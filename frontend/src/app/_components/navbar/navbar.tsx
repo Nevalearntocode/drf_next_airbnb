@@ -9,7 +9,7 @@ type Props = {};
 
 const Navbar = (props: Props) => {
   return (
-    <nav className="fixed left-0 top-0 z-10 w-full border-b py-6">
+    <nav className="fixed left-0 top-0 z-10 w-full border-b bg-white py-6">
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           <div>
