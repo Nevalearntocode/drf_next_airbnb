@@ -15,19 +15,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/hooks/use-redux-store";
+import { openModal } from "@/redux/features/auth-modal-slice";
 
 type Props = {};
 
 const UserButton = (props: Props) => {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleSignInClick = () => {
-    router.push("/signin");
+    dispatch(openModal("login"));
   };
 
   const handleSignUpClick = () => {
-    router.push("/signup");
+    dispatch(openModal("register"));
   };
 
   const renderDropdownMenuItems = () => {
@@ -58,11 +61,11 @@ const UserButton = (props: Props) => {
       return (
         <>
           <DropdownMenuItem onClick={handleSignInClick}>
-            Sign In
+            Log In
             <IoLockClosed className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleSignUpClick}>
-            Sign Up
+            Register
             <AiOutlineUserAdd className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
         </>
