@@ -5,7 +5,7 @@ type Props = {};
 
 const ConversationDetailPage = (props: Props) => {
   return (
-    <main>
+    <main className="container">
       <ConversationDetail />
     </main>
   );

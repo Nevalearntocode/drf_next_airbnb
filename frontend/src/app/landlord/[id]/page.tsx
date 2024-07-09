@@ -7,7 +7,7 @@ type Props = {};
 
 const LandlordPage = (props: Props) => {
   return (
-    <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+    <div className="container grid grid-cols-1 gap-4 md:grid-cols-4">
       <aside className="col-span-1 mb-4">
         <div className="flex flex-col items-center rounded-xl border border-gray-300 p-6 shadow-xl">
           <Image

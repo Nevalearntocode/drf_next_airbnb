@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { SquareArrowOutUpRight, SquareArrowUpRight } from "lucide-react";
+import { SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Props = {};
@@ -37,7 +37,7 @@ const ReservationCard = (props: Props) => {
       </div>
       <Button
         variant={`ghost`}
-        className="absolute right-0 top-0 hidden items-center justify-center rounded-xl focus-visible:ring-0 focus-visible:ring-offset-0 lg:flex"
+        className="absolute right-0 top-0 hidden items-center justify-center focus-visible:ring-0 focus-visible:ring-offset-0 lg:flex"
         size={"icon"}
       >
         <SquareArrowOutUpRight className="h-5 w-5" />

@@ -5,7 +5,7 @@ type Props = {};
 
 const MyPropertiesPage = (props: Props) => {
   return (
-    <main>
+    <main className="container">
       <h1 className="my-6 text-2xl font-bold">My properties</h1>
       <PropertyList />;
     </main>

@@ -32,7 +32,7 @@ const PropertyReservation = (props: Props) => {
       <Separator />
       <div className="mt-4 flex items-center justify-between font-bold">
         <p>Total</p>
-        <p>$2040</p>
+        <p>$40</p>
       </div>
     </aside>
   );

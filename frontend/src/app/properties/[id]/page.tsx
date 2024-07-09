@@ -6,7 +6,7 @@ type Props = {};
 
 const PropertyDetail = (props: Props) => {
   return (
-    <main className="pb-6">
+    <main className="container pb-6">
       <PropertyImage />
       <PropertyInfo />
     </main>
