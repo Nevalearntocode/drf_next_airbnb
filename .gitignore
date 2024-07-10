@@ -291,3 +291,4 @@ auction/src/db/drop-table.pgsql
 
 postman_requests
 notes
+.env.dev
