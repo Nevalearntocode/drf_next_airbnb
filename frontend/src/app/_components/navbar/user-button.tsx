@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/hooks/use-redux-store";
-import { openModal } from "@/redux/features/auth-modal-slice";
+import { openModal } from "@/redux/features/modal-slice";
 
 type Props = {};
 

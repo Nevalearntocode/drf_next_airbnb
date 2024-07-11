@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from os import getenv, path
+from datetime import timedelta
 import dotenv
 
 
@@ -30,6 +31,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "corsheaders",
+    "users",
+    "property",
 ]
 
 MIDDLEWARE = [
@@ -102,6 +105,47 @@ USE_TZ = True
 
 
 STATIC_URL = "static/"
-
+MEDIA_URL = "media/"
+STATIC_ROOT = BASE_DIR / "static"
+MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "users.authentication.CustomJWTAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+AUTH_USER_MODEL = "users.CustomUser"
+
+DJOSER = {
+    "LOGIN_FIELD": "email",
+    "USER_CREATE_PASSWORD_RETYPE": True,
+    "SERIALIZERS": {
+        "user": "users.serializers.CustomUserSerializer",
+        "current_user": "users.serializers.CustomUserSerializer",
+    },
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "UPDATE_LAST_LOGIN": True,
+    "SIGNING_KEY": getenv("SIGNING_KEY"),
+}
+
+CORS_ALLOWED_ORIGINS = getenv("CORS_ALLOWED_ORIGINS").split(",")
+
+AUTH_COOKIE_HTTPONLY = getenv("AUTH_COOKIE_HTTPONLY") == "True"
+AUTH_COOKIE_SECURE = getenv("AUTH_COOKIE_SECURE") == "True"
+AUTH_COOKIE_SAMESITE = getenv("AUTH_COOKIE_SAMESITE")
+AUTH_COOKIE_PATH = getenv("AUTH_COOKIE_PATH")
+AUTH_COOKIE_ACCESS_MAX_AGE = 60 * 60
+AUTH_COOKIE_REFRESH_MAX_AGE = 60 * 60 * 24 * 7
+
+WEBSITE_URL = getenv("WEBSITE_URL")

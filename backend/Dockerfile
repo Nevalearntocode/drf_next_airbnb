@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1
 FROM python:3.12.2-slim-bullseye
 
 # Set the working directory in the container
@@ -8,7 +9,15 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONBUFFERED 1
 
 # # Install gcc and other build dependencies
-RUN apt-get update && apt-get install -y build-essential netcat libffi-dev libpq-dev
+RUN apt-get update && apt-get install -y \
+    # build-essential \
+    netcat \
+    # libffi-dev \
+    # libpq-dev \
+    # gcc \
+    # g++ \
+    # make \
+    && rm -rf /var/lib/apt/lists/*  # Clean up apt cache to reduce image size
 
 # Upgrade pip
 RUN python -m pip install --upgrade pip

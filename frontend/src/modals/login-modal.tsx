@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
-import { closeModal, openModal } from "@/redux/features/auth-modal-slice";
+import { closeModal, openModal } from "@/redux/features/modal-slice";
 
 type Props = {};
 
