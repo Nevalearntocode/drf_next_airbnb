@@ -27,7 +27,7 @@ class ListCreatePropertyView(ListCreateAPIView):
             user = self.request.user
             if not user.is_authenticated:
                 raise NotAuthenticated
-            return querySet.filter(landlord=user)
+            querySet = querySet.filter(landlord=user)
         if id:
             return querySet.filter(id=id)
         if name:

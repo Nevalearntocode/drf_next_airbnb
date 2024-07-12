@@ -1,9 +1,5 @@
+import { AuthState } from "@/types/redux";
 import { createSlice } from "@reduxjs/toolkit";
-
-type AuthState = {
-  isAuthenticated: boolean;
-  isLoading: boolean;
-};
 
 const initialState = {
   isAuthenticated: false,

@@ -6,7 +6,7 @@ export default function Home() {
     <main className="container">
       <div className="flex flex-col items-center pb-6 pt-3">
         <Categories />
-        <PropertyList />
+        <PropertyList route="all" />
       </div>
     </main>
   );

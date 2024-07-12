@@ -7,7 +7,7 @@ const MyPropertiesPage = (props: Props) => {
   return (
     <main className="container">
       <h1 className="my-6 text-2xl font-bold">My properties</h1>
-      <PropertyList />;
+      <PropertyList route="me" />
     </main>
   );
 };

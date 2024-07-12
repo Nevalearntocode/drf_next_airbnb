@@ -1,23 +1,6 @@
+import { LoginArgs, RegisterArgs } from "@/types/redux";
 import { apiSlice } from "../services/api-slice";
-
-type LoginArgs = {
-  email: string;
-  password: string;
-};
-
-type RegisterArgs = {
-  name: string;
-  email: string;
-  password: string;
-  re_password: string;
-};
-
-export type User = {
-  id: number;
-  name: string;
-  email: string;
-  avatar: string | null;
-};
+import { User } from "@/types/user";
 
 export const userSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
