@@ -5,13 +5,16 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import HeartToggle from "./heart-toggle";
 import { useRouter } from "next/navigation";
+import { Property } from "@/redux/features/property-slice";
 
-type Props = {};
+type Props = {
+  property: Property;
+};
 
-const PropertyCard = (props: Props) => {
+const PropertyCard = ({ property }: Props) => {
   const router = useRouter();
   const onClick = () => {
-    router.push(`/properties/${1}`);
+    router.push(`/properties/${property.id}`);
   };
 
   return (
@@ -21,9 +24,10 @@ const PropertyCard = (props: Props) => {
         onClick={onClick}
       >
         <Image
-          src={"/examples/modern.jpg"}
-          alt={"cave"}
+          src={property.image}
+          alt={property.name}
           fill
+          priority
           sizes="(max-width: 768px) 768px, (max-width: 1200px) 768px, 768px"
           className="h-auto w-auto rounded-xl object-cover transition duration-1000 hover:scale-110"
         />
@@ -31,10 +35,10 @@ const PropertyCard = (props: Props) => {
       </CardContent>
       <CardFooter className="p-2">
         <div>
-          <p className="text-sm text-muted-foreground">Cave</p>
-          <p className="text-sm text-muted-foreground">$1000</p>
+          <p className="text-sm text-muted-foreground">{property.name}</p>
+          <p className="text-sm text-muted-foreground">${property.price}</p>
           <p className="text-sm text-muted-foreground">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            {property.description}
           </p>
         </div>
       </CardFooter>

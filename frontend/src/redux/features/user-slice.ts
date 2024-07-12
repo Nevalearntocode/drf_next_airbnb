@@ -12,7 +12,7 @@ type RegisterArgs = {
   re_password: string;
 };
 
-type User = {
+export type User = {
   id: number;
   name: string;
   email: string;
