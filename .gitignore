@@ -293,3 +293,4 @@ postman_requests
 notes
 .env.dev
 backend/media
+migrations

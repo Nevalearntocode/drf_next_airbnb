@@ -1,10 +1,13 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Property
 from rest_framework.exceptions import NotAuthenticated
-from .serializers import ListCreatePropertySerializer
+from .serializers import PropertySerializer, PropertySerializerWithLandlord
 from rest_framework.permissions import AllowAny
 from rest_framework.pagination import PageNumberPagination
 
+class RetrieveUpdateDestroyPropertyView(RetrieveUpdateDestroyAPIView):
+    queryset = Property.objects.all()
+    serializer_class = PropertySerializerWithLandlord
 
 class PropertyPagination(PageNumberPagination):
     page_size = 8
@@ -13,7 +16,7 @@ class PropertyPagination(PageNumberPagination):
 
 class ListCreatePropertyView(ListCreateAPIView):
     queryset = Property.objects.all()
-    serializer_class = ListCreatePropertySerializer
+    serializer_class = PropertySerializer
     pagination_class = PropertyPagination
 
     def list(self, request, *args, **kwargs):

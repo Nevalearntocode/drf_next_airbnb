@@ -1,27 +1,20 @@
 from rest_framework import serializers
 from property.models import Property
+from users.serializers import CustomUserSerializer
 
-
-class ListCreatePropertySerializer(serializers.ModelSerializer):
+class PropertySerializer(serializers.HyperlinkedModelSerializer):
     landlord = serializers.PrimaryKeyRelatedField(
         read_only=True, source="landlord.email"
     )
 
     class Meta:
         model = Property
-        fields = [
-            "id",
-            "name",
-            "price",
-            "description",
-            "category",
-            "landlord",
-            "created_at",
-            "image",
-            "guests",
-            "beds",
-            "baths",
-            "address",
-            "country",
-            "country_code",
-        ]
+        fields = "__all__"
+
+
+class PropertySerializerWithLandlord(serializers.HyperlinkedModelSerializer):
+    landlord = CustomUserSerializer(read_only=True)
+
+    class Meta:
+        model = Property
+        fields = "__all__"
