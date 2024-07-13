@@ -3,7 +3,7 @@
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
-import { IoLockClosed } from "react-icons/io5";
+import { IoLockOpen } from "react-icons/io5";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -27,22 +27,32 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { closeModal, openModal } from "@/redux/features/modal-slice";
+import {
+  useLoginMutation,
+  useRegisterMutation,
+} from "@/redux/features/user-slice";
+import { setLoading } from "@/redux/features/auth-slice";
+import { login as loginAction } from "@/redux/features/auth-slice";
 
 type Props = {};
 
 const formSchema = z.object({
+  name: z.string().min(1, "Name is required"),
   email: z.string().min(1, "Email is required").email("Email is invalid"),
   password: z
     .string()
     .min(1, "Password is required")
     .min(8, "Password must be more than 8 characters")
     .max(32, "Password must be less than 32 characters"),
+  re_password: z.string().min(1, "Confirm password is required"),
 });
 
 type formType = z.infer<typeof formSchema>;
 
 const RegisterModal = ({}: Props) => {
   const { type, isOpen } = useAppSelector((state) => state.authModal);
+  const [register] = useRegisterMutation();
+  const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -62,7 +72,36 @@ const RegisterModal = ({}: Props) => {
     dispatch(closeModal());
   };
 
-  const onSubmit = async (data: formType) => {};
+  const onSubmit = (data: formType) => {
+    dispatch(setLoading(true));
+    register(data)
+      .unwrap()
+      .then(() => {
+        toast.success("Register successfully");
+        login({
+          email: data.email,
+          password: data.password,
+        })
+          .unwrap()
+          .then(() => {
+            dispatch(loginAction());
+            toast.success("Welcome to Airbnb");
+          })
+          .catch((err) => {
+            console.log(err);
+            toast.error(err.data.message);
+          });
+        dispatch(closeModal());
+        router.push("/");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.data.message);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -82,6 +121,23 @@ const RegisterModal = ({}: Props) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex w-full flex-col gap-y-2 px-8"
           >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="John Doe"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"
@@ -117,13 +173,31 @@ const RegisterModal = ({}: Props) => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="re_password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm password</FormLabel>
+                  <FormControl>
+                    <Input
+                      disabled={isLoading}
+                      placeholder="********"
+                      type="password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button
               disabled={isLoading}
               className="mt-2 flex w-full items-center justify-center"
               type="submit"
             >
               <p className="m-auto">Register</p>
-              <IoLockClosed size={18} />
+              <IoLockOpen size={18} />
             </Button>
           </form>
         </Form>

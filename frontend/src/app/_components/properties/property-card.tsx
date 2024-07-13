@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import HeartToggle from "./heart-toggle";
 import { useRouter } from "next/navigation";
-import { Property } from "@/redux/features/property-slice";
+import { Property } from "@/types/property";
 
 type Props = {
   property: Property;

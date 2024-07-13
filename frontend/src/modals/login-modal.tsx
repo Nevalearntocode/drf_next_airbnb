@@ -3,7 +3,7 @@
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
-import { IoLockClosed } from "react-icons/io5";
+import { IoLockOpen } from "react-icons/io5";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -27,6 +27,8 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { closeModal, openModal } from "@/redux/features/modal-slice";
+import { useLoginMutation } from "@/redux/features/user-slice";
+import { login as loginAction, setLoading } from "@/redux/features/auth-slice";
 
 type Props = {};
 
@@ -43,6 +45,7 @@ type formType = z.infer<typeof formSchema>;
 
 const LoginModal = ({}: Props) => {
   const { type, isOpen } = useAppSelector((state) => state.authModal);
+  const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -62,7 +65,24 @@ const LoginModal = ({}: Props) => {
     dispatch(closeModal());
   };
 
-  const onSubmit = async (data: formType) => {};
+  const onSubmit = (data: formType) => {
+    dispatch(setLoading(true));
+    login(data)
+      .unwrap()
+      .then(() => {
+        dispatch(loginAction());
+        toast.success("Login successfully");
+        dispatch(closeModal());
+        router.push("/");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.data.message);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
 
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
@@ -123,7 +143,7 @@ const LoginModal = ({}: Props) => {
               type="submit"
             >
               <p className="m-auto">Log In</p>
-              <IoLockClosed size={18} />
+              <IoLockOpen size={18} />
             </Button>
           </form>
         </Form>

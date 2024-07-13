@@ -1,5 +1,6 @@
 "use client";
 
+import useVerify from "@/hooks/use-verify";
 import LoginModal from "@/modals/login-modal";
 import RegisterModal from "@/modals/register-modal";
 import React from "react";
@@ -13,6 +14,8 @@ const ModalProvider = (props: Props) => {
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  useVerify();
 
   if (!isClient) {
     return null;

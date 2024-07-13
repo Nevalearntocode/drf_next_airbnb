@@ -3,9 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Briefcase, MessageSquare, LogOut, Menu, Ticket } from "lucide-react";
 import { AiOutlineUserAdd } from "react-icons/ai";
-import { IoLockClosed } from "react-icons/io5";
+import { IoLockOpen } from "react-icons/io5";
 import Image from "next/image";
-import React, { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,15 +14,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/hooks/use-redux-store";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { openModal } from "@/redux/features/modal-slice";
+import { useLogoutMutation } from "@/redux/features/user-slice";
+import {
+  logout as logoutAction,
+  setLoading,
+} from "@/redux/features/auth-slice";
 
 type Props = {};
 
 const UserButton = (props: Props) => {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated } = useAppSelector((state) => state.authState);
   const dispatch = useAppDispatch();
+  const [logout] = useLogoutMutation();
+  const { isLoading } = useAppSelector((state) => state.authState);
 
   const handleSignInClick = () => {
     dispatch(openModal("login"));
@@ -31,6 +37,22 @@ const UserButton = (props: Props) => {
 
   const handleSignUpClick = () => {
     dispatch(openModal("register"));
+  };
+
+  const onLogOut = () => {
+    dispatch(setLoading(true));
+    logout()
+      .unwrap()
+      .then(() => {
+        dispatch(logoutAction());
+        router.push("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
   };
 
   const renderDropdownMenuItems = () => {
@@ -51,7 +73,7 @@ const UserButton = (props: Props) => {
             My Inbox
             <MessageSquare className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={onLogOut}>
             Logout
             <LogOut className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
@@ -62,7 +84,7 @@ const UserButton = (props: Props) => {
         <>
           <DropdownMenuItem onClick={handleSignInClick}>
             Log In
-            <IoLockClosed className="ml-auto h-4 w-4" />
+            <IoLockOpen className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleSignUpClick}>
             Register

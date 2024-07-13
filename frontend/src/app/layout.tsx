@@ -5,6 +5,7 @@ import Navbar from "./_components/navbar/navbar";
 import { cn } from "@/lib/utils";
 import ReduxProvider from "@/providers/redux-provider";
 import ModalProvider from "@/providers/modal-provider";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className={cn("", inter.className)}>
         <ReduxProvider>
           <ModalProvider />
+          <Toaster />
           <Navbar />
           <div className="pt-32">{children}</div>
         </ReduxProvider>

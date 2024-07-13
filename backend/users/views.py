@@ -12,24 +12,22 @@ from rest_framework import status
 class LogoutView(APIView):
     def post(self, request, *args, **kwargs):
         response = Response(status=status.HTTP_204_NO_CONTENT)
-        # response.set_cookie(
-        #     "access",
-        #     httponly=settings.AUTH_COOKIE_HTTPONLY,
-        #     samesite=settings.AUTH_COOKIE_SAMESITE,
-        #     secure=settings.AUTH_COOKIE_SECURE,
-        #     max_age=0,
-        #     path="/",
-        # )
-        # response.set_cookie(
-        #     "refresh",
-        #     httponly=settings.AUTH_COOKIE_HTTPONLY,
-        #     samesite=settings.AUTH_COOKIE_SAMESITE,
-        #     secure=settings.AUTH_COOKIE_SECURE,
-        #     max_age=0,
-        #     path="/",
-        # )
-        response.delete_cookie("access")
-        response.delete_cookie("refresh")
+        response.set_cookie(
+            "access",
+            httponly=settings.AUTH_COOKIE_HTTPONLY,
+            samesite=settings.AUTH_COOKIE_SAMESITE,
+            secure=settings.AUTH_COOKIE_SECURE,
+            max_age=0,
+            path="/",
+        )
+        response.set_cookie(
+            "refresh",
+            httponly=settings.AUTH_COOKIE_HTTPONLY,
+            samesite=settings.AUTH_COOKIE_SAMESITE,
+            secure=settings.AUTH_COOKIE_SECURE,
+            max_age=0,
+            path="/",
+        )
         return response
 
 

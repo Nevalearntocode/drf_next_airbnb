@@ -11,32 +11,38 @@ export const userSlice = apiSlice.injectEndpoints({
         body: args,
       }),
     }),
-    logout: builder.mutation({
+    logout: builder.mutation<undefined, void>({
       query: () => ({
-        url: "/logout",
+        url: "/logout/",
         method: "POST",
       }),
     }),
     register: builder.mutation({
       query: (args: RegisterArgs) => ({
-        url: "/register",
+        url: "/users/",
         method: "POST",
         body: args,
       }),
     }),
     retrieveUser: builder.query<User, void>({
       query: () => ({
-        url: "/users/me",
+        url: "/users/me/",
         method: "GET",
       }),
     }),
     updateUser: builder.mutation({
-      query: (args: {name: string, avatar: string | null}) => ({
-        url: "/users/me",
+      query: (args: { name: string; avatar: string | null }) => ({
+        url: "/users/me/",
         method: "PUT",
         body: args,
       }),
-    })
+    }),
+    verify: builder.mutation<undefined, void>({
+      query: () => ({
+        url: "/jwt/verify/",
+        method: "POST",
+      }),
+    }),
   }),
 });
 
@@ -45,4 +51,6 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useRetrieveUserQuery,
+  useUpdateUserMutation,
+  useVerifyMutation,
 } = userSlice;
