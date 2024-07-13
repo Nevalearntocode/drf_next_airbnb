@@ -1,12 +1,10 @@
 from django.urls import path, include
-from .views import ListCreatePropertyView, RetrieveUpdateDestroyPropertyView
+from .views import (
+    PropertyViewset,
+)
+from rest_framework.routers import DefaultRouter
 
-urlpatterns = [
-    path("", ListCreatePropertyView.as_view(), name="properties"),
-    path(
-        "detail/<str:pk>/",
-        RetrieveUpdateDestroyPropertyView.as_view(),
-        name="property-detail",
-    ),
-    path("me/", ListCreatePropertyView.as_view(), name="my-properties"),
-]
+router = DefaultRouter()
+router.register("properties", PropertyViewset, basename="property")
+
+urlpatterns = router.urls
