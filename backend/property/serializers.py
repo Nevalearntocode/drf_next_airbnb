@@ -2,7 +2,7 @@ from rest_framework import serializers
 from property.models import Property
 from users.serializers import CustomUserSerializer
 
-class PropertySerializer(serializers.HyperlinkedModelSerializer):
+class PropertySerializer(serializers.ModelSerializer):
     landlord = serializers.PrimaryKeyRelatedField(
         read_only=True, source="landlord.email"
     )
@@ -12,7 +12,7 @@ class PropertySerializer(serializers.HyperlinkedModelSerializer):
         fields = "__all__"
 
 
-class PropertySerializerWithLandlord(serializers.HyperlinkedModelSerializer):
+class PropertySerializerWithLandlord(serializers.ModelSerializer):
     landlord = CustomUserSerializer(read_only=True)
 
     class Meta:

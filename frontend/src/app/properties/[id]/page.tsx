@@ -1,16 +1,18 @@
 import React from "react";
-import PropertyImage from "../property-image";
-import PropertyInfo from "../property-info";
+import PropertyDetail from "../property-detail";
 
-type Props = {};
+type Props = {
+  params: {
+    id: string;
+  }
+};
 
-const PropertyDetail = (props: Props) => {
+const PropertyDetailPage = ({ params }: Props) => {
   return (
     <main className="container pb-6">
-      <PropertyImage />
-      <PropertyInfo />
+      <PropertyDetail id={params.id} />
     </main>
   );
 };
 
-export default PropertyDetail;
+export default PropertyDetailPage;

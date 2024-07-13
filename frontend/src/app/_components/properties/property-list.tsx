@@ -18,8 +18,8 @@ const PropertyList = ({ route }: Props) => {
 
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
-      {properties.data.results.map((property, index) => (
-        <PropertyCard key={property.id || index} property={property} />
+      {properties.data.results.map((property) => (
+        <PropertyCard key={property.id} property={property} />
       ))}
     </div>
   );

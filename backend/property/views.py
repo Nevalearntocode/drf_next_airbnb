@@ -1,32 +1,12 @@
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-from rest_framework.pagination import PageNumberPagination
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from property.serializers import PropertySerializer, PropertySerializerWithLandlord
 from property.permissions import IsOwnerOrReadOnly
 from property.models import Property
-
-
-class PropertyPagination(PageNumberPagination):
-    page_size = 8
-    page_query_param = "page"
-
-
-class PropertyQuerysetMixin(GenericViewSet):
-    def get_queryset(self):
-        request = self.request
-        queryset = super().get_queryset()
-        id = request.query_params.get("id")
-        name = request.query_params.get("name")
-        category = request.query_params.get("category")
-        if id:
-            queryset = queryset.filter(id=id)
-        if name:
-            queryset = queryset.filter(name__icontains=name)
-        if category:
-            queryset = queryset.filter(category=category)
-        return queryset
+from property.mixins import PropertyQuerysetMixin
+from property.paginations import PropertyPagination
 
 
 class PropertyViewset(ModelViewSet, PropertyQuerysetMixin):

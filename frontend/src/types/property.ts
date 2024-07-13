@@ -13,9 +13,10 @@ type Property = {
   beds: number;
   baths: number;
   image: string;
-  landlord: User;
   created_at: string;
 };
+
+type PropertyWithLandlord = Property & { landlord: User };
 
 type PropertyList = {
   count: number;
@@ -26,4 +27,4 @@ type PropertyList = {
 
 type PropertyRoute = "all" | "landlord" | "favorite" | "me";
 
-export type { Property, PropertyList, PropertyRoute };
+export type { Property, PropertyList, PropertyRoute, PropertyWithLandlord };

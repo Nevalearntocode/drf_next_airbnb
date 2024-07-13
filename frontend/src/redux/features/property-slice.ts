@@ -1,4 +1,4 @@
-import { PropertyList } from "@/types/property";
+import { PropertyList, PropertyWithLandlord } from "@/types/property";
 import { apiSlice } from "../services/api-slice";
 import { getPropertiesArgs } from "@/types/redux";
 import { paramsAppender } from "@/lib/utils";
@@ -23,8 +23,17 @@ export const propertySlice = apiSlice.injectEndpoints({
         };
       },
     }),
+    getPropertyDetails: builder.query<PropertyWithLandlord, { id: string }>({
+      query: (args) => ({
+        url: `/properties/${args.id}/`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
-export const { useGetAllPropertiesQuery, useGetCurrentUserPropertiesQuery } =
-  propertySlice;
+export const {
+  useGetAllPropertiesQuery,
+  useGetCurrentUserPropertiesQuery,
+  useGetPropertyDetailsQuery,
+} = propertySlice;
