@@ -10,7 +10,7 @@ type Property = {
   country_code: string;
   price: number;
   guests: number;
-  beds: number;
+  bedrooms: number;
   baths: number;
   image: string;
   created_at: string;

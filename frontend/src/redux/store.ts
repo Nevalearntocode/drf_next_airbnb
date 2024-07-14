@@ -1,19 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
-import authModalReducer from "./features/modal-slice";
+import modalReducer from "./features/modal-slice";
 import { userSlice } from "./features/user-slice";
 import { propertySlice } from "./features/property-slice";
-import authStateReducer from "./features/auth-slice"
+import authStateReducer from "./features/auth-slice";
 
 export const store = configureStore({
   reducer: {
-    authModal: authModalReducer,
+    modal: modalReducer,
     property: propertySlice.reducer,
     authState: authStateReducer,
     [userSlice.reducerPath]: userSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(userSlice.middleware),
-  
+
   devTools: process.env.NODE_ENV !== "production",
 });
 

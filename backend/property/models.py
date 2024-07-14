@@ -32,7 +32,7 @@ class Property(models.Model):
     country_code = models.CharField(max_length=10)
     price = models.IntegerField()
     guests = models.IntegerField()
-    beds = models.IntegerField()
+    bedrooms = models.IntegerField()
     baths = models.IntegerField()
     image = models.ImageField(upload_to="upload/properties")
     landlord = models.ForeignKey(

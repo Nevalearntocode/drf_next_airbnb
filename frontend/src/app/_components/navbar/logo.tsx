@@ -10,6 +10,7 @@ const Logo = (props: Props) => {
       <Link href={`/`}>
         <Image
           src={`/images/logo.png`}
+          priority
           width={150}
           height={50}
           alt={`logo`}

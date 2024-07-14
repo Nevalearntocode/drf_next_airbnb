@@ -24,6 +24,7 @@ RUN python -m pip install --upgrade pip
 
 # Copy requirements.txt to the working directory and install dependencies
 COPY ./requirements.txt /backend/requirements.txt
+
 RUN pip install -r requirements.txt
 
 COPY ./entrypoint.sh /entrypoint.sh

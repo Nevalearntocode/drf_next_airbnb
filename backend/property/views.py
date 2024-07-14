@@ -1,12 +1,12 @@
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from property.serializers import PropertySerializer, PropertySerializerWithLandlord
-from property.permissions import IsOwnerOrReadOnly
 from property.models import Property
 from property.mixins import PropertyQuerysetMixin
+from property.permissions import IsOwnerOrReadOnly
 from property.paginations import PropertyPagination
+from property.serializers import PropertySerializer, PropertySerializerWithLandlord
 
 
 class PropertyViewset(ModelViewSet, PropertyQuerysetMixin):

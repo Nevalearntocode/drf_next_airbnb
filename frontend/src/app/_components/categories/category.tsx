@@ -23,7 +23,7 @@ const Category = ({ description, icon: Icon, label, selected }: Props) => {
     if (currentCategory === label) {
       url.searchParams.delete("category");
     } else {
-      url.searchParams.set("category", label);
+      url.searchParams.set("category", label.toLowerCase());
     }
 
     router.push(url.toString());

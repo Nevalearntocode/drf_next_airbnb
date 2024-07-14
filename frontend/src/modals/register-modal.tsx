@@ -50,7 +50,7 @@ const formSchema = z.object({
 type formType = z.infer<typeof formSchema>;
 
 const RegisterModal = ({}: Props) => {
-  const { type, isOpen } = useAppSelector((state) => state.authModal);
+  const { type, isOpen } = useAppSelector((state) => state.modal);
   const [register] = useRegisterMutation();
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
@@ -77,7 +77,6 @@ const RegisterModal = ({}: Props) => {
     register(data)
       .unwrap()
       .then(() => {
-        toast.success("Register successfully");
         login({
           email: data.email,
           password: data.password,
@@ -89,14 +88,22 @@ const RegisterModal = ({}: Props) => {
           })
           .catch((err) => {
             console.log(err);
-            toast.error(err.data.message);
+            toast.error(err.data.detail);
           });
         dispatch(closeModal());
-        router.push("/");
+        router.refresh();
       })
       .catch((err) => {
         console.log(err);
-        toast.error(err.data.message);
+        if (err.data.non_field_errors) {
+          toast.error(err.data.non_field_errors[0]);
+        }
+        if (err.data.email) {
+          toast.error(err.data.email[0]);
+        }
+        if (err.data.password) {
+          toast.error(err.data.password[0]);
+        }
       })
       .finally(() => {
         dispatch(setLoading(false));

@@ -29,7 +29,6 @@ const UserButton = (props: Props) => {
   const { isAuthenticated } = useAppSelector((state) => state.authState);
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
-  const { isLoading } = useAppSelector((state) => state.authState);
 
   const handleSignInClick = () => {
     dispatch(openModal("login"));

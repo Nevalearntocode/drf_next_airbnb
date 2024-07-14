@@ -44,7 +44,7 @@ const formSchema = z.object({
 type formType = z.infer<typeof formSchema>;
 
 const LoginModal = ({}: Props) => {
-  const { type, isOpen } = useAppSelector((state) => state.authModal);
+  const { type, isOpen } = useAppSelector((state) => state.modal);
   const [login] = useLoginMutation();
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -73,7 +73,7 @@ const LoginModal = ({}: Props) => {
         dispatch(loginAction());
         toast.success("Login successfully");
         dispatch(closeModal());
-        router.push("/");
+        router.refresh();
       })
       .catch((err) => {
         console.log(err);
