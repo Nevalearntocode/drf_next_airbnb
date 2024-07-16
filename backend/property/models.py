@@ -33,7 +33,7 @@ class Property(models.Model):
     price = models.IntegerField()
     guests = models.IntegerField()
     bedrooms = models.IntegerField()
-    baths = models.IntegerField()
+    bathrooms = models.IntegerField()
     image = models.ImageField(upload_to="upload/properties")
     landlord = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="landlord"

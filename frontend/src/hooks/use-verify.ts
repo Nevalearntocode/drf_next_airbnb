@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "./use-redux-store";
 import { useVerifyMutation } from "@/redux/features/user-slice";
-import { login, setLoading } from "@/redux/features/auth-slice";
+import { setLoading, setAuth } from "@/redux/features/auth-slice";
 
 export default function useVerify() {
   const dispatch = useAppDispatch();
@@ -13,7 +13,10 @@ export default function useVerify() {
     verify()
       .unwrap()
       .then(() => {
-        dispatch(login());
+        dispatch(setAuth(true));
+      })
+      .catch((err) => {
+        dispatch(setAuth(false));
       })
       .finally(() => {
         dispatch(setLoading(false));

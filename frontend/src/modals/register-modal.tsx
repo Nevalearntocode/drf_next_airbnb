@@ -32,7 +32,7 @@ import {
   useRegisterMutation,
 } from "@/redux/features/user-slice";
 import { setLoading } from "@/redux/features/auth-slice";
-import { login as loginAction } from "@/redux/features/auth-slice";
+import { setAuth } from "@/redux/features/auth-slice";
 
 type Props = {};
 
@@ -83,7 +83,7 @@ const RegisterModal = ({}: Props) => {
         })
           .unwrap()
           .then(() => {
-            dispatch(loginAction());
+            dispatch(setAuth(true));
             toast.success("Welcome to Airbnb");
           })
           .catch((err) => {

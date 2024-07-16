@@ -2,13 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import modalReducer from "./features/modal-slice";
 import { userSlice } from "./features/user-slice";
 import { propertySlice } from "./features/property-slice";
-import authStateReducer from "./features/auth-slice";
+import authReducer from "./features/auth-slice";
 
 export const store = configureStore({
   reducer: {
     modal: modalReducer,
     property: propertySlice.reducer,
-    authState: authStateReducer,
+    auth: authReducer,
     [userSlice.reducerPath]: userSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

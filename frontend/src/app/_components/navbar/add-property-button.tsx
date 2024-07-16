@@ -11,7 +11,7 @@ type Props = {};
 
 const AddPropertyButton = (props: Props) => {
   const dispatch = useAppDispatch();
-  const { isAuthenticated } = useAppSelector((state) => state.authState);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
 
   const onClick = () => {
     if (!isAuthenticated) {

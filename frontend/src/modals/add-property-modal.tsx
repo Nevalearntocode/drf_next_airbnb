@@ -8,7 +8,6 @@ import { useForm } from "react-hook-form";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -17,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,10 +26,37 @@ import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { closeModal } from "@/redux/features/modal-slice";
 import { Separator } from "@/components/ui/separator";
 import { categories } from "@/constants";
-import CategoryInput from "@/components/category-input";
+import CategoryInput from "@/modals/components/category-input";
 import { cn } from "@/lib/utils";
+import FieldHeader from "./components/field-header";
+import { Textarea } from "@/components/ui/textarea";
+import Counter from "./components/counter";
+import { Check, ChevronsUpDown, DollarSign } from "lucide-react";
+import CountrySelect from "./components/select-country";
+import { useCountries } from "@/hooks/use-countries";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import ImageUpload from "./components/image-upload";
 
 type Props = {};
+
+const locationSchema = z.object({
+  name: z.string(),
+  country_code: z.string(),
+});
+
+export type LocationType = z.infer<typeof locationSchema>;
 
 const formSchema = z.object({
   category: z.string().min(1, {
@@ -41,12 +66,13 @@ const formSchema = z.object({
   description: z
     .string()
     .min(1, { message: "Describe your listing in detail." }),
-  image: z.string().min(1, { message: "Upload an image of your property." }),
+  image: z.instanceof(File).nullable(),
   guests: z.number().positive({ message: "Guest  must be a positive number." }),
+  location: locationSchema,
   bedrooms: z
     .number()
     .positive({ message: "Room  must be a positive number." }),
-  baths: z
+  bathrooms: z
     .number()
     .positive({ message: "Bathroom  must be a positive number." }),
   price: z
@@ -57,11 +83,10 @@ const formSchema = z.object({
 
 enum STEPS {
   CATEGORY = 0,
-  LOCATION = 1,
-  INFO = 2,
-  IMAGES = 3,
-  DESCRIPTION = 4,
-  PRICE = 5,
+  DESCRIPTION = 1,
+  DETAILS = 2,
+  LOCATION = 3,
+  PRICE = 4,
 }
 
 type FormType = z.infer<typeof formSchema>;
@@ -70,6 +95,8 @@ const AddPropertyModal = (props: Props) => {
   const { isOpen, type } = useAppSelector((state) => state.modal);
   const isModalOpen = type === "add-property" && isOpen;
   const dispatch = useAppDispatch();
+  const { getAll } = useCountries();
+  const countries = getAll();
   const [step, setStep] = useState<STEPS>(STEPS.CATEGORY);
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
@@ -77,11 +104,15 @@ const AddPropertyModal = (props: Props) => {
       category: "",
       name: "",
       description: "",
-      image: "",
+      image: null,
       guests: 0,
       bedrooms: 0,
-      baths: 0,
+      bathrooms: 0,
       price: 0,
+      location: {
+        name: "",
+        country_code: "",
+      },
     },
   });
 
@@ -104,6 +135,14 @@ const AddPropertyModal = (props: Props) => {
     console.log(data);
   };
 
+  const onSetLocation = ({ name, country_code }: LocationType) => {
+    form.setValue("location", { name, country_code });
+  };
+
+  const onUploadImage = (image: File) => {
+    form.setValue("image", image);
+  };
+
   return (
     <Dialog open={isModalOpen} onOpenChange={onClose}>
       <DialogContent aria-describedby={undefined}>
@@ -119,12 +158,10 @@ const AddPropertyModal = (props: Props) => {
                 name="category"
                 render={({ field }) => (
                   <FormItem className="">
-                    <FormLabel className="text-xl font-bold">
-                      Which of these best describe your place?
-                    </FormLabel>
-                    <FormDescription className="text-sm italic">
-                      Pick a category.
-                    </FormDescription>
+                    <FieldHeader
+                      label="Which of these best describe your place?"
+                      description="Pick a category."
+                    />
                     <FormControl>
                       <div className="grid max-h-[50vh] grid-cols-1 gap-3 overflow-y-auto md:grid-cols-2">
                         {categories.map((category) => (
@@ -143,6 +180,234 @@ const AddPropertyModal = (props: Props) => {
                   </FormItem>
                 )}
               />
+            )}
+            {step === STEPS.DESCRIPTION && (
+              <div className="mb-8 flex flex-col gap-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <div className="pb-4">
+                        <FieldHeader
+                          label="How would you describe your place?"
+                          description="Short and sweet work best."
+                        />
+                      </div>
+                      <FormControl>
+                        <Input
+                          placeholder="Name"
+                          disabled={isLoading}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <FormControl>
+                        <Textarea
+                          placeholder="Description"
+                          disabled={isLoading}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+            {step === STEPS.LOCATION && (
+              <div className="mb-8 flex flex-col gap-y-8">
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FieldHeader
+                        label="Where is your place located?"
+                        description="Help guests find you."
+                      />
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              className={cn(
+                                "w-full justify-between",
+                                !field.value && "text-muted-foreground",
+                              )}
+                            >
+                              {countries.find(
+                                (country) => country.name === field.value.name,
+                              )?.name || "Select country"}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0" align="start">
+                          <Command>
+                            <CommandInput placeholder="Search country..." />
+                            <CommandList>
+                              <CommandEmpty>No countries found.</CommandEmpty>
+                              <CommandGroup>
+                                {countries.map((country) => (
+                                  <CommandItem
+                                    value={country.name}
+                                    key={country.name}
+                                    onSelect={() => {
+                                      form.setValue("location", {
+                                        name: country.name,
+                                        country_code: country.country_code,
+                                      });
+                                    }}
+                                    className="flex items-center justify-between"
+                                  >
+                                    <p className="text-sm">{country.name}</p>
+                                    <div className="flex items-center">
+                                      <p className="text-xs text-muted-foreground">
+                                        {country.country_code}
+                                      </p>
+                                      <Check
+                                        className={cn(
+                                          "ml-2 h-4 w-4",
+                                          field.value.name === country.name
+                                            ? "opacity-100"
+                                            : "opacity-0",
+                                        )}
+                                      />
+                                    </div>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="image"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <div className="">
+                        <FieldHeader
+                          label="Add some photos"
+                          description="Help guests visualize your place."
+                        />
+                      </div>
+                      <FormControl>
+                        <ImageUpload
+                          onChange={onUploadImage}
+                          value={field.value}
+                          onRemove={() => form.setValue("image", null)}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+            {step === STEPS.DETAILS && (
+              <div className="mb-8 flex flex-col gap-y-4">
+                <FormField
+                  control={form.control}
+                  name="guests"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <div className="mb-4">
+                        <FieldHeader
+                          label="Share some basics about your place."
+                          description="What amenities do you have?"
+                        />
+                      </div>
+                      <Counter
+                        onChange={field.onChange}
+                        title="Guests"
+                        subtitle="Let us know how many people you're planning for."
+                        value={field.value}
+                      />
+                    </FormItem>
+                  )}
+                />
+                <Separator />
+                <FormField
+                  control={form.control}
+                  name="bedrooms"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <Counter
+                        onChange={field.onChange}
+                        title="Bedrooms"
+                        subtitle="How many bedrooms do you have?"
+                        value={field.value}
+                      />
+                    </FormItem>
+                  )}
+                />
+                <Separator />
+                <FormField
+                  control={form.control}
+                  name="bathrooms"
+                  render={({ field }) => (
+                    <FormItem className="">
+                      <Counter
+                        onChange={field.onChange}
+                        title="Bathrooms"
+                        subtitle="Choose the number of bathrooms for your place."
+                        value={field.value}
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+            {step === STEPS.PRICE && (
+              <div className="mb-8">
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col gap-y-4">
+                      <div>
+                        <FieldHeader
+                          label="Now, set your price."
+                          description="How much do you charge per night?"
+                        />
+                      </div>
+                      <FormControl>
+                        <div className="relative flex w-auto items-center">
+                          <Input
+                            {...field}
+                            className="p-6"
+                            onChange={(e) =>
+                              field.onChange(Number(e.target.value))
+                            }
+                          />
+                          <DollarSign className="absolute left-1 h-4 w-4 opacity-75" />
+                        </div>
+                      </FormControl>
+                      {hasErrors && (
+                        <p className="text-rose-500 dark:text-rose-900">
+                          Please fill all {field.value ? "previous " : "the "}
+                          fields before submiting.
+                        </p>
+                      )}
+                    </FormItem>
+                  )}
+                />
+              </div>
             )}
             <DialogFooter className="mt-2">
               <div className="flex w-full items-center gap-4">

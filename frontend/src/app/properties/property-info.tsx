@@ -10,7 +10,7 @@ type Props = {
 };
 
 const PropertyInfo = ({ property }: Props) => {
-  const { name, description, landlord, baths, bedrooms, price, guests } =
+  const { name, description, landlord, bathrooms, bedrooms, price, guests } =
     property;
 
   return (
@@ -18,7 +18,7 @@ const PropertyInfo = ({ property }: Props) => {
       <div className="col-span-3 py-6 pr-6">
         <h1 className="mb-4 text-4xl font-bold">{name}</h1>
         <span className="mb-6 block text-lg text-gray-600">
-          {guests} guests · {bedrooms} bedroom · {baths} bath
+          {guests} guests · {bedrooms} bedroom · {bathrooms} bath
         </span>
         <Separator />
         <div className="flex items-center py-6">

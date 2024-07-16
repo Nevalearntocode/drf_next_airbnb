@@ -18,7 +18,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { openModal } from "@/redux/features/modal-slice";
 import { useLogoutMutation } from "@/redux/features/user-slice";
 import {
-  logout as logoutAction,
+  setAuth,
   setLoading,
 } from "@/redux/features/auth-slice";
 
@@ -26,7 +26,7 @@ type Props = {};
 
 const UserButton = (props: Props) => {
   const router = useRouter();
-  const { isAuthenticated } = useAppSelector((state) => state.authState);
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
 
@@ -43,7 +43,7 @@ const UserButton = (props: Props) => {
     logout()
       .unwrap()
       .then(() => {
-        dispatch(logoutAction());
+        dispatch(setAuth(false));
         router.push("/");
       })
       .catch((err) => {

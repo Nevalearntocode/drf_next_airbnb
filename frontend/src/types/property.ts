@@ -11,7 +11,7 @@ type Property = {
   price: number;
   guests: number;
   bedrooms: number;
-  baths: number;
+  bathrooms: number;
   image: string;
   created_at: string;
 };

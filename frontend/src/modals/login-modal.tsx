@@ -28,7 +28,7 @@ import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { closeModal, openModal } from "@/redux/features/modal-slice";
 import { useLoginMutation } from "@/redux/features/user-slice";
-import { login as loginAction, setLoading } from "@/redux/features/auth-slice";
+import { setAuth, setLoading } from "@/redux/features/auth-slice";
 
 type Props = {};
 
@@ -70,7 +70,7 @@ const LoginModal = ({}: Props) => {
     login(data)
       .unwrap()
       .then(() => {
-        dispatch(loginAction());
+        dispatch(setAuth(true));
         toast.success("Login successfully");
         dispatch(closeModal());
         router.refresh();

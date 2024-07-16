@@ -5,12 +5,15 @@ import type {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { Mutex } from "async-mutex";
-import { login, logout } from "../features/auth-slice";
+import { setAuth } from "../features/auth-slice";
 import { env } from "@/env";
 
 // create a new mutex
 const mutex = new Mutex();
-const baseQuery = fetchBaseQuery({ baseUrl: `${env.NEXT_PUBLIC_HOST}/api`, credentials: "include" });
+const baseQuery = fetchBaseQuery({
+  baseUrl: `${env.NEXT_PUBLIC_HOST}/api`,
+  credentials: "include",
+});
 const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -19,7 +22,11 @@ const baseQueryWithReauth: BaseQueryFn<
   // wait until the mutex is available without locking it
   await mutex.waitForUnlock();
   let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
+  console.log(result);
+  if (
+    result.error &&
+    (result.error.status === 401 || result.error.status === 400)
+  ) {
     // checking whether the mutex is locked
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
@@ -33,11 +40,11 @@ const baseQueryWithReauth: BaseQueryFn<
           extraOptions,
         );
         if (refreshResult.data) {
-          api.dispatch(login());
+          api.dispatch(setAuth(true));
           // retry the initial query
           result = await baseQuery(args, api, extraOptions);
         } else {
-          api.dispatch(logout());
+          api.dispatch(setAuth(false));
         }
       } finally {
         // release must be called once the mutex should be released again.
