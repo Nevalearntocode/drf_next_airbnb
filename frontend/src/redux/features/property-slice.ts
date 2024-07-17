@@ -29,6 +29,13 @@ export const propertySlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    createProperty: builder.mutation({
+      query: (data) => ({
+        url: "/properties/",
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 

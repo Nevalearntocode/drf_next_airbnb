@@ -1,7 +1,7 @@
 "use client";
 
 import { useCountries } from "@/hooks/use-countries";
-import { LocationType } from "../add-property-modal";
+import { LocationType } from "../../add-property-modal";
 import { FormControl, FormLabel, FormMessage } from "@/components/ui/form";
 import {
   Select,

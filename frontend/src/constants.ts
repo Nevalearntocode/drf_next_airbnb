@@ -21,6 +21,30 @@ export type CategoryConstant = {
   description: string;
 };
 
+export enum STEPS {
+  CATEGORY = 0,
+  DESCRIPTION = 1,
+  DETAILS = 2,
+  LOCATION = 3,
+  PRICE = 4,
+}
+
+export const DefaultPropertyValues = {
+  category: "",
+  name: "",
+  description: "",
+  image: null,
+  guests: 0,
+  bedrooms: 0,
+  bathrooms: 0,
+  price: 0,
+  location: {
+    name: "",
+    country_code: "",
+  },
+  address: "",
+};
+
 export const categories = [
   {
     label: "Beach",
