@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { FormControl, FormField, FormItem } from "@/components/ui/form";
+import { FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import FieldHeader from "./field-header";
 import { AddPropertyControl } from "@/types/form";
 import { Input } from "@/components/ui/input";
@@ -42,6 +42,7 @@ export default function PriceStep({ control, hasErrors }: Props) {
                 fields before submiting.
               </p>
             )}
+            <FormMessage />
           </FormItem>
         )}
       />

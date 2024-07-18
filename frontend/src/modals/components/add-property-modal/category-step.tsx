@@ -29,9 +29,9 @@ function CategoryStep({ control }: Props) {
                   <div key={category.label} className="col-span-1">
                     <CategoryInput
                       onClick={(formCategory) => {
-                        field.onChange(formCategory);
+                        field.onChange(formCategory.toLowerCase());
                       }}
-                      selected={field.value === category.label}
+                      selected={field.value.toLowerCase() === category.label.toLowerCase()}
                       categoryConstant={category}
                     />
                   </div>

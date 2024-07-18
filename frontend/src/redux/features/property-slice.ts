@@ -29,11 +29,11 @@ export const propertySlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
-    createProperty: builder.mutation({
-      query: (data) => ({
+    addProperty: builder.mutation({
+      query: (args: FormData) => ({
         url: "/properties/",
         method: "POST",
-        body: data,
+        body: args,
       }),
     }),
   }),
@@ -43,4 +43,5 @@ export const {
   useGetAllPropertiesQuery,
   useGetCurrentUserPropertiesQuery,
   useGetPropertyDetailsQuery,
+  useAddPropertyMutation,
 } = propertySlice;

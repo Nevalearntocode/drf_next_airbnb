@@ -24,11 +24,14 @@ import LocationStep from "./components/add-property-modal/location-step";
 import DetailStep from "./components/add-property-modal/detail-step";
 import PriceStep from "./components/add-property-modal/price-step";
 import { DefaultPropertyValues, STEPS } from "@/constants";
+import { useAddPropertyMutation } from "@/redux/features/property-slice";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 const locationSchema = z.object({
-  name: z.string(),
+  country: z.string(),
   country_code: z.string(),
 });
 
@@ -45,7 +48,7 @@ const formSchema = z.object({
   image: z.instanceof(File).nullable(),
   guests: z.number().positive({ message: "Guest  must be a positive number." }),
   location: locationSchema,
-  address: z.string().optional(),
+  address: z.string().min(1, { message: "Enter your property address." }),
   bedrooms: z
     .number()
     .positive({ message: "Room  must be a positive number." }),
@@ -55,16 +58,14 @@ const formSchema = z.object({
   price: z
     .number()
     .positive({ message: "Enter a positive price for your listing." }),
-  country_code: z.string(),
 });
 
 export type AddPropertyType = z.infer<typeof formSchema>;
 
 const AddPropertyModal = (props: Props) => {
   const { isOpen, type } = useAppSelector((state) => state.modal);
+  const router = useRouter();
   const isModalOpen = type === "add-property" && isOpen;
-  const dispatch = useAppDispatch();
-  const [step, setStep] = useState<STEPS>(STEPS.CATEGORY);
   const form = useForm<AddPropertyType>({
     resolver: zodResolver(formSchema),
     defaultValues: DefaultPropertyValues,
@@ -72,7 +73,9 @@ const AddPropertyModal = (props: Props) => {
   const { control, setValue } = form;
   const isLoading = form.formState.isSubmitting;
   const hasErrors = Object.keys(form.formState.errors).length > 0;
-
+  const dispatch = useAppDispatch();
+  const [step, setStep] = useState<STEPS>(STEPS.CATEGORY);
+  const [addProperty] = useAddPropertyMutation();
   const onBack = () => {
     setStep((value) => value - 1);
   };
@@ -85,8 +88,33 @@ const AddPropertyModal = (props: Props) => {
     dispatch(closeModal());
   };
 
-  const onSubmit = async (data: AddPropertyType) => {
-    console.log(data);
+  const onSubmit = (data: AddPropertyType) => {
+    const formData = new FormData();
+
+    formData.append("category", data.category);
+    formData.append("name", data.name);
+    formData.append("description", data.description);
+    formData.append("guests", data.guests.toString());
+    formData.append("address", data.address);
+    formData.append("bedrooms", data.bedrooms.toString());
+    formData.append("bathrooms", data.bathrooms.toString());
+    formData.append("price", data.price.toString());
+    formData.append("country", data.location.country);
+    formData.append("country_code", data.location.country_code);
+
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+
+    try {
+      addProperty(formData).unwrap();
+      onClose();
+      router.refresh();
+      toast.success("Property created successfully");
+    } catch (err: any) {
+      console.log(err);
+      toast.error(err.data.detail);
+    }
   };
 
   return (
