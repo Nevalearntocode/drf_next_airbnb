@@ -1,4 +1,4 @@
-import { PropertyList, PropertyWithLandlord } from "@/types/property";
+import { PropertyForm, PropertyList, PropertyWithLandlord } from "@/types/property";
 import { apiSlice } from "../services/api-slice";
 import { getPropertiesArgs } from "@/types/redux";
 import { paramsAppender } from "@/lib/utils";
@@ -30,7 +30,7 @@ export const propertySlice = apiSlice.injectEndpoints({
       }),
     }),
     addProperty: builder.mutation({
-      query: (args: FormData) => ({
+      query: (args: PropertyForm) => ({
         url: "/properties/",
         method: "POST",
         body: args,

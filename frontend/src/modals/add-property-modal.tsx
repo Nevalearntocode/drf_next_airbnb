@@ -17,7 +17,7 @@ import { Form } from "@/components/ui/form";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { closeModal } from "@/redux/features/modal-slice";
 import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { cn, createImageUrl, generateUniqueKey } from "@/lib/utils";
 import CategoryStep from "./components/add-property-modal/category-step";
 import DescriptionStep from "./components/add-property-modal/description-step";
 import LocationStep from "./components/add-property-modal/location-step";
@@ -27,6 +27,8 @@ import { DefaultPropertyValues, STEPS } from "@/constants";
 import { useAddPropertyMutation } from "@/redux/features/property-slice";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { useUploadImageMutation } from "@/redux/features/r2-slice";
+import { createUploadUrlAction, deleteImageAction } from "@/app/action";
 
 type Props = {};
 
@@ -76,6 +78,7 @@ const AddPropertyModal = (props: Props) => {
   const dispatch = useAppDispatch();
   const [step, setStep] = useState<STEPS>(STEPS.CATEGORY);
   const [addProperty] = useAddPropertyMutation();
+  const [uploadImage] = useUploadImageMutation();
   const onBack = () => {
     setStep((value) => value - 1);
   };
@@ -88,33 +91,48 @@ const AddPropertyModal = (props: Props) => {
     dispatch(closeModal());
   };
 
-  const onSubmit = (data: AddPropertyType) => {
-    const formData = new FormData();
+  const handleUploadImage = async (uniqueKey: string, image: File) => {
+    const uploadUrl = await createUploadUrlAction(uniqueKey, image.type);
+    uploadImage({ image: image, url: uploadUrl })
+      .unwrap()
+      .catch((error) => {
+        console.log(error);
+        toast.error("Failed to upload image");
+      });
+  };
 
-    formData.append("category", data.category);
-    formData.append("name", data.name);
-    formData.append("description", data.description);
-    formData.append("guests", data.guests.toString());
-    formData.append("address", data.address);
-    formData.append("bedrooms", data.bedrooms.toString());
-    formData.append("bathrooms", data.bathrooms.toString());
-    formData.append("price", data.price.toString());
-    formData.append("country", data.location.country);
-    formData.append("country_code", data.location.country_code);
+  // delete the image from S3 bucket if there is an error in this function
+  const handleAddProperty = (data: AddPropertyType, uniqueKey: string) => {
+    addProperty({
+      ...data,
+      country: data.location.country,
+      country_code: data.location.country_code,
+      image: createImageUrl(uniqueKey),
+    })
+      .unwrap()
+      .then(() => {
+        toast.success("Property added successfully");
+        dispatch(closeModal());
+        setStep(STEPS.CATEGORY);
+        form.reset();
+        router.refresh();
+      })
+      .catch(async (error) => {
+        // await deleteImageAction(uniqueKey);
+        console.log(error);
+        toast.error("Failed to add property");
+      });
+  };
 
-    if (data.image) {
-      formData.append("image", data.image);
+  const onSubmit = async (data: AddPropertyType) => {
+    const image = data.image;
+    if (!image) {
+      toast.error("Please upload an image for your property");
+      return;
     }
-
-    try {
-      addProperty(formData).unwrap();
-      onClose();
-      router.refresh();
-      toast.success("Property created successfully");
-    } catch (err: any) {
-      console.log(err);
-      toast.error(err.data.detail);
-    }
+    const uniqueKey = generateUniqueKey(image.name);
+    await handleUploadImage(uniqueKey, image);
+    handleAddProperty(data, uniqueKey);
   };
 
   return (

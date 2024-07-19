@@ -16,6 +16,21 @@ type Property = {
   created_at: string;
 };
 
+type PropertyForm = Pick<
+  Property,
+  | "name"
+  | "description"
+  | "category"
+  | "address"
+  | "country"
+  | "country_code"
+  | "price"
+  | "guests"
+  | "bedrooms"
+  | "bathrooms"
+  | "image"
+>;
+
 type PropertyWithLandlord = Property & { landlord: User };
 
 type PropertyList = {
@@ -27,4 +42,4 @@ type PropertyList = {
 
 type PropertyRoute = "all" | "landlord" | "favorite" | "me";
 
-export type { Property, PropertyList, PropertyRoute, PropertyWithLandlord };
+export type { Property, PropertyList, PropertyRoute, PropertyWithLandlord, PropertyForm };

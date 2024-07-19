@@ -4,10 +4,10 @@ const baseQuery = fetchBaseQuery({
 });
 
 export const r2Slice = createApi({
-  reducerPath: "apiR2",
+  reducerPath: "r2Api",
   baseQuery,
   endpoints: (builder) => ({
-    postImage: builder.mutation({
+    uploadImage: builder.mutation({
       query: (args: { image: File; url: string }) => {
         return {
           url: args.url,
@@ -19,7 +19,15 @@ export const r2Slice = createApi({
         };
       },
     }),
+    deleteImage: builder.mutation({
+      query: (args: { url: string }) => {
+        return {
+          url: args.url,
+          method: "DELETE",
+        };
+      },
+    })
   }),
 });
 
-export const { usePostImageMutation } = r2Slice;
+export const { useUploadImageMutation } = r2Slice;

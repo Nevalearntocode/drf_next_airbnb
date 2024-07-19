@@ -37,7 +37,7 @@ const PropertyCard = ({ property }: Props) => {
         <div>
           <p className="text-sm text-muted-foreground">{property.name}</p>
           <p className="text-sm text-muted-foreground">${property.price}</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="line-clamp-1 text-sm text-muted-foreground">
             {property.description}
           </p>
         </div>

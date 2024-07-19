@@ -63,6 +63,8 @@ const RegisterModal = ({}: Props) => {
     defaultValues: {
       email: "",
       password: "",
+      re_password: "",
+      name: "",
     },
   });
 

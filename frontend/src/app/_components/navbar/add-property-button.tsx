@@ -1,5 +1,6 @@
 "use client";
 
+import { deleteImageAction } from "@/app/action";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { openModal } from "@/redux/features/modal-slice";
@@ -21,6 +22,12 @@ const AddPropertyButton = (props: Props) => {
       dispatch(openModal("add-property"));
     }
   };
+
+  const onDelete = async() => {
+    await deleteImageAction(
+      "ancient castle0ecc24dd-fd48-40d3-b9e4-09e8fa88ffb3.jpg",
+    );
+  }
 
   return (
     <div className="p-2 text-sm">
