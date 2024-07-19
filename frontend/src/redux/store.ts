@@ -3,16 +3,20 @@ import modalReducer from "./features/modal-slice";
 import { userSlice } from "./features/user-slice";
 import { propertySlice } from "./features/property-slice";
 import authReducer from "./features/auth-slice";
+import { r2Slice } from "./features/r2-slice";
 
 export const store = configureStore({
   reducer: {
     modal: modalReducer,
-    property: propertySlice.reducer,
     auth: authReducer,
+    property: propertySlice.reducer,
+    [r2Slice.reducerPath]: r2Slice.reducer,
     [userSlice.reducerPath]: userSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userSlice.middleware),
+    getDefaultMiddleware()
+      .concat(userSlice.middleware)
+      .concat(r2Slice.middleware),
 
   devTools: process.env.NODE_ENV !== "production",
 });
