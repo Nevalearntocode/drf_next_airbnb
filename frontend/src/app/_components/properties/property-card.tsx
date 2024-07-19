@@ -5,10 +5,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import HeartToggle from "./heart-toggle";
 import { useRouter } from "next/navigation";
-import { Property } from "@/types/property";
+import { ShortenedProperty } from "@/types/property";
 
 type Props = {
-  property: Property;
+  property: ShortenedProperty;
 };
 
 const PropertyCard = ({ property }: Props) => {
@@ -27,7 +27,7 @@ const PropertyCard = ({ property }: Props) => {
           src={property.image}
           alt={property.name}
           fill
-          priority
+          priority={true}
           sizes="(max-width: 768px) 768px, (max-width: 1200px) 768px, 768px"
           className="h-auto w-auto rounded-xl object-cover transition duration-1000 hover:scale-110"
         />
@@ -38,7 +38,7 @@ const PropertyCard = ({ property }: Props) => {
           <p className="text-sm text-muted-foreground">{property.name}</p>
           <p className="text-sm text-muted-foreground">${property.price}</p>
           <p className="line-clamp-1 text-sm text-muted-foreground">
-            {property.description}
+            {property.address}
           </p>
         </div>
       </CardFooter>

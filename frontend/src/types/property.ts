@@ -16,6 +16,11 @@ type Property = {
   created_at: string;
 };
 
+type ShortenedProperty = Pick<
+  Property,
+  "id" | "name" | "image" | "address" | "price"
+>;
+
 type PropertyForm = Pick<
   Property,
   | "name"
@@ -37,9 +42,16 @@ type PropertyList = {
   count: number;
   next: string | null;
   previous: string | null;
-  results: Property[];
+  results: ShortenedProperty[];
 };
 
 type PropertyRoute = "all" | "landlord" | "favorite" | "me";
 
-export type { Property, PropertyList, PropertyRoute, PropertyWithLandlord, PropertyForm };
+export type {
+  Property,
+  PropertyList,
+  PropertyRoute,
+  PropertyWithLandlord,
+  PropertyForm,
+  ShortenedProperty,
+};

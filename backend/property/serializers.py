@@ -2,14 +2,11 @@ from rest_framework import serializers
 from property.models import Property
 from users.serializers import CustomUserSerializer
 
-class PropertySerializer(serializers.ModelSerializer):
-    landlord = serializers.PrimaryKeyRelatedField(
-        read_only=True, source="landlord.email"
-    )
 
+class PropertySerializer(serializers.ModelSerializer):
     class Meta:
         model = Property
-        fields = "__all__"
+        fields = ["id", "name", "image", "price", "address"]
 
 
 class PropertySerializerWithLandlord(serializers.ModelSerializer):

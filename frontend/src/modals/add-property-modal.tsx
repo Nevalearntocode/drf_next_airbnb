@@ -102,7 +102,11 @@ const AddPropertyModal = (props: Props) => {
   };
 
   // delete the image from S3 bucket if there is an error in this function
-  const handleAddProperty = (data: AddPropertyType, uniqueKey: string) => {
+  const handleAddProperty = (
+    data: AddPropertyType,
+    uniqueKey: string,
+    image: File,
+  ) => {
     addProperty({
       ...data,
       country: data.location.country,
@@ -110,7 +114,8 @@ const AddPropertyModal = (props: Props) => {
       image: createImageUrl(uniqueKey),
     })
       .unwrap()
-      .then(() => {
+      .then(async () => {
+        await handleUploadImage(uniqueKey, image);
         toast.success("Property added successfully");
         dispatch(closeModal());
         setStep(STEPS.CATEGORY);
@@ -118,7 +123,6 @@ const AddPropertyModal = (props: Props) => {
         router.refresh();
       })
       .catch(async (error) => {
-        // await deleteImageAction(uniqueKey);
         console.log(error);
         toast.error("Failed to add property");
       });
@@ -131,8 +135,7 @@ const AddPropertyModal = (props: Props) => {
       return;
     }
     const uniqueKey = generateUniqueKey(image.name);
-    await handleUploadImage(uniqueKey, image);
-    handleAddProperty(data, uniqueKey);
+    handleAddProperty(data, uniqueKey, image);
   };
 
   return (
