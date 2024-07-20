@@ -28,7 +28,7 @@ import { useAddPropertyMutation } from "@/redux/features/property-slice";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useUploadImageMutation } from "@/redux/features/r2-slice";
-import { createUploadUrlAction, deleteImageAction } from "@/app/action";
+import { createUploadUrlAction } from "@/app/action";
 
 type Props = {};
 
@@ -102,11 +102,7 @@ const AddPropertyModal = (props: Props) => {
   };
 
   // delete the image from S3 bucket if there is an error in this function
-  const handleAddProperty = (
-    data: AddPropertyType,
-    uniqueKey: string,
-    image: File,
-  ) => {
+  const handleAddProperty = (data: AddPropertyType, uniqueKey: string) => {
     addProperty({
       ...data,
       country: data.location.country,
@@ -115,7 +111,6 @@ const AddPropertyModal = (props: Props) => {
     })
       .unwrap()
       .then(async () => {
-        await handleUploadImage(uniqueKey, image);
         toast.success("Property added successfully");
         dispatch(closeModal());
         setStep(STEPS.CATEGORY);
@@ -135,7 +130,8 @@ const AddPropertyModal = (props: Props) => {
       return;
     }
     const uniqueKey = generateUniqueKey(image.name);
-    handleAddProperty(data, uniqueKey, image);
+    await handleUploadImage(uniqueKey, image);
+    handleAddProperty(data, uniqueKey);
   };
 
   return (
@@ -175,7 +171,7 @@ const AddPropertyModal = (props: Props) => {
                   Back
                 </Button>
                 <Button
-                  disabled={(hasErrors && step === STEPS.PRICE) || isLoading}
+                  disabled={isLoading}
                   variant={"destructive"}
                   className={cn(
                     "ml-auto w-2/4",

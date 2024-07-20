@@ -5,6 +5,7 @@ import PropertyCard from "./property-card";
 import { PropertyRoute } from "@/types/property";
 import { usePropertyList } from "@/hooks/use-property-list";
 import NotFound from "./not-found";
+import Loading from "@/app/loading";
 
 type Props = {
   route: PropertyRoute;
@@ -12,6 +13,10 @@ type Props = {
 
 const PropertyList = ({ route }: Props) => {
   const properties = usePropertyList(route);
+
+  if (properties.isLoading) {
+    return <Loading />;
+  }
 
   if (!properties.data || properties.data.results.length === 0) {
     return <NotFound />;

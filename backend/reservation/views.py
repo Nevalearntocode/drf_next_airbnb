@@ -1,11 +1,11 @@
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
+from rest_framework import status
 from reservation.models import Reservation
 from reservation.serializers import ReservationSerializer, ReservationDetailSerializer
 from reservation.permissions import IsOwnerOrIsHost
-from property.models import Property
+from datetime import datetime
 
 
 class ReservationViewSet(ModelViewSet):
@@ -29,15 +29,33 @@ class ReservationViewSet(ModelViewSet):
         self.serializer_class = ReservationDetailSerializer
         return super().retrieve(request, *args, **kwargs)
 
+    def is_data_unchanged(self, request):
+        instance = self.get_object()
+        check_in = datetime.fromisoformat(request.data.get("check_in")).date()
+        check_out = datetime.fromisoformat(request.data.get("check_out")).date()        
+        guests = int(request.data.get("guests"))
+        return (
+            check_in == instance.check_in
+            and check_out == instance.check_out
+            and guests == instance.guests
+        )
+
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
+        
+        no_changes = self.is_data_unchanged(request)
+        if no_changes:
+            return Response(
+                status=status.HTTP_204_NO_CONTENT,
+                data={"message": "No changes were made"},
+            )
+
         data = request.data.copy()
         data["property"] = instance.property.id
         serializer = self.get_serializer(instance, data=data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-
         if getattr(instance, "_prefetched_objects_cache", None):
             instance._prefetched_objects_cache = {}
 

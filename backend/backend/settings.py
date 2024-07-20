@@ -69,15 +69,15 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 
 DATABASES = {
+    # "default": {
+    #     "ENGINE": getenv("SQL_ENGINE"),
+    #     "NAME": getenv("SQL_DATABASE"),
+    #     "USER": getenv("SQL_USER"),
+    #     "PASSWORD": getenv("SQL_PASSWORD"),
+    #     "HOST": getenv("SQL_HOST"),
+    #     "PORT": getenv("SQL_PORT"),
+    # },
     "default": {
-        "ENGINE": getenv("SQL_ENGINE"),
-        "NAME": getenv("SQL_DATABASE"),
-        "USER": getenv("SQL_USER"),
-        "PASSWORD": getenv("SQL_PASSWORD"),
-        "HOST": getenv("SQL_HOST"),
-        "PORT": getenv("SQL_PORT"),
-    },
-    "test": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     },

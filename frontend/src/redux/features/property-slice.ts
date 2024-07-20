@@ -1,47 +1,51 @@
-import { PropertyForm, PropertyList, PropertyWithLandlord } from "@/types/property";
-import { apiSlice } from "../services/api-slice";
-import { getPropertiesArgs } from "@/types/redux";
-import { paramsAppender } from "@/lib/utils";
+  import { PropertyForm, PropertyList, PropertyWithLandlord } from "@/types/property";
+  import { apiSlice } from "../services/api-slice";
+  import { getPropertiesArgs } from "@/types/redux";
+  import { paramsAppender } from "@/lib/utils";
 
-export const propertySlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    getAllProperties: builder.query<PropertyList, getPropertiesArgs>({
-      query: (args) => {
-        const params = paramsAppender(args);
-        return {
-          url: `/properties/?${params.toString()}`,
+  export const propertySlice = apiSlice.injectEndpoints({
+    endpoints: (builder) => ({
+      getAllProperties: builder.query<PropertyList, getPropertiesArgs>({
+        query: (args) => {
+          const params = paramsAppender(args);
+          return {
+            url: `/properties/?${params.toString()}`,
+            method: "GET",
+          };
+        },
+        providesTags: ["MyProperties"],
+      }),
+      getCurrentUserProperties: builder.query<PropertyList, getPropertiesArgs>({
+        query: (args) => {
+          const params = paramsAppender(args);
+          return {
+            url: `/properties/me/?${params.toString()}`,
+            method: "GET",
+          };
+        },
+        providesTags: ["MyProperties"],
+      }),
+      getPropertyDetails: builder.query<PropertyWithLandlord, { id: string }>({
+        query: (args) => ({
+          url: `/properties/${args.id}/`,
           method: "GET",
-        };
-      },
-    }),
-    getCurrentUserProperties: builder.query<PropertyList, getPropertiesArgs>({
-      query: (args) => {
-        const params = paramsAppender(args);
-        return {
-          url: `/properties/me/?${params.toString()}`,
-          method: "GET",
-        };
-      },
-    }),
-    getPropertyDetails: builder.query<PropertyWithLandlord, { id: string }>({
-      query: (args) => ({
-        url: `/properties/${args.id}/`,
-        method: "GET",
+        }),
+        providesTags: ["Property"],
+      }),
+      addProperty: builder.mutation({
+        query: (args: PropertyForm) => ({
+          url: "/properties/",
+          method: "POST",
+          body: args,
+        }),
+        invalidatesTags: ["Property", "MyProperties"],
       }),
     }),
-    addProperty: builder.mutation({
-      query: (args: PropertyForm) => ({
-        url: "/properties/",
-        method: "POST",
-        body: args,
-      }),
-    }),
-  }),
-});
+  });
 
-export const {
-  useGetAllPropertiesQuery,
-  useGetCurrentUserPropertiesQuery,
-  useGetPropertyDetailsQuery,
-  useAddPropertyMutation,
-} = propertySlice;
+  export const {
+    useGetAllPropertiesQuery,
+    useGetCurrentUserPropertiesQuery,
+    useGetPropertyDetailsQuery,
+    useAddPropertyMutation,
+  } = propertySlice;

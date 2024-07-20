@@ -13,7 +13,7 @@ export function usePropertyList(route: PropertyRoute) {
   const id = searchParams.get("id") || undefined;
 
   if (route === "me") {
-    const { data } = useGetCurrentUserPropertiesQuery({
+    const { data, isLoading } = useGetCurrentUserPropertiesQuery({
       page,
       name,
       id,
@@ -21,10 +21,11 @@ export function usePropertyList(route: PropertyRoute) {
 
     return {
       data,
+      isLoading,
     };
   }
 
-  const { data } = useGetAllPropertiesQuery({ page, name, id });
+  const { data, isLoading } = useGetAllPropertiesQuery({ page, name, id });
 
-  return { data };
+  return { data, isLoading };
 }

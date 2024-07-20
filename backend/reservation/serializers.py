@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 from reservation.models import Reservation
-from property.serializers import PropertySerializerWithLandlord
+from property.serializers import PropertySerializer
 from users.serializers import CustomUserSerializer
 
 
@@ -23,6 +23,16 @@ class BaseReservationSerializer(serializers.ModelSerializer):
 
         check_in = attrs["check_in"]
         check_out = attrs["check_out"]
+
+        if check_in >= check_out:
+            raise ValidationError("Check-in date must be before check-out.")
+
+        guests = int(request.data.get("guests"))
+
+        if guests > property_instance.guests:
+            raise ValidationError(
+                "The number of guests is greater than the property's capacity please contact the property's landlord for arrangement."
+            )
 
         overlapsing_reservations = (
             Reservation.objects.filter(
@@ -73,6 +83,10 @@ class BaseReservationSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         nights = self.get_nights(validated_data)
         total = self.calculate_total(validated_data)
+        for key, value in validated_data.items():
+            # for every key and value in the validated data dictionary
+            # run instance.key = value
+            setattr(instance, key, value)
         instance.nights = nights
         instance.total = total
         instance.save()
@@ -85,4 +99,4 @@ class ReservationSerializer(BaseReservationSerializer):
 
 
 class ReservationDetailSerializer(BaseReservationSerializer):
-    property = PropertySerializerWithLandlord(read_only=True)
+    property = PropertySerializer(read_only=True)
