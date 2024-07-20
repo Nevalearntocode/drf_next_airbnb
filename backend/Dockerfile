@@ -6,7 +6,7 @@ WORKDIR /backend
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONBUFFERED 1
+ENV PYTHONUNBUFFERED 1
 
 # # Install gcc and other build dependencies
 RUN apt-get update && apt-get install -y \

@@ -39,6 +39,7 @@ class Property(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="landlord"
     )
     created_at = models.DateTimeField(auto_now_add=True)
+    fee_percentage = models.FloatField(default=5)
 
     def __str__(self):
         return self.name

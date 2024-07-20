@@ -29,13 +29,16 @@ class ReservationViewSet(ModelViewSet):
         self.serializer_class = ReservationDetailSerializer
         return super().retrieve(request, *args, **kwargs)
 
-    def perform_create(self, serializer):
-        # This line is retrieving the id of the property that the user is trying to
-        # create a reservation for from the validated data of the serializer.
-        # property_id = serializer.validated_data["property"].id
-        # property_instance = Property.objects.get(id=property_id)
-        # if property_instance.landlord == self.request.user:
-        #     raise ValidationError(
-        #         "You cannot create a reservation for your own property."
-        #     )
-        serializer.save(guest=self.request.user)
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        data = request.data.copy()
+        data["property"] = instance.property.id
+        serializer = self.get_serializer(instance, data=data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, "_prefetched_objects_cache", None):
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)

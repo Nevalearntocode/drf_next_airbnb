@@ -5,10 +5,10 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import HeartToggle from "./heart-toggle";
 import { useRouter } from "next/navigation";
-import { ShortenedProperty } from "@/types/property";
+import { Property } from "@/types/property";
 
 type Props = {
-  property: ShortenedProperty;
+  property: Property;
 };
 
 const PropertyCard = ({ property }: Props) => {

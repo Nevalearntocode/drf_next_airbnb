@@ -10,8 +10,16 @@ type Props = {
 };
 
 const PropertyInfo = ({ property }: Props) => {
-  const { name, description, landlord, bathrooms, bedrooms, price, guests } =
-    property;
+  const {
+    name,
+    description,
+    landlord,
+    bathrooms,
+    bedrooms,
+    price,
+    guests,
+    id,
+  } = property;
 
   return (
     <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-5">
