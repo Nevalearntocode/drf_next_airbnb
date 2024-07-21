@@ -1,10 +1,10 @@
 import React from "react";
-import PropertyDetail from "../property-detail";
+import PropertyDetail from "../_components/property-detail";
 
 type Props = {
   params: {
     id: string;
-  }
+  };
 };
 
 const PropertyDetailPage = ({ params }: Props) => {

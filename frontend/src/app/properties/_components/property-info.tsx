@@ -3,10 +3,10 @@ import { Separator } from "@/components/ui/separator";
 import React from "react";
 import PropertyReservation from "./property-reservation";
 import Link from "next/link";
-import { PropertyWithLandlord } from "@/types/property";
+import { PropertyWithLandlordAndReservation } from "@/types/property";
 
 type Props = {
-  property: PropertyWithLandlord;
+  property: PropertyWithLandlordAndReservation;
 };
 
 const PropertyInfo = ({ property }: Props) => {
@@ -40,7 +40,7 @@ const PropertyInfo = ({ property }: Props) => {
         <Separator />
         <p className="mt-6 text-lg">{description}</p>
       </div>
-      <PropertyReservation guests={guests} price={price} />
+      <PropertyReservation guests={guests} price={price} reservations={property.reservations} fee_percentage={property.fee_percentage} />
     </div>
   );
 };

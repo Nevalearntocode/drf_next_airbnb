@@ -3,6 +3,7 @@ from rest_framework.exceptions import ValidationError
 from reservation.models import Reservation
 from property.serializers import PropertySerializer
 from users.serializers import CustomUserSerializer
+import datetime
 
 
 class BaseReservationSerializer(serializers.ModelSerializer):
@@ -21,11 +22,17 @@ class BaseReservationSerializer(serializers.ModelSerializer):
         if request and request.user == property_instance.landlord:
             raise ValidationError("You can't book a reservation on your own property.")
 
+        if self.instance and self.instance.property != property_instance:
+            raise ValidationError("Property can't be changed.")
+
         check_in = attrs["check_in"]
         check_out = attrs["check_out"]
+        
+        if check_in < datetime.date.today():
+            raise ValidationError("Check-in date must be in the future.")
 
-        if check_in >= check_out:
-            raise ValidationError("Check-in date must be before check-out.")
+        if check_out < check_in:
+            raise ValidationError("Check-out date must be after check-in date.")
 
         guests = int(request.data.get("guests"))
 

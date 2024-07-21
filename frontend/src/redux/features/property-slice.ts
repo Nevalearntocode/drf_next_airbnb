@@ -1,4 +1,4 @@
-  import { PropertyForm, PropertyList, PropertyWithLandlord } from "@/types/property";
+  import { PropertyForm, PropertyList, PropertyWithLandlord, PropertyWithLandlordAndReservation } from "@/types/property";
   import { apiSlice } from "../services/api-slice";
   import { getPropertiesArgs } from "@/types/redux";
   import { paramsAppender } from "@/lib/utils";
@@ -13,7 +13,7 @@
             method: "GET",
           };
         },
-        providesTags: ["MyProperties"],
+        providesTags: ["Properties"],
       }),
       getCurrentUserProperties: builder.query<PropertyList, getPropertiesArgs>({
         query: (args) => {
@@ -25,7 +25,7 @@
         },
         providesTags: ["MyProperties"],
       }),
-      getPropertyDetails: builder.query<PropertyWithLandlord, { id: string }>({
+      getPropertyDetails: builder.query<PropertyWithLandlordAndReservation, { id: string }>({
         query: (args) => ({
           url: `/properties/${args.id}/`,
           method: "GET",

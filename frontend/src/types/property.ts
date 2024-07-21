@@ -1,3 +1,4 @@
+import { ShortenReservation } from "./reservations";
 import { User } from "./user";
 
 type Property = {
@@ -12,6 +13,7 @@ type Property = {
   guests: number;
   bedrooms: number;
   bathrooms: number;
+  fee_percentage: number;
   image: string;
   created_at: string;
 };
@@ -33,11 +35,15 @@ type PropertyForm = Pick<
 
 type PropertyWithLandlord = Property & { landlord: User };
 
+type PropertyWithLandlordAndReservation = PropertyWithLandlord & {
+  reservations: ShortenReservation[];
+};
+
 type PropertyList = {
   count: number;
   next: string | null;
   previous: string | null;
-  results: Property[];
+  results: PropertyWithLandlord[];
 };
 
 type PropertyRoute = "all" | "landlord" | "favorite" | "me";
@@ -48,4 +54,5 @@ export type {
   PropertyRoute,
   PropertyWithLandlord,
   PropertyForm,
+  PropertyWithLandlordAndReservation,
 };

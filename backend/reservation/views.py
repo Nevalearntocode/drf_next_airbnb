@@ -1,3 +1,5 @@
+from datetime import datetime
+from django.db import models
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -5,13 +7,19 @@ from rest_framework import status
 from reservation.models import Reservation
 from reservation.serializers import ReservationSerializer, ReservationDetailSerializer
 from reservation.permissions import IsOwnerOrIsHost
-from datetime import datetime
 
 
 class ReservationViewSet(ModelViewSet):
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
     permission_classes = [IsOwnerOrIsHost]
+
+    def get_queryset(self):
+        request = self.request
+        queryset = self.queryset.filter(
+            models.Q(guest=request.user) | models.Q(property__landlord=request.user)
+        )
+        return queryset
 
     @action(detail=False, methods=["GET"])
     def me(self, request):
@@ -31,8 +39,8 @@ class ReservationViewSet(ModelViewSet):
 
     def is_data_unchanged(self, request):
         instance = self.get_object()
-        check_in = datetime.fromisoformat(request.data.get("check_in")).date()
-        check_out = datetime.fromisoformat(request.data.get("check_out")).date()        
+        check_in = datetime.strptime(request.data.get("check_in"), "%Y-%m-%d").date()
+        check_out = datetime.strptime(request.data.get("check_out"), "%Y-%m-%d").date()
         guests = int(request.data.get("guests"))
         return (
             check_in == instance.check_in
@@ -43,7 +51,7 @@ class ReservationViewSet(ModelViewSet):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
-        
+
         no_changes = self.is_data_unchanged(request)
         if no_changes:
             return Response(

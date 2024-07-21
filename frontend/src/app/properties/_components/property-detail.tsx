@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
+import { useGetPropertyDetailsQuery } from "@/redux/features/property-slice";
 import PropertyImage from "./property-image";
 import PropertyInfo from "./property-info";
-import { useGetPropertyDetailsQuery } from "@/redux/features/property-slice";
 
 type Props = {
   id: string;
@@ -11,8 +11,6 @@ type Props = {
 
 const PropertyDetail = ({ id }: Props) => {
   const { data } = useGetPropertyDetailsQuery({ id });
-
-  console.log(data);
 
   if (!data) return null;
 

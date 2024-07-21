@@ -5,17 +5,24 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import HeartToggle from "./heart-toggle";
 import { useRouter } from "next/navigation";
-import { Property } from "@/types/property";
+import { PropertyWithLandlord } from "@/types/property";
+import { useRetrieveUserQuery } from "@/redux/features/user-slice";
+import { useAppSelector } from "@/hooks/use-redux-store";
 
 type Props = {
-  property: Property;
+  property: PropertyWithLandlord;
 };
 
 const PropertyCard = ({ property }: Props) => {
   const router = useRouter();
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
   const onClick = () => {
     router.push(`/properties/${property.id}`);
   };
+
+  const { data } = useRetrieveUserQuery();
+
+  const shouldDisplayHeart = isAuthenticated && data && data.id !== property.landlord.id;
 
   return (
     <Card className="rounded-xl border-b border-none">
@@ -31,13 +38,15 @@ const PropertyCard = ({ property }: Props) => {
           sizes="(max-width: 768px) 768px, (max-width: 1200px) 768px, 768px"
           className="h-auto w-auto rounded-xl object-cover transition duration-1000 hover:scale-110"
         />
-        <HeartToggle />
+        {shouldDisplayHeart && <HeartToggle />}
       </CardContent>
       <CardFooter className="p-2">
         <div>
-          <p className="text-sm text-muted-foreground">{property.name}</p>
-          <p className="text-sm text-muted-foreground">${property.price}</p>
-          <p className="line-clamp-1 text-sm text-muted-foreground">
+          <p className="line-clamp-1 text-sm">{property.name}</p>
+          <p className="text-sm font-semibold text-muted-foreground">
+            ${property.price}
+          </p>
+          <p className="line-clamp-2 text-xs text-muted-foreground">
             {property.address}
           </p>
         </div>

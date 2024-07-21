@@ -7,8 +7,9 @@ from users.models import CustomUser
 class Reservation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     property = models.ForeignKey(
-        Property, on_delete=models.CASCADE, related_name="reservations",
-        editable=False
+        Property,
+        on_delete=models.CASCADE,
+        related_name="reservations",
     )
     guest = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="guest_reservations"
