@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
 import { ShortenReservation } from "@/types/reservations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { differenceInDays, format, isWithinInterval } from "date-fns";
@@ -13,12 +12,17 @@ import { parseISO } from "date-fns";
 import { toast } from "sonner";
 import PropertyReservationDateRange from "./property-reservation-date-range";
 import PropertyReservationNumberOfGuests from "./property-reservation-number-of-guests";
+import PropertyReservationPrice from "./property-reservation-price";
+import { useDispatch } from "react-redux";
+import { openModal } from "@/redux/features/modal-slice";
+import { setConfirmHeader } from "@/redux/features/confirm-slice";
 
 type Props = {
   guests: number;
   price: number;
-  fee_percentage: number
+  fee_percentage: number;
   reservations: ShortenReservation[];
+  id: string;
 };
 
 const formSchema = z.object({
@@ -26,12 +30,12 @@ const formSchema = z.object({
   dateRange: z.object({
     from: z
       .date({
-        required_error: "Start date is required.",
+        required_error: "Please select the check-in date",
       })
       .nullable(),
     to: z
       .date({
-        required_error: "End date is required.",
+        required_error: "Please select the check-out date",
       })
       .nullable(),
   }),
@@ -39,7 +43,14 @@ const formSchema = z.object({
 
 export type PropertyReservationFormType = z.infer<typeof formSchema>;
 
-const PropertyReservation = ({ guests, price, reservations, fee_percentage }: Props) => {
+const PropertyReservation = ({
+  guests,
+  price,
+  reservations,
+  fee_percentage,
+  id,
+}: Props) => {
+  const dispatch = useDispatch();
   const form = useForm<PropertyReservationFormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,7 +84,7 @@ const PropertyReservation = ({ guests, price, reservations, fee_percentage }: Pr
   const to = form.watch("dateRange").to;
 
   const nights = from && to ? differenceInDays(to, from) : 1;
-  const fee = price * fee_percentage / 100;
+  const fee = (price * fee_percentage) / 100;
   const total = Math.floor(price * nights + fee);
 
   const onHandleGuestsChange = (value: string) => {
@@ -93,7 +104,22 @@ const PropertyReservation = ({ guests, price, reservations, fee_percentage }: Pr
     const check_in = format(from, "yyyy-MM-dd");
     const check_out = format(to, "yyyy-MM-dd");
 
-    console.log({ check_in, check_out, guests });
+    dispatch(
+      setConfirmHeader({
+        title: "Confirm Reservation",
+        message: `Are you sure you want to reserve this property?`,
+        confirmType: "add-reservation",
+        data: {
+          reservation: {
+            property: id,
+            check_in,
+            check_out,
+            guests,
+          },
+        },
+      }),
+    );
+    dispatch(openModal("confirm"));
   };
 
   return (
@@ -102,7 +128,7 @@ const PropertyReservation = ({ guests, price, reservations, fee_percentage }: Pr
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
+          className="mb-4 flex flex-col gap-4"
         >
           <PropertyReservationDateRange
             control={form.control}
@@ -118,19 +144,12 @@ const PropertyReservation = ({ guests, price, reservations, fee_percentage }: Pr
           </Button>
         </form>
       </Form>
-      <div className="mb-4 flex items-center justify-between">
-        <p>${price} * {nights}</p>
-        <p>${price * nights}</p>
-      </div>
-      <div className="mb-4 flex items-center justify-between">
-        <p>Service fee</p>
-        <p>${fee}</p>
-      </div>
-      <Separator />
-      <div className="mt-4 flex items-center justify-between font-bold">
-        <p>Total</p>
-        <p>${total}</p>
-      </div>
+      <PropertyReservationPrice
+        fee={fee}
+        price={price}
+        nights={nights}
+        total={total}
+      />
     </aside>
   );
 };

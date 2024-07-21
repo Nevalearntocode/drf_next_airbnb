@@ -1,8 +1,6 @@
 "use client";
 
 import React from "react";
-import { PropertyReservationFormType } from "./property-reservation";
-import { Control } from "react-hook-form";
 import {
   FormControl,
   FormField,
@@ -16,9 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AddReservationControl } from "@/types/form";
 
 type Props = {
-  control: Control<PropertyReservationFormType>;
+  control: AddReservationControl;
   onHandleGuestsChange: (value: string) => void;
   guests: number;
 };
@@ -35,16 +34,16 @@ export default function PropertyReservationNumberOfGuests({
       render={({ field }) => (
         <FormItem className="rounded-xl">
           <FormLabel>Guests</FormLabel>
-          <Select onValueChange={onHandleGuestsChange} defaultValue={"Guests"}>
+          <Select onValueChange={onHandleGuestsChange} defaultValue={`${field.value} guest`}>
             <FormControl>
               <SelectTrigger>
-                <SelectValue placeholder="Select a verified email to display" />
+                <SelectValue placeholder="1 guest" />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
               {Array.from({ length: guests }, (_, i) => i + 1).map((i) => (
                 <SelectItem key={i} value={i.toString()}>
-                  {i} guests
+                  {i} guest{i > 1 && "s"}
                 </SelectItem>
               ))}
             </SelectContent>

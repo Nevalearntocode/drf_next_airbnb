@@ -62,13 +62,13 @@ const formSchema = z.object({
     .positive({ message: "Enter a positive price for your listing." }),
 });
 
-export type AddPropertyType = z.infer<typeof formSchema>;
+export type PropertyFormType = z.infer<typeof formSchema>;
 
 const AddPropertyModal = (props: Props) => {
   const { isOpen, type } = useAppSelector((state) => state.modal);
   const router = useRouter();
   const isModalOpen = type === "add-property" && isOpen;
-  const form = useForm<AddPropertyType>({
+  const form = useForm<PropertyFormType>({
     resolver: zodResolver(formSchema),
     defaultValues: DefaultPropertyValues,
   });
@@ -102,7 +102,7 @@ const AddPropertyModal = (props: Props) => {
   };
 
   // delete the image from S3 bucket if there is an error in this function
-  const handleAddProperty = (data: AddPropertyType, uniqueKey: string) => {
+  const handleAddProperty = (data: PropertyFormType, uniqueKey: string) => {
     addProperty({
       ...data,
       country: data.location.country,
@@ -123,7 +123,7 @@ const AddPropertyModal = (props: Props) => {
       });
   };
 
-  const onSubmit = async (data: AddPropertyType) => {
+  const onSubmit = async (data: PropertyFormType) => {
     const image = data.image;
     if (!image) {
       toast.error("Please upload an image for your property");

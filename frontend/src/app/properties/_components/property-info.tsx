@@ -40,7 +40,13 @@ const PropertyInfo = ({ property }: Props) => {
         <Separator />
         <p className="mt-6 text-lg">{description}</p>
       </div>
-      <PropertyReservation guests={guests} price={price} reservations={property.reservations} fee_percentage={property.fee_percentage} />
+      <PropertyReservation
+        guests={guests}
+        price={price}
+        reservations={property.reservations}
+        fee_percentage={property.fee_percentage}
+        id={id}
+      />
     </div>
   );
 };

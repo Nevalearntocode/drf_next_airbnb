@@ -3,6 +3,29 @@ type AuthState = {
   isLoading: boolean;
 };
 
+type ModalState = {
+  isOpen: boolean;
+  type: "login" | "register" | "add-property" | "edit-property" | "confirm";
+};
+
+type ConfirmData = {
+  reservation?: {
+    property: string;
+    check_in: string;
+    check_out: string;
+    guests: number;
+  };
+  reservationId?: string;
+  propertyId?: string;  
+};
+
+type ConfirmState = {
+  data: ConfirmData;
+  title: string;
+  message: string;
+  confirmType: "add-reservation" | null;
+};
+
 type LoginArgs = {
   email: string;
   password: string;
@@ -21,4 +44,11 @@ type getPropertiesArgs = {
   id?: string;
 };
 
-export type { AuthState, LoginArgs, RegisterArgs, getPropertiesArgs }
+export type {
+  AuthState,
+  LoginArgs,
+  RegisterArgs,
+  getPropertiesArgs,
+  ModalState,
+  ConfirmState,
+};

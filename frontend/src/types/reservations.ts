@@ -27,8 +27,22 @@ type ReservationWithPropertyWithLandlord = Pick<
 
 type ShortenReservation = Pick<Reservation, "id" | "check_in" | "check_out">;
 
+type ReservationForm = {
+  property: string;
+  check_in: string;
+  check_out: string;
+  guests: number;
+};
+
+type UpdateReservationForm = Pick<
+  ReservationForm,
+  "check_in" | "check_out" | "guests"
+>;
+
 export type {
   Reservation,
   ReservationWithPropertyWithLandlord,
   ShortenReservation,
+  ReservationForm,
+  UpdateReservationForm,
 };

@@ -1,15 +1,12 @@
 "use client";
 
 import React from "react";
-import { Control } from "react-hook-form";
-import { PropertyReservationFormType } from "./property-reservation";
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import {
   Popover,
@@ -22,9 +19,10 @@ import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { DateRange } from "react-day-picker";
+import { AddReservationControl } from "@/types/form";
 
 type Props = {
-  control: Control<PropertyReservationFormType>;
+  control: AddReservationControl;
   isDisabled: (date: Date) => boolean;
 };
 
@@ -38,7 +36,7 @@ export default function PropertyReservationDateRange({
       name="dateRange"
       render={({ field }) => (
         <FormItem className="flex w-full flex-col">
-          <FormLabel>Date Range</FormLabel>
+          <FormLabel>Dates</FormLabel>
           <Popover>
             <PopoverTrigger asChild>
               <FormControl>
@@ -53,14 +51,14 @@ export default function PropertyReservationDateRange({
                   {field.value?.from ? (
                     field.value.to ? (
                       <>
-                        {format(field.value.from, "yyyy-MM-dd")} -{" "}
-                        {format(field.value.to, "yyyy-MM-dd")}
+                        {format(field.value.from, "EE, dd MMM yyyy")} -{" "}
+                        {format(field.value.to, "EE, dd MMM yyyy")}
                       </>
                     ) : (
-                      format(field.value.from, "yyyy-MM-dd")
+                      format(field.value.from, "EE, dd MMM yyyy")
                     )
                   ) : (
-                    <span>Pick a date range</span>
+                    <span>Select dates</span>
                   )}
                 </Button>
               </FormControl>
@@ -77,10 +75,7 @@ export default function PropertyReservationDateRange({
               />
             </PopoverContent>
           </Popover>
-          <FormDescription>
-            Select a start and end date for the range.
-          </FormDescription>
-          <FormMessage />
+          <FormDescription>Select check in and check out dates</FormDescription>
         </FormItem>
       )}
     />

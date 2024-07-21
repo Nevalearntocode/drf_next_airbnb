@@ -1,15 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
-import modalReducer from "./features/modal-slice";
-import { userSlice } from "./features/user-slice";
+import { reservationSlice } from "./features/reservation-slice";
 import { propertySlice } from "./features/property-slice";
-import authReducer from "./features/auth-slice";
 import { r2Slice } from "./features/r2-slice";
+import { userSlice } from "./features/user-slice";
+import authReducer from "./features/auth-slice";
+import modalReducer from "./features/modal-slice";
+import confirmReducer from "./features/confirm-slice";
 
 export const store = configureStore({
   reducer: {
-    modal: modalReducer,
     auth: authReducer,
+    modal: modalReducer,
+    confirm: confirmReducer,
     property: propertySlice.reducer,
+    reservation: reservationSlice.reducer,
     [r2Slice.reducerPath]: r2Slice.reducer,
     [userSlice.reducerPath]: userSlice.reducer,
   },
@@ -21,7 +25,5 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;

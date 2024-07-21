@@ -2,6 +2,7 @@
 
 import useVerify from "@/hooks/use-verify";
 import AddPropertyModal from "@/modals/add-property-modal";
+import ConfirmModal from "@/modals/confirm-modal";
 import LoginModal from "@/modals/login-modal";
 import RegisterModal from "@/modals/register-modal";
 import React from "react";
@@ -26,6 +27,7 @@ const ModalProvider = (props: Props) => {
       <LoginModal />
       <RegisterModal />
       <AddPropertyModal />
+      <ConfirmModal />
     </>
   );
 };
