@@ -103,6 +103,8 @@ class BaseReservationSerializer(serializers.ModelSerializer):
 
 class ReservationSerializer(BaseReservationSerializer):
     url = serializers.HyperlinkedIdentityField(view_name="reservation-detail")
+    image_url = serializers.ReadOnlyField(source="property.image")
+    property_name = serializers.ReadOnlyField(source="property.name")
 
 
 class ReservationDetailSerializer(BaseReservationSerializer):

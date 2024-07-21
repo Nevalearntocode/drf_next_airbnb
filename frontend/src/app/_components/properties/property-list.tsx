@@ -19,7 +19,7 @@ const PropertyList = ({ route }: Props) => {
     return <Loading />;
   }
 
-  if (!properties.data || properties.data.results.length == 0) {
+  if (!properties.data || properties.data.results.length === 0) {
     return <PropertyEmpty />;
   }
 

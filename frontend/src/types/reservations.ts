@@ -11,6 +11,9 @@ type Reservation = {
   check_in: string;
   check_out: string;
   created_at: Date;
+
+  image_url: string;
+  property_name: string;
 };
 
 type ReservationWithPropertyWithLandlord = Pick<
