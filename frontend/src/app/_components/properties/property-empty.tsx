@@ -8,17 +8,12 @@ import React from "react";
 
 type Props = {};
 
-export default function NotFound({}: Props) {
+export default function PropertyEmpty({}: Props) {
   const pathname = usePathname();
 
   return (
-    <div className="flex h-[55vh] w-full flex-col items-center justify-center gap-8">
-      <Image
-        src={"/svgs/not-found.svg"}
-        alt="notfound"
-        width={300}
-        height={300}
-      />
+    <div className="flex w-full flex-col items-center justify-center gap-8">
+      <Image src={"/svgs/empty.svg"} alt="notfound" width={300} height={300} />
       <p className="text-center text-xl text-gray-500">
         <span className="text-3xl font-bold">No properties found</span>
       </p>

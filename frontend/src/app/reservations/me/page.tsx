@@ -1,26 +1,10 @@
 import React from "react";
-import ReservationCard from "../reservation-card";
+import ReservationList from "../reservation-list";
 
 type Props = {};
 
-const MyReservation = (props: Props) => {
-  return (
-    <div className="container pb-2 pt-6">
-      <h1 className="mb-6 text-2xl">My reservations</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 md:gap-4">
-        <ReservationCard />
-        <ReservationCard />
-        <ReservationCard />
-        <ReservationCard />
-        <ReservationCard />
-        <ReservationCard />
-        <ReservationCard />
-        <ReservationCard />
-        <ReservationCard />
-        <ReservationCard />
-      </div>
-    </div>
-  );
+const MyReservation = ({}: Props) => {
+  return <ReservationList />;
 };
 
 export default MyReservation;

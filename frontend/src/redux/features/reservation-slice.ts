@@ -8,14 +8,14 @@ import { apiSlice } from "../services/api-slice";
 
 export const reservationSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getAllReservations: builder.query<Reservation[], undefined>({
+    getAllReservations: builder.query<Reservation[], void>({
       query: () => ({
         url: "reservations/",
         method: "GET",
       }),
       providesTags: ["Reservations"],
     }),
-    getCurrentUserReservations: builder.query<Reservation[], undefined>({
+    getCurrentUserReservations: builder.query<Reservation[], void>({
       query: () => ({
         url: "reservations/me/",
         method: "GET",

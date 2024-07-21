@@ -4,8 +4,9 @@ import React from "react";
 import PropertyCard from "./property-card";
 import { PropertyRoute } from "@/types/property";
 import { usePropertyList } from "@/hooks/use-property-list";
-import NotFound from "./not-found";
 import Loading from "@/app/loading";
+import PropertyEmpty from "./property-empty";
+
 
 type Props = {
   route: PropertyRoute;
@@ -18,8 +19,8 @@ const PropertyList = ({ route }: Props) => {
     return <Loading />;
   }
 
-  if (!properties.data || properties.data.results.length === 0) {
-    return <NotFound />;
+  if (!properties.data || properties.data.results.length == 0) {
+    return <PropertyEmpty />;
   }
 
   return (
