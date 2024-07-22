@@ -25,11 +25,14 @@ const HeartToggle = () => {
       size={"icon"}
       onClick={onFavorite}
     >
-      <AiOutlineHeart size={28} className="absolute fill-white" />
+      <AiOutlineHeart
+        size={28}
+        className="absolute fill-white transition duration-500 hover:scale-110"
+      />
       <AiFillHeart
         size={24}
         className={cn(
-          "fill-neutral-500/70 transition duration-500 hover:fill-neutral-500",
+          "fill-neutral-500/70 transition duration-500 hover:scale-110 hover:fill-neutral-500",
           favorited &&
             "fill-rose-500 transition duration-500 hover:fill-rose-300",
         )}

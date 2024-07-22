@@ -1,13 +1,16 @@
 "use client";
 
-import React from "react";
+import React, { MouseEvent } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import HeartToggle from "./heart-toggle";
 import { useRouter } from "next/navigation";
 import { PropertyWithLandlord } from "@/types/property";
 import { useRetrieveUserQuery } from "@/redux/features/user-slice";
-import { useAppSelector } from "@/hooks/use-redux-store";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
+import { Button } from "@/components/ui/button";
+import { Edit } from "lucide-react";
+import { openModal, setProperty } from "@/redux/features/modal-slice";
 
 type Props = {
   property: PropertyWithLandlord;
@@ -16,13 +19,20 @@ type Props = {
 const PropertyCard = ({ property }: Props) => {
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const onClick = () => {
     router.push(`/properties/${property.id}`);
   };
 
   const { data } = useRetrieveUserQuery();
 
-  const shouldDisplayHeart = isAuthenticated && data && data.id !== property.landlord.id;
+  const isOwner = data?.id === property.landlord.id;
+  const shouldDisplayHeart = isAuthenticated && !isOwner;
+
+  const onEdit = () => {
+    dispatch(openModal("edit-property"));
+    dispatch(setProperty(property));
+  };
 
   return (
     <Card className="rounded-xl border-b border-none">
@@ -39,6 +49,19 @@ const PropertyCard = ({ property }: Props) => {
           className="h-auto w-auto rounded-xl object-cover transition duration-1000 hover:scale-110"
         />
         {shouldDisplayHeart && <HeartToggle />}
+        {isOwner && (
+          <Button
+            variant={"ghost"}
+            className="absolute right-0 top-0 flex items-center justify-center hover:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
+            size={"icon"}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+          >
+            <Edit className="h-5 w-5 text-primary transition duration-1000 hover:scale-110" />
+          </Button>
+        )}
       </CardContent>
       <CardFooter className="p-2">
         <div>

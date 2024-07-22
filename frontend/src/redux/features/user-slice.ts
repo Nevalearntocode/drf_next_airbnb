@@ -10,6 +10,7 @@ export const userSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: args,
       }),
+      invalidatesTags: ["Properties", "User"],
     }),
     logout: builder.mutation<undefined, void>({
       query: () => ({

@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
-import { openModal } from "@/redux/features/modal-slice";
+import { clearProperty, openModal } from "@/redux/features/modal-slice";
 import { Globe } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
@@ -19,6 +19,7 @@ const AddPropertyButton = (props: Props) => {
       toast.info("Please login to add property");
     } else {
       dispatch(openModal("add-property"));
+      dispatch(clearProperty());
     }
   };
 

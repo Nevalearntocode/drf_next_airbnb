@@ -67,7 +67,9 @@ export type PropertyFormType = z.infer<typeof formSchema>;
 const AddPropertyModal = (props: Props) => {
   const { isOpen, type } = useAppSelector((state) => state.modal);
   const router = useRouter();
-  const isModalOpen = type === "add-property" && isOpen;
+  const isModalOpen =
+    (type === "add-property" || type === "edit-property") && isOpen;
+  const { property } = useAppSelector((state) => state.modal);
   const form = useForm<PropertyFormType>({
     resolver: zodResolver(formSchema),
     defaultValues: DefaultPropertyValues,
@@ -90,6 +92,8 @@ const AddPropertyModal = (props: Props) => {
   const onClose = () => {
     dispatch(closeModal());
   };
+
+  console.log(property);
 
   const handleUploadImage = async (uniqueKey: string, image: File) => {
     const uploadUrl = await createUploadUrlAction(uniqueKey, image.type);

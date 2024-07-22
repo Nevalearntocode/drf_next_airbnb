@@ -21,13 +21,12 @@ import { toast } from "sonner";
 type Props = {};
 
 export default function ConfirmModal({}: Props) {
-  const { message, title, confirmType, data } = useAppSelector(
+  const { message, title, confirmType, reservationFormData } = useAppSelector(
     (state) => state.confirm,
   );
   const { isOpen, type } = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
   const [addReservation] = useAddReservationMutation();
-  const { reservation } = data;
   const isModalOpen = isOpen && type === "confirm";
   const router = useRouter();
 
@@ -36,11 +35,11 @@ export default function ConfirmModal({}: Props) {
   };
 
   const onAddReservation = () => {
-    if (!reservation) {
+    if (!reservationFormData) {
       toast.error("Something went wrong");
       return;
     }
-    addReservation({ ...reservation })
+    addReservation({ ...reservationFormData })
       .unwrap()
       .then(() => {
         toast.success("Reservation added successfully");
@@ -67,10 +66,10 @@ export default function ConfirmModal({}: Props) {
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription className="text-center leading-8">
             {message} <br />{" "}
-            {reservation &&
+            {reservationFormData &&
               confirmType === "add-reservation" &&
-              `from ${format(reservation.check_in, "EEEE dd MMMM")} to ${format(
-                reservation.check_out,
+              `from ${format(reservationFormData.check_in, "EEEE dd MMMM")} to ${format(
+                reservationFormData.check_out,
                 "EEEE dd MMMM",
               )}`}
           </DialogDescription>

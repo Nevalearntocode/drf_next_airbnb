@@ -1,21 +1,25 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { ShortenReservation } from "@/types/reservations";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { parseISO } from "date-fns";
 import { differenceInDays, format, isWithinInterval } from "date-fns";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { parseISO } from "date-fns";
-import { toast } from "sonner";
+
+import { ShortenReservation } from "@/types/reservations";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+import { useDispatch } from "react-redux";
+import { openModal } from "@/redux/features/modal-slice";
+import { setConfirmHeader, setReservationFormData } from "@/redux/features/confirm-slice";
+
 import PropertyReservationDateRange from "./property-reservation-date-range";
 import PropertyReservationNumberOfGuests from "./property-reservation-number-of-guests";
 import PropertyReservationPrice from "./property-reservation-price";
-import { useDispatch } from "react-redux";
-import { openModal } from "@/redux/features/modal-slice";
-import { setConfirmHeader } from "@/redux/features/confirm-slice";
+
+import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 
 type Props = {
   guests: number;
@@ -109,15 +113,10 @@ const PropertyReservation = ({
         title: "Confirm Reservation",
         message: `Are you sure you want to reserve this property?`,
         confirmType: "add-reservation",
-        data: {
-          reservation: {
-            property: id,
-            check_in,
-            check_out,
-            guests,
-          },
-        },
       }),
+    );
+    dispatch(
+      setReservationFormData({ property: id, check_in, check_out, guests }),
     );
     dispatch(openModal("confirm"));
   };

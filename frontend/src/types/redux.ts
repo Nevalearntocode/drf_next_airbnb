@@ -1,29 +1,36 @@
+import { Property } from "./property";
+
 type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
 };
 
+type ModalData = {
+  property?: Property;
+};
 type ModalState = {
   isOpen: boolean;
-  type: "login" | "register" | "add-property" | "edit-property" | "confirm";
+  type:
+    | "login"
+    | "register"
+    | "add-property"
+    | "edit-property"
+    | "confirm"
+    | null;
+  property?: Property;
 };
 
-type ConfirmData = {
-  reservation?: {
+type ConfirmState = {
+  title: string;
+  message: string;
+  confirmType: "add-reservation" | null;
+
+  reservationFormData?: {
     property: string;
     check_in: string;
     check_out: string;
     guests: number;
   };
-  reservationId?: string;
-  propertyId?: string;  
-};
-
-type ConfirmState = {
-  data: ConfirmData;
-  title: string;
-  message: string;
-  confirmType: "add-reservation" | null;
 };
 
 type LoginArgs = {
