@@ -1,13 +1,8 @@
-import { Property } from "./property";
-
 type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
 };
 
-type ModalData = {
-  property?: Property;
-};
 type ModalState = {
   isOpen: boolean;
   type:
@@ -17,7 +12,6 @@ type ModalState = {
     | "edit-property"
     | "confirm"
     | null;
-  property?: Property;
 };
 
 type ConfirmState = {
@@ -25,7 +19,7 @@ type ConfirmState = {
   message: string;
   confirmType: "add-reservation" | null;
 
-  reservationFormData?: {
+  reservationFormData: {
     property: string;
     check_in: string;
     check_out: string;

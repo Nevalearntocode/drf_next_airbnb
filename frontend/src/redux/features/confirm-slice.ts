@@ -1,11 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { ConfirmState } from "@/types/redux";
 
+const defaultRervationFormData: ConfirmState["reservationFormData"] = {
+  check_in: "",
+  check_out: "",
+  guests: 0,
+  property: "",
+};
+
 const initialState: ConfirmState = {
   confirmType: null,
   title: "",
   message: "",
-  reservationFormData: undefined,
+  reservationFormData: defaultRervationFormData,
 };
 
 const confirmSlice = createSlice({
@@ -38,7 +45,7 @@ const confirmSlice = createSlice({
       state.reservationFormData = action.payload;
     },
     clearReservationFormData: (state) => {
-      state.reservationFormData = undefined;
+      state.reservationFormData = defaultRervationFormData;
     },
   },
 });

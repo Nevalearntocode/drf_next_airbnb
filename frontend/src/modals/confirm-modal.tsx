@@ -35,10 +35,6 @@ export default function ConfirmModal({}: Props) {
   };
 
   const onAddReservation = () => {
-    if (!reservationFormData) {
-      toast.error("Something went wrong");
-      return;
-    }
     addReservation({ ...reservationFormData })
       .unwrap()
       .then(() => {

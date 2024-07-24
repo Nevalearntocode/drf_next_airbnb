@@ -1,16 +1,14 @@
 "use client";
 
-import React, { MouseEvent } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import Image from "next/image";
 import HeartToggle from "./heart-toggle";
 import { useRouter } from "next/navigation";
 import { PropertyWithLandlord } from "@/types/property";
 import { useRetrieveUserQuery } from "@/redux/features/user-slice";
-import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
+import { useAppSelector } from "@/hooks/use-redux-store";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
-import { openModal, setProperty } from "@/redux/features/modal-slice";
 
 type Props = {
   property: PropertyWithLandlord;
@@ -19,7 +17,6 @@ type Props = {
 const PropertyCard = ({ property }: Props) => {
   const router = useRouter();
   const { isAuthenticated } = useAppSelector((state) => state.auth);
-  const dispatch = useAppDispatch();
   const onClick = () => {
     router.push(`/properties/${property.id}`);
   };
@@ -29,10 +26,7 @@ const PropertyCard = ({ property }: Props) => {
   const isOwner = data?.id === property.landlord.id;
   const shouldDisplayHeart = isAuthenticated && !isOwner;
 
-  const onEdit = () => {
-    dispatch(openModal("edit-property"));
-    dispatch(setProperty(property));
-  };
+  const onEdit = () => {};
 
   return (
     <Card className="rounded-xl border-b border-none">
