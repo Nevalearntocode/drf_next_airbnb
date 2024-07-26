@@ -25,9 +25,9 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import ImageUpload from "./image-upload";
-import { useCountries } from "@/hooks/use-countries";
 import { AddPropertyControl, AddPropertySetValue } from "@/types/form";
 import { Input } from "@/components/ui/input";
+import { useCountries } from "@/hooks/use-countries";
 
 type Props = {
   control: AddPropertyControl;

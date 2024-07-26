@@ -39,7 +39,7 @@ const locationSchema = z.object({
 
 export type LocationType = z.infer<typeof locationSchema>;
 
-const formSchema = z.object({
+export const AddPropertyFormSchema = z.object({
   category: z.string().min(1, {
     message: "Please select a category where your property locates.",
   }),
@@ -47,7 +47,7 @@ const formSchema = z.object({
   description: z
     .string()
     .min(1, { message: "Describe your listing in detail." }),
-  image: z.instanceof(File).nullable(),
+  image: z.union([z.instanceof(File), z.string()]).nullable(),
   guests: z.number().positive({ message: "Guest  must be a positive number." }),
   location: locationSchema,
   address: z.string().min(1, { message: "Enter your property address." }),
@@ -62,14 +62,14 @@ const formSchema = z.object({
     .positive({ message: "Enter a positive price for your listing." }),
 });
 
-export type PropertyFormType = z.infer<typeof formSchema>;
+export type PropertyFormType = z.infer<typeof AddPropertyFormSchema>;
 
 const AddPropertyModal = (props: Props) => {
   const { isOpen, type } = useAppSelector((state) => state.modal);
   const router = useRouter();
   const isModalOpen = type === "add-property" && isOpen;
   const form = useForm<PropertyFormType>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(AddPropertyFormSchema),
     defaultValues: DefaultPropertyValues,
   });
   const { control, setValue } = form;
@@ -102,12 +102,12 @@ const AddPropertyModal = (props: Props) => {
   };
 
   // delete the image from S3 bucket if there is an error in this function
-  const handleAddProperty = (data: PropertyFormType, uniqueKey: string) => {
+  const handleAddProperty = (data: PropertyFormType, image: string) => {
     addProperty({
       ...data,
       country: data.location.country,
       country_code: data.location.country_code,
-      image: createImageUrl(uniqueKey),
+      image: image,
     })
       .unwrap()
       .then(async () => {
@@ -129,9 +129,15 @@ const AddPropertyModal = (props: Props) => {
       toast.error("Please upload an image for your property");
       return;
     }
-    const uniqueKey = generateUniqueKey(image.name);
-    await handleUploadImage(uniqueKey, image);
-    handleAddProperty(data, uniqueKey);
+    if(typeof image === "string") {
+      handleAddProperty(data, image);
+    }
+    if(typeof image == "object") {
+      const uniqueKey = generateUniqueKey(image.name);
+      await handleUploadImage(uniqueKey, image);
+      const imageUrl = createImageUrl(uniqueKey);
+      handleAddProperty(data, imageUrl);
+    }
   };
 
   return (

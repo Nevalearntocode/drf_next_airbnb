@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import { useAppDispatch } from "./use-redux-store";
-import { useVerifyMutation } from "@/redux/features/user-slice";
+import {
+  useVerifyMutation,
+} from "@/redux/features/user-slice";
 import { setLoading, setAuth } from "@/redux/features/auth-slice";
 
-export default function useVerify() {
+export const useVerify = () => {
   const dispatch = useAppDispatch();
-
   const [verify] = useVerifyMutation();
 
   useEffect(() => {
@@ -21,5 +22,5 @@ export default function useVerify() {
       .finally(() => {
         dispatch(setLoading(false));
       });
-  }, []);
+  }, [verify, dispatch]);
 }

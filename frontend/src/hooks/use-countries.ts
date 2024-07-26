@@ -5,7 +5,7 @@ const formattedCountries = countries.map((country) => ({
   country: country.name.common,
 }));
 
-export function useCountries() {
+export const useCountries = () => {
   const getAll = () => formattedCountries;
   const getByValue = (country_code: string) => {
     return formattedCountries.find((item) => item.country_code === country_code);

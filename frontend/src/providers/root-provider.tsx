@@ -4,6 +4,7 @@ import React from "react";
 import ReduxProvider from "./redux-provider";
 import ModalProvider from "./modal-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "./auth-provider";
 
 type Props = {
   children: React.ReactNode;
@@ -12,9 +13,11 @@ type Props = {
 const RootProvider = ({ children }: Props) => {
   return (
     <ReduxProvider>
-      <ModalProvider />
-      <Toaster />
-      {children}
+      <AuthProvider>
+        <ModalProvider />
+        <Toaster />
+        {children}
+      </AuthProvider>
     </ReduxProvider>
   );
 };

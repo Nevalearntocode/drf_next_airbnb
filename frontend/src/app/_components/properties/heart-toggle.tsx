@@ -1,12 +1,20 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useAppDispatch } from "@/hooks/use-redux-store";
 import { cn } from "@/lib/utils";
+import { openModal } from "@/redux/features/modal-slice";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { toast } from "sonner";
 
-const HeartToggle = () => {
+type Props = {
+  isAuthenticated: boolean;
+};
+
+const HeartToggle = ({isAuthenticated}: Props) => {
   const [favorited, setFavorited] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {});
 
@@ -15,6 +23,12 @@ const HeartToggle = () => {
   ) => {
     event.stopPropagation();
     event.preventDefault();
+
+    if (!isAuthenticated) {
+      dispatch(openModal("login"));
+      toast.info("Please login to favorite property");
+      return;
+    }
     setFavorited(!favorited);
   };
 
@@ -30,11 +44,10 @@ const HeartToggle = () => {
         className="absolute fill-white transition duration-500 hover:scale-110"
       />
       <AiFillHeart
-        size={24}
+        size={26}
         className={cn(
           "fill-neutral-500/70 transition duration-500 hover:scale-110 hover:fill-neutral-500",
-          favorited &&
-            "fill-rose-500 transition duration-500 hover:fill-rose-300",
+          favorited && "fill-rose-500 hover:fill-rose-300",
         )}
       />
     </Button>

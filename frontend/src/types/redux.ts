@@ -1,6 +1,9 @@
+import { User } from "./user";
+
 type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
+  user?: User
 };
 
 type ModalState = {

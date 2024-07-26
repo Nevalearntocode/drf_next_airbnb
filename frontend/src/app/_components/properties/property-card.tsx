@@ -5,10 +5,9 @@ import Image from "next/image";
 import HeartToggle from "./heart-toggle";
 import { useRouter } from "next/navigation";
 import { PropertyWithLandlord } from "@/types/property";
-import { useRetrieveUserQuery } from "@/redux/features/user-slice";
-import { useAppSelector } from "@/hooks/use-redux-store";
 import { Button } from "@/components/ui/button";
 import { Edit } from "lucide-react";
+import { useOwnerCheck } from "@/hooks/use-owner-check";
 
 type Props = {
   property: PropertyWithLandlord;
@@ -16,17 +15,16 @@ type Props = {
 
 const PropertyCard = ({ property }: Props) => {
   const router = useRouter();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, isOwner } = useOwnerCheck(property.landlord.id);
+
   const onClick = () => {
     router.push(`/properties/${property.id}`);
   };
 
-  const { data } = useRetrieveUserQuery();
 
-  const isOwner = data?.id === property.landlord.id;
-  const shouldDisplayHeart = isAuthenticated && !isOwner;
-
-  const onEdit = () => {};
+  const onEdit = () => {
+    router.push(`/properties/${property.id}/edit`);
+  };
 
   return (
     <Card className="rounded-xl border-b border-none">
@@ -42,7 +40,7 @@ const PropertyCard = ({ property }: Props) => {
           sizes="(max-width: 768px) 768px, (max-width: 1200px) 768px, 768px"
           className="h-auto w-auto rounded-xl object-cover transition duration-1000 hover:scale-110"
         />
-        {shouldDisplayHeart && <HeartToggle />}
+        {!isOwner && <HeartToggle isAuthenticated={isAuthenticated} />}
         {isOwner && (
           <Button
             variant={"ghost"}

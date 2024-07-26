@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 type Props = {
   onChange: (image: File) => void;
   onRemove: () => void;
-  value: File | null;
+  value: File | null | string;
 };
 
 const ImageUpload = ({ onChange, value, onRemove }: Props) => {

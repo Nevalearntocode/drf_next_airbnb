@@ -20,6 +20,7 @@ import { useLogoutMutation } from "@/redux/features/user-slice";
 import {
   setAuth,
   setLoading,
+  setUser,
 } from "@/redux/features/auth-slice";
 
 type Props = {};
@@ -44,6 +45,7 @@ const UserButton = (props: Props) => {
       .unwrap()
       .then(() => {
         dispatch(setAuth(false));
+        dispatch(setUser(undefined));
         router.push("/");
       })
       .catch((err) => {

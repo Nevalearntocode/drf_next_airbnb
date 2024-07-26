@@ -5,7 +5,7 @@ import {
 import { PropertyRoute } from "@/types/property";
 import { useSearchParams } from "next/navigation";
 
-export function usePropertyList(route: PropertyRoute) {
+export const usePropertyList = (route: PropertyRoute) => {
   const searchParams = useSearchParams();
 
   const page = searchParams.get("page") || undefined;
