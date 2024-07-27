@@ -26,7 +26,7 @@ function Counter({ onChange, subtitle, title, value }: Props) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-col">
-        <div className="font-medium">{title}</div>
+        <div className="font-semibold">{title}</div>
         <div className="text-sm font-light text-gray-600 dark:text-gray-400">
           {subtitle}
         </div>

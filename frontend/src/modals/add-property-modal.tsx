@@ -18,11 +18,11 @@ import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { closeModal } from "@/redux/features/modal-slice";
 import { Separator } from "@/components/ui/separator";
 import { cn, createImageUrl, generateUniqueKey } from "@/lib/utils";
-import CategoryStep from "./components/add-property-modal/category-step";
-import DescriptionStep from "./components/add-property-modal/description-step";
-import LocationStep from "./components/add-property-modal/location-step";
-import DetailStep from "./components/add-property-modal/detail-step";
-import PriceStep from "./components/add-property-modal/price-step";
+import StepCategory from "../components/form/step-category";
+import StepDescription from "../components/form/step-description";
+import StepLocation from "../components/form/step-location";
+import StepDetail from "../components/form/step-detail";
+import StepPrice from "../components/form/step-price";
 import { DefaultPropertyValues, STEPS } from "@/constants";
 import { useAddPropertyMutation } from "@/redux/features/property-slice";
 import { toast } from "sonner";
@@ -129,10 +129,10 @@ const AddPropertyModal = (props: Props) => {
       toast.error("Please upload an image for your property");
       return;
     }
-    if(typeof image === "string") {
+    if (typeof image === "string") {
       handleAddProperty(data, image);
     }
-    if(typeof image == "object") {
+    if (typeof image == "object") {
       const uniqueKey = generateUniqueKey(image.name);
       await handleUploadImage(uniqueKey, image);
       const imageUrl = createImageUrl(uniqueKey);
@@ -149,16 +149,32 @@ const AddPropertyModal = (props: Props) => {
         <Separator />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            {step === STEPS.CATEGORY && <CategoryStep control={control} />}
+            {step === STEPS.CATEGORY && (
+              <StepCategory control={control} state={"modal"} />
+            )}
             {step === STEPS.DESCRIPTION && (
-              <DescriptionStep control={control} isLoading={isLoading} />
+              <StepDescription
+                control={control}
+                isLoading={isLoading}
+                state={"modal"}
+              />
             )}
             {step === STEPS.LOCATION && (
-              <LocationStep control={control} setValue={setValue} />
+              <StepLocation
+                control={control}
+                setValue={setValue}
+                state={"modal"}
+              />
             )}
-            {step === STEPS.DETAILS && <DetailStep control={control} />}
+            {step === STEPS.DETAILS && (
+              <StepDetail control={control} state={"modal"} />
+            )}
             {step === STEPS.PRICE && (
-              <PriceStep control={control} hasErrors={hasErrors} />
+              <StepPrice
+                control={control}
+                hasErrors={hasErrors}
+                state={"modal"}
+              />
             )}
             <DialogFooter className="mt-2">
               <div className="flex w-full items-center gap-4">

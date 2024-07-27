@@ -7,3 +7,5 @@ export type AddPropertyControl = Control<PropertyFormType>;
 export type AddPropertySetValue = UseFormSetValue<PropertyFormType>;
 
 export type AddReservationControl = Control<PropertyReservationFormType>;
+
+export type FieldState = "modal" | "standard"

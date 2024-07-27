@@ -3,27 +3,30 @@
 import React from "react";
 import { FormField, FormItem } from "@/components/ui/form";
 import FieldHeader from "./field-header";
-import { AddPropertyControl } from "@/types/form";
+import { AddPropertyControl, FieldState } from "@/types/form";
 import Counter from "./counter";
 import { Separator } from "@/components/ui/separator";
 
 type Props = {
   control: AddPropertyControl;
+  state?: FieldState;
 };
 
-export default function DetailStep({ control }: Props) {
+export default function StepDetail({ control, state = "standard" }: Props) {
   return (
-    <div className="mb-8 flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-4">
       <FormField
         control={control}
         name="guests"
         render={({ field }) => (
           <FormItem className="">
             <div className="mb-4">
-              <FieldHeader
-                label="Share some basics about your place."
-                description="What amenities do you have?"
-              />
+              {state === "modal" && (
+                <FieldHeader
+                  label="Share some basics about your place."
+                  description="What amenities do you have?"
+                />
+              )}
             </div>
             <Counter
               onChange={field.onChange}

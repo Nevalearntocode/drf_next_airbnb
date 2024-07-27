@@ -17,7 +17,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { PropertyWithLandlordAndReservation } from "@/types/property";
-import { AddPropertyFormSchema, PropertyFormType } from "@/modals/add-property-modal";
+import {
+  AddPropertyFormSchema,
+  PropertyFormType,
+} from "@/modals/add-property-modal";
+import StepDescription from "@/components/form/step-description";
+import StepDetail from "@/components/form/step-detail";
+import StepLocation from "@/components/form/step-location";
+import StepPrice from "@/components/form/step-price";
 
 type Props = {
   property: PropertyWithLandlordAndReservation;
@@ -39,7 +46,7 @@ const EditingPropertyInfo = ({ property }: Props) => {
       location: {
         country: property.country,
         country_code: property.country_code,
-      }
+      },
     },
   });
 
@@ -55,19 +62,11 @@ const EditingPropertyInfo = ({ property }: Props) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex w-1/3 flex-col gap-4"
       >
-        <FormField
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Name" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <h1 className="text-2xl font-bold">{property.name}</h1>
+        <StepDescription control={form.control} isLoading={isLoading} />
+        <StepLocation control={form.control} setValue={form.setValue} />
+        <StepDetail control={form.control} />
+        <StepPrice control={form.control} hasErrors={false} />
         <Button className="flex self-end" disabled={isLoading}>
           {isLoading ? (
             <>
