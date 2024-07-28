@@ -34,12 +34,10 @@ export default function StepPrice({
           className={cn("flex flex-col", state === "standard" && "mt-4")}
         >
           {state === "modal" && (
-            <div className="">
-              <FieldHeader
-                label="Now, set your price."
-                description="How much do you charge per night?"
-              />
-            </div>
+            <FieldHeader
+              label="Now, set your price."
+              description="How much do you charge per night?"
+            />
           )}
           {state === "standard" && (
             <FormLabel className="font-semibold">Price</FormLabel>
@@ -60,7 +58,6 @@ export default function StepPrice({
               fields before submiting.
             </p>
           )}
-          <FormMessage />
         </FormItem>
       )}
     />

@@ -45,7 +45,7 @@ export default function StepLocation({
   setValue,
   state = "standard",
 }: Props) {
-  const onUploadImage = (image: File) => {
+  const onUploadImage = (image: File | string) => {
     setValue("image", image);
   };
 
@@ -54,33 +54,6 @@ export default function StepLocation({
 
   return (
     <div className="flex flex-col gap-y-4">
-      <FormField
-        control={control}
-        name="image"
-        render={({ field }) => (
-          <FormItem className="">
-            {state === "modal" && (
-              <div className="">
-                <FieldHeader
-                  label="Add a photo"
-                  description="Help guests visualize your place."
-                />
-              </div>
-            )}
-            {state === "standard" && (
-              <FormLabel className="font-semibold">Property image</FormLabel>
-            )}
-            <FormControl>
-              <ImageUpload
-                onChange={onUploadImage}
-                value={field.value}
-                onRemove={() => setValue("image", null)}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
       <FormField
         control={control}
         name="location"
@@ -166,6 +139,31 @@ export default function StepLocation({
             )}
             <FormControl>
               <Input placeholder="Address" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={control}
+        name="image"
+        render={({ field }) => (
+          <FormItem className="flex flex-col">
+            {state === "modal" && (
+              <FieldHeader
+                label="Add a photo"
+                description="Help guests visualize your place."
+              />
+            )}
+            {state === "standard" && (
+              <FormLabel className="font-semibold">Property image</FormLabel>
+            )}
+            <FormControl>
+              <ImageUpload
+                onChange={onUploadImage}
+                value={field.value}
+                onRemove={() => setValue("image", null)}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

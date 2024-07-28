@@ -1,11 +1,13 @@
-"use client"
+"use client";
 
-import React from 'react'
+import { ShortenReservation } from "@/types/reservations";
+import React from "react";
 
-type Props = {}
+type Props = {
+  reservations: ShortenReservation[];
+};
 
-export default function EditingPropertyReservations({}: Props) {
-  return (
-    <div>EditingPropertyReservations</div>
-  )
+export default function EditingPropertyReservations({ reservations }: Props) {
+  console.log(reservations);
+  return <div>EditingPropertyReservations</div>;
 }

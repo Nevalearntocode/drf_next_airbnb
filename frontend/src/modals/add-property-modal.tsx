@@ -176,7 +176,7 @@ const AddPropertyModal = (props: Props) => {
                 state={"modal"}
               />
             )}
-            <DialogFooter className="mt-2">
+            <DialogFooter className="mt-8">
               <div className="flex w-full items-center gap-4">
                 <Button
                   variant={"outline"}

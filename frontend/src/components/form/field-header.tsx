@@ -8,12 +8,12 @@ type Props = {
 
 const FieldHeader = ({ label, description }: Props) => {
   return (
-    <>
+    <div className="mb-4">
       <FormLabel className="text-xl font-bold">{label}</FormLabel>
       <FormDescription className="text-sm italic">
         {description}
       </FormDescription>
-    </>
+    </div>
   );
 };
 

@@ -25,12 +25,14 @@ import StepDescription from "@/components/form/step-description";
 import StepDetail from "@/components/form/step-detail";
 import StepLocation from "@/components/form/step-location";
 import StepPrice from "@/components/form/step-price";
+import { useUpdatePropertyMutation } from "@/redux/features/property-slice";
 
 type Props = {
   property: PropertyWithLandlordAndReservation;
 };
 
 const EditingPropertyInfo = ({ property }: Props) => {
+  const [updateProperty] = useUpdatePropertyMutation();
   const form = useForm<PropertyFormType>({
     resolver: zodResolver(AddPropertyFormSchema),
     defaultValues: {
@@ -52,15 +54,25 @@ const EditingPropertyInfo = ({ property }: Props) => {
 
   const isLoading = form.formState.isSubmitting;
 
-  const onSubmit = async (data: PropertyFormType) => {
-    console.log(data);
+  const onSubmit = (data: PropertyFormType) => {
+    updateProperty({
+      id: property.id,
+      data: {
+        ...data,
+        country_code: data.location.country_code,
+        country: data.location.country,
+        image: property.image,
+      },
+    })
+      .unwrap()
+      .catch((err) => console.log(err));
   };
 
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-1/3 flex-col gap-4"
+        className="flex w-auto flex-col gap-4"
       >
         <h1 className="text-2xl font-bold">{property.name}</h1>
         <StepDescription control={form.control} isLoading={isLoading} />

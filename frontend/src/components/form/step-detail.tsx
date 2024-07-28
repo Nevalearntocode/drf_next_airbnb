@@ -20,14 +20,12 @@ export default function StepDetail({ control, state = "standard" }: Props) {
         name="guests"
         render={({ field }) => (
           <FormItem className="">
-            <div className="mb-4">
-              {state === "modal" && (
-                <FieldHeader
-                  label="Share some basics about your place."
-                  description="What amenities do you have?"
-                />
-              )}
-            </div>
+            {state === "modal" && (
+              <FieldHeader
+                label="Share some basics about your place."
+                description="What amenities do you have?"
+              />
+            )}
             <Counter
               onChange={field.onChange}
               title="Guests"

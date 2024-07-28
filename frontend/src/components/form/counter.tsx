@@ -3,6 +3,8 @@
 import { Button } from "@/components/ui/button";
 import React, { useCallback } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
+import { Input } from "../ui/input";
+import { toast } from "sonner";
 
 type Props = {
   title: string;
@@ -23,6 +25,21 @@ function Counter({ onChange, subtitle, title, value }: Props) {
     onChange(value - 1);
   }, [onChange, value]);
 
+  const onSet = useCallback(
+    (value: number) => {
+      if (value >= 100) {
+        toast.error(
+          "The property size exceeds the allowed limit. Please contact customer support for further assistance.",
+        );
+        return;
+      }
+
+      onChange(value);
+    },
+
+    [onChange],
+  );
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex flex-col">
@@ -37,20 +54,24 @@ function Counter({ onChange, subtitle, title, value }: Props) {
             e.preventDefault();
             onReduce();
           }}
-          variant={"outline"}
+          variant={"ghost"}
           className="mr-auto rounded-full"
           size={"icon"}
           disabled={value <= 1}
         >
           <AiOutlineMinus className="h-4 w-4" />
         </Button>
-        {value}
+        <Input
+          value={value.toString()}
+          onChange={(e) => onSet(Number(e.target.value))}
+          className="text-center"
+        />
         <Button
           onClick={(e) => {
             e.preventDefault();
             onAdd();
           }}
-          variant={"outline"}
+          variant={"ghost"}
           className="ml-auto rounded-full"
           size={"icon"}
         >

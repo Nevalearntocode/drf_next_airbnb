@@ -15,12 +15,12 @@ export default function EditingProperty({ propertyId }: Props) {
   if (!data) return null;
 
   return (
-    <div className="mt-8 flex h-full gap-8">
+    <div className="mt-8 flex h-full flex-col gap-8 sm:flex-row">
       <EditingPropertyInfo property={data} />
       <div className="relative flex items-stretch">
         <Separator orientation="vertical" className="h-full" />
       </div>
-      <EditingPropertyReservations />
+      <EditingPropertyReservations reservations={data.reservations} />
     </div>
   );
 }

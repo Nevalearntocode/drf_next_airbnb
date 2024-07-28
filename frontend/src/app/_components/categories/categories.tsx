@@ -3,7 +3,6 @@
 import React from "react";
 import { categories } from "@/constants";
 import Category from "./category";
-import PropertyList from "../properties/property-list";
 
 type Props = {};
 
