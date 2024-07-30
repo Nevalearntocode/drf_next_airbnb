@@ -31,7 +31,7 @@ export default function StepPrice({
       name="price"
       render={({ field }) => (
         <FormItem
-          className={cn("flex flex-col", state === "standard" && "mt-4")}
+          className={cn("flex flex-col", state === "standard" && "mt-2")}
         >
           {state === "modal" && (
             <FieldHeader

@@ -2,11 +2,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-type Props = {};
-
-const Logo = (props: Props) => {
+const Logo = () => {
   return (
-    <div>
+    <div className="relative flex aspect-video max-h-20 items-center justify-center">
       <Link href={`/`}>
         <Image
           src={`/images/logo.png`}
@@ -14,9 +12,7 @@ const Logo = (props: Props) => {
           width={150}
           height={50}
           alt={`logo`}
-          style={{
-            height: "auto",
-          }}
+          className="h-auto w-auto"
         />
       </Link>
     </div>

@@ -44,18 +44,18 @@ function Counter({ onChange, subtitle, title, value }: Props) {
     <div className="flex items-center justify-between">
       <div className="flex flex-col">
         <div className="font-semibold">{title}</div>
-        <div className="text-sm font-light text-gray-600 dark:text-gray-400">
+        <div className="flex-1 text-sm font-light text-gray-600 dark:text-gray-400">
           {subtitle}
         </div>
       </div>
-      <div className="flex w-32 items-center gap-4">
+      <div className="flex items-center gap-2">
         <Button
           onClick={(e) => {
             e.preventDefault();
             onReduce();
           }}
           variant={"ghost"}
-          className="mr-auto rounded-full"
+          className="rounded-full"
           size={"icon"}
           disabled={value <= 1}
         >
@@ -64,7 +64,7 @@ function Counter({ onChange, subtitle, title, value }: Props) {
         <Input
           value={value.toString()}
           onChange={(e) => onSet(Number(e.target.value))}
-          className="text-center"
+          className="w-12 rounded-full text-center"
         />
         <Button
           onClick={(e) => {
@@ -72,7 +72,7 @@ function Counter({ onChange, subtitle, title, value }: Props) {
             onAdd();
           }}
           variant={"ghost"}
-          className="ml-auto rounded-full"
+          className="rounded-full"
           size={"icon"}
         >
           <AiOutlinePlus className="h-4 w-4" />

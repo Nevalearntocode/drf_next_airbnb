@@ -2,10 +2,15 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ConfirmState } from "@/types/redux";
 
 const defaultRervationFormData: ConfirmState["reservationFormData"] = {
+  property: "",
   check_in: "",
   check_out: "",
   guests: 0,
-  property: "",
+};
+
+const defaultDeletingPropertyInfo: ConfirmState["deletingPropertyInfo"] = {
+  id: "",
+  name: "",
 };
 
 const initialState: ConfirmState = {
@@ -13,6 +18,7 @@ const initialState: ConfirmState = {
   title: "",
   message: "",
   reservationFormData: defaultRervationFormData,
+  deletingPropertyInfo: defaultDeletingPropertyInfo,
 };
 
 const confirmSlice = createSlice({
@@ -47,6 +53,16 @@ const confirmSlice = createSlice({
     clearReservationFormData: (state) => {
       state.reservationFormData = defaultRervationFormData;
     },
+    setDeletingPropertyInfo: (
+      state,
+      action: { payload: ConfirmState["deletingPropertyInfo"] },
+    ) => {
+      state.deletingPropertyInfo = action.payload;
+
+    },
+    clearDeletingPropertyInfo: (state) => {
+      state.deletingPropertyInfo = defaultDeletingPropertyInfo;
+    },
   },
 });
 
@@ -55,5 +71,7 @@ export const {
   clearConfirmHeader,
   setReservationFormData,
   clearReservationFormData,
+  setDeletingPropertyInfo,
+  clearDeletingPropertyInfo
 } = confirmSlice.actions;
 export default confirmSlice.reducer;

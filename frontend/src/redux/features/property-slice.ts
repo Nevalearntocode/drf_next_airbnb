@@ -1,7 +1,6 @@
 import {
   PropertyForm,
   PropertyList,
-  PropertyWithLandlord,
   PropertyWithLandlordAndReservation,
 } from "@/types/property";
 import { apiSlice } from "../services/api-slice";
@@ -54,7 +53,7 @@ export const propertySlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: args.data,
       }),
-      invalidatesTags: ["Property"],
+      invalidatesTags: ["Property", "MyProperties", "Properties"],
     }),
   }),
 });

@@ -3,30 +3,29 @@ import { User } from "./user";
 type AuthState = {
   isAuthenticated: boolean;
   isLoading: boolean;
-  user?: User
+  user?: User;
 };
 
 type ModalState = {
   isOpen: boolean;
-  type:
-    | "login"
-    | "register"
-    | "add-property"
-    | "edit-property"
-    | "confirm"
-    | null;
+  type: "login" | "register" | "confirm" | null;
 };
 
 type ConfirmState = {
   title: string;
   message: string;
-  confirmType: "add-reservation" | null;
+  confirmType: "add-reservation" | "delete-property" | null;
 
   reservationFormData: {
     property: string;
     check_in: string;
     check_out: string;
     guests: number;
+  };
+
+  deletingPropertyInfo: {
+    id: string;
+    name: string;
   };
 };
 

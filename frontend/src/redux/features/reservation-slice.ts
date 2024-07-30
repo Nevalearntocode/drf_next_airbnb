@@ -26,8 +26,8 @@ export const reservationSlice = apiSlice.injectEndpoints({
       ReservationWithPropertyWithLandlord,
       { id: string }
     >({
-      query: (id) => ({
-        url: `reservations/${id}/`,
+      query: (args: { id: string }) => ({
+        url: `reservations/${args.id}/`,
         method: "GET",
       }),
       providesTags: ["Reservation"],

@@ -38,19 +38,21 @@ const ImageUpload = ({ onChange, value, onRemove }: Props) => {
         <div className="relative flex aspect-video flex-col">
           {typeof value === "string" ? (
             <Image
-              priority={true}
               src={value}
               alt="Uploaded Image"
               fill
+              sizes="( max-width: 768px ) 768px, ( max-width: 1200px ) 768px, 768px"
               className="h-80 w-auto rounded-md"
+              priority={true}
             />
           ) : (
             <Image
-              priority={true}
               src={URL.createObjectURL(value)}
               alt="Uploaded Image"
               fill
+              sizes="( max-width: 768px ) 768px, ( max-width: 1200px ) 768px, 768px"
               className="h-80 w-auto rounded-md"
+              priority={true}
             />
           )}
           <Button
