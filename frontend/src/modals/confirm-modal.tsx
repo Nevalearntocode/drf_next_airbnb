@@ -9,49 +9,49 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { useConfirmProperty } from "@/hooks/use-confirm-property";
+import { useConfirmReservation } from "@/hooks/use-confirm-reservation";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
-import { clearConfirmHeader } from "@/redux/features/confirm-slice";
+import {
+  clearDeletingPropertyInfo,
+  clearReservationFormData,
+} from "@/redux/features/confirm-slice";
 import { closeModal } from "@/redux/features/modal-slice";
-import { useAddReservationMutation } from "@/redux/features/reservation-slice";
-import { format } from "date-fns";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { toast } from "sonner";
 
 type Props = {};
 
 export default function ConfirmModal({}: Props) {
-  const { message, title, confirmType, reservationFormData } = useAppSelector(
-    (state) => state.confirm,
-  );
+  const {
+    message,
+    title,
+    confirmType,
+    deletingPropertyInfo,
+    reservationFormData,
+  } = useAppSelector((state) => state.confirm);
   const { isOpen, type } = useAppSelector((state) => state.modal);
-  const dispatch = useAppDispatch();
-  const [addReservation] = useAddReservationMutation();
   const isModalOpen = isOpen && type === "confirm";
-  const router = useRouter();
+  const dispatch = useAppDispatch();
+
+  const { onAddReservation, reservationContent } = useConfirmReservation({
+    reservationFormData,
+  });
+  const { onDeleteProperty, isLoading, disable, onChange } = useConfirmProperty(
+    { deletingPropertyInfo, confirmType },
+  );
 
   const onClose = () => {
     dispatch(closeModal());
-  };
-
-  const onAddReservation = () => {
-    addReservation({ ...reservationFormData })
-      .unwrap()
-      .then(() => {
-        toast.success("Reservation added successfully");
-        dispatch(clearConfirmHeader());
-        dispatch(closeModal());
-        router.push("/reservations/me");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Failed to add reservation");
-      });
+    dispatch(clearReservationFormData());
+    dispatch(clearDeletingPropertyInfo());
   };
 
   const onSubmit = () => {
     if (confirmType === "add-reservation") {
       return onAddReservation();
+    }
+    if (confirmType === "delete-property") {
+      return onDeleteProperty();
     }
   };
 
@@ -60,27 +60,38 @@ export default function ConfirmModal({}: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription className="text-center leading-8">
-            {message} <br />{" "}
-            {reservationFormData &&
-              confirmType === "add-reservation" &&
-              `from ${format(reservationFormData.check_in, "EEEE dd MMMM")} to ${format(
-                reservationFormData.check_out,
-                "EEEE dd MMMM",
-              )}`}
+          <DialogDescription className="flex flex-col text-center">
+            {message} <br />
+            {confirmType === "add-reservation" && (
+              <span className="font-semibold">{reservationContent}</span>
+            )}
+            {confirmType === "delete-property" && (
+              <>
+                Please type the property's name below for confirmation
+                <span className="mb-4 font-semibold">
+                  "{deletingPropertyInfo.name}"
+                </span>
+                <Input placeholder={"Property's name"} onChange={onChange} />
+              </>
+            )}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <div className="flex w-full items-center justify-between gap-3">
+          <div className="flex w-full items-center justify-between gap-4">
             <Button
-              className="w-1/3"
+              className="w-full"
               onClick={onClose}
               size={"lg"}
               variant={"secondary"}
             >
               Cancel
             </Button>
-            <Button className="w-1/3" onClick={onSubmit} size={"lg"}>
+            <Button
+              className="w-full"
+              onClick={onSubmit}
+              size={"lg"}
+              disabled={disable || isLoading}
+            >
               Confirm
             </Button>
           </div>

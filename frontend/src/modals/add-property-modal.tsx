@@ -54,7 +54,7 @@ const AddPropertyModal = (props: Props) => {
   const { isOpen, type } = useAppSelector((state) => state.modal);
   const dispatch = useAppDispatch();
   const [step, setStep] = useState<STEPS>(STEPS.CATEGORY);
-  const { onSubmit } = useAddProperty()
+  const { onSubmit } = useAddProperty();
   const form = useForm<PropertyFormType>({
     resolver: zodResolver(AddPropertyFormSchema),
     defaultValues: DefaultPropertyValues,
@@ -70,8 +70,9 @@ const AddPropertyModal = (props: Props) => {
 
   const handleSubmit = (data: PropertyFormType) => {
     onSubmit(data);
-    setStep(STEPS.CATEGORY);
+    onClose();
     form.reset();
+    setStep(STEPS.CATEGORY);
   };
 
   return (

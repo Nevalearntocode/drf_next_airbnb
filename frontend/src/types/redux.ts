@@ -8,7 +8,7 @@ type AuthState = {
 
 type ModalState = {
   isOpen: boolean;
-  type: "login" | "register" | "confirm" | null;
+  type: "login" | "register" | "confirm" | "add-property" | null;
 };
 
 type ConfirmState = {

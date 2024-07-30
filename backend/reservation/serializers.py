@@ -71,7 +71,7 @@ class BaseReservationSerializer(serializers.ModelSerializer):
         nights = self.get_nights(validated_data)
 
         total_price_pre_fee = price * nights
-        fee = total_price_pre_fee * fee_percentage / 100
+        fee = total_price_pre_fee * fee_percentage / 100 * nights
 
         total = total_price_pre_fee + fee
 

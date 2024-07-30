@@ -45,13 +45,20 @@ export const propertySlice = apiSlice.injectEndpoints({
         method: "POST",
         body: args,
       }),
-      invalidatesTags: ["Property", "MyProperties"],
+      invalidatesTags: ["MyProperties", "Properties"],
     }),
     updateProperty: builder.mutation({
       query: (args: { id: string; data: PropertyForm }) => ({
         url: `/properties/${args.id}/`,
         method: "PUT",
         body: args.data,
+      }),
+      invalidatesTags: ["Property", "MyProperties", "Properties"],
+    }),
+    deleteProperty: builder.mutation({
+      query: (args: { id: string }) => ({
+        url: `/properties/${args.id}/`,
+        method: "DELETE",
       }),
       invalidatesTags: ["Property", "MyProperties", "Properties"],
     }),
@@ -64,4 +71,5 @@ export const {
   useGetPropertyDetailsQuery,
   useAddPropertyMutation,
   useUpdatePropertyMutation,
+  useDeletePropertyMutation
 } = propertySlice;

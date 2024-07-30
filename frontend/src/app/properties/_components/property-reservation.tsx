@@ -88,7 +88,7 @@ const PropertyReservation = ({
   const to = form.watch("dateRange").to;
 
   const nights = from && to ? differenceInDays(to, from) : 1;
-  const fee = (price * fee_percentage) / 100;
+  const fee = (price * fee_percentage) / 100 * nights;
   const total = Math.floor(price * nights + fee);
 
   const onHandleGuestsChange = (value: string) => {

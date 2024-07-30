@@ -46,11 +46,15 @@ export const useUpdateProperty = ({ property }: Props) => {
 
   const onSubmit = async (data: PropertyFormType) => {
     const image = data.image ?? property.image;
+    if (!user) {
+      toast.error("Please login to update your property");
+      return;
+    }
     if (typeof image === "string") {
       handleUpdateProperty(data, image);
     }
     if (typeof image == "object") {
-      const uniqueKey = generateUniqueKey(image.name, user!.id);
+      const uniqueKey = generateUniqueKey(image.name, user.id);
       await uploadImageHandler(uniqueKey, image);
       const imageUrl = createImageUrl(uniqueKey);
       handleUpdateProperty(data, imageUrl);
@@ -58,7 +62,10 @@ export const useUpdateProperty = ({ property }: Props) => {
     // TODO: I will need a flag later on in the model to decide if current image is URL or file
     // If the image is not uploaded from the local machine, we don't need to send delete request to r2
     const currentImageKey = property.image.split("/").pop();
-    if (currentImageKey && property.image !== image) {
+    const userIdInKey = currentImageKey?.includes(user.id ?? "");
+    const imageChanged = currentImageKey && property.image !== image;
+
+    if (userIdInKey && imageChanged) {
       await deleteImageAction(currentImageKey);
     }
   };

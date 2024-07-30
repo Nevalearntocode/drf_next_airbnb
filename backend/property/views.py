@@ -56,21 +56,16 @@ class PropertyViewset(ModelViewSet, PropertyQuerysetMixin):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         image_url = instance.image  # Assuming the Property model has an image_url field
-
+        userId = str(request.user.id)
         # Extract the file key from the URL
         file_key = image_url.split("/")[-1]
 
         # Delete the image from Cloudflare R2
-        r2_response = self.delete_from_r2(file_key)
+        if userId in file_key:
+            self.delete_from_r2(file_key)
 
-        if r2_response:
-            instance.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        else:
-            return Response(
-                {"detail": "Failed to delete image from R2"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def delete_from_r2(self, file_key):
         s3_client = boto3.client(
