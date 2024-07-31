@@ -16,7 +16,7 @@ export default function EditingProperty({ propertyId }: Props) {
 
   return (
     <div className="mt-8 flex h-full flex-col gap-8 sm:flex-row">
-      <EditingPropertyInfo property={data} />
+    <EditingPropertyInfo property={data} />
       <div className="relative flex items-stretch">
         <Separator orientation="vertical" className="h-full" />
       </div>

@@ -4,6 +4,7 @@ import React from "react";
 import PropertyReservation from "./property-reservation";
 import Link from "next/link";
 import { PropertyWithLandlordAndReservation } from "@/types/property";
+import { UserAvatar } from "@/components/user-avatar";
 
 type Props = {
   property: PropertyWithLandlordAndReservation;
@@ -30,11 +31,17 @@ const PropertyInfo = ({ property }: Props) => {
         </span>
         <Separator />
         <div className="flex items-center py-6">
-          <Link href={"/landlord/1"} className="flex items-center space-x-4">
-            <Avatar>
-              <AvatarFallback>{landlord.name[0]}</AvatarFallback>
-            </Avatar>
-            <p className="text-lg font-bold">{landlord.name}</p>
+          <Link
+            href={`/landlords/${landlord.id}`}
+            className="flex items-center space-x-4"
+          >
+            <UserAvatar
+              name={landlord.name}
+              image={landlord.avatar ?? undefined}
+            />
+            <p className="text-xl font-semibold underline decoration-1 underline-offset-2">
+              {landlord.name}
+            </p>
           </Link>
         </div>
         <Separator />

@@ -111,7 +111,7 @@ const AddPropertyModal = (props: Props) => {
                 state={"modal"}
               />
             )}
-            <DialogFooter className="mt-8">
+            <DialogFooter className="mt-4">
               <StepSetter
                 setStep={setStep}
                 step={step}

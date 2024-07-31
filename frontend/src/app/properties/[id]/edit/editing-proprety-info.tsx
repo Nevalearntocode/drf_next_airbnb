@@ -60,7 +60,7 @@ const EditingPropertyInfo = ({ property }: Props) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex w-full flex-col gap-4 md:w-1/2 lg:w-1/3"
       >
-        <h1 className="text-2xl font-bold">{property.name}</h1>
+        <h2 className="text-2xl font-bold">{property.name}</h2>
         <StepDescription control={form.control} isLoading={isLoading} />
         <StepCategory control={form.control} state="standard" />
         <StepLocation control={form.control} setValue={form.setValue} />

@@ -134,6 +134,7 @@ DJOSER = {
         "user": "users.serializers.CustomUserSerializer",
         "current_user": "users.serializers.CustomUserSerializer",
     },
+    "HIDE_USERS": False,
 }
 
 SIMPLE_JWT = {

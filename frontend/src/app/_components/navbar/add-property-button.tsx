@@ -24,7 +24,7 @@ const AddPropertyButton = (props: Props) => {
 
   return (
     <div className="p-2 text-sm">
-      <Button className="rounded-full" onClick={onClick}>
+      <Button className="rounded-full shadow-md" onClick={onClick}>
         <p>Airbnb your home</p>
         <Globe className="ml-2 h-4 w-4" />
       </Button>

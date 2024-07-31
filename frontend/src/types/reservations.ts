@@ -37,10 +37,7 @@ type ReservationForm = {
   guests: number;
 };
 
-type UpdateReservationForm = Pick<
-  ReservationForm,
-  "check_in" | "check_out" | "guests"
->;
+type UpdateReservationForm = Omit<ReservationForm, "property">;
 
 export type {
   Reservation,

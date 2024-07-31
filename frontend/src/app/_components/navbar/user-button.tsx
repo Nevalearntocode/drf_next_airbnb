@@ -1,10 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Briefcase, MessageSquare, LogOut, Menu, Ticket } from "lucide-react";
+import { MessageSquare, LogOut, Menu, Ticket, UserRound } from "lucide-react";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { IoLockOpen } from "react-icons/io5";
-import Image from "next/image";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,17 +16,15 @@ import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { openModal } from "@/redux/features/modal-slice";
 import { useLogoutMutation } from "@/redux/features/user-slice";
-import {
-  setAuth,
-  setLoading,
-  setUser,
-} from "@/redux/features/auth-slice";
+import { setAuth, setLoading, setUser } from "@/redux/features/auth-slice";
+import { UserAvatar } from "@/components/user-avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {};
 
 const UserButton = (props: Props) => {
   const router = useRouter();
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
 
@@ -57,23 +54,28 @@ const UserButton = (props: Props) => {
   };
 
   const renderDropdownMenuItems = () => {
-    if (isAuthenticated) {
+    if (isAuthenticated && user) {
       return (
         <>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => router.push("/properties/me")}>
-            My Properties
-            <Briefcase className="ml-auto h-4 w-4" />
+          <DropdownMenuItem
+            className=""
+            onClick={() => router.push("/properties/me")}
+          >
+            Profile & Properties
+            <UserRound className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => router.push("/reservations/me")}>
-            My Reservations
+            Reservations
             <Ticket className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => router.push("/conversations")}>
-            My Inbox
+            Inbox
             <MessageSquare className="ml-auto h-4 w-4" />
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={onLogOut}>
             Logout
             <LogOut className="ml-auto h-4 w-4" />
@@ -99,15 +101,22 @@ const UserButton = (props: Props) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={`outline`} className="rounded-full">
+        <Button
+          variant={`outline`}
+          className="flex justify-between rounded-full py-6 pr-1 shadow-md"
+        >
           <Menu className="mr-2 h-5 w-5" />
-          <Image
-            src={`/images/placeholder.jpg`}
-            width={32}
-            height={32}
-            alt={`avatar`}
-            className="rounded-full"
-          />
+          {user ? (
+            <UserAvatar
+              name={user.name}
+              image={user.avatar ?? undefined}
+              currentUser
+            />
+          ) : (
+            <Avatar>
+              <AvatarImage src="/images/placeholder.jpg" />
+            </Avatar>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
