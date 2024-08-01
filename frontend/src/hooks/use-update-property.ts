@@ -7,7 +7,6 @@ import { PropertyWithLandlordAndReservation } from "@/types/property";
 import { toast } from "sonner";
 import { useUploadImage } from "./use-upload-image";
 import { useAppDispatch, useAppSelector } from "./use-redux-store";
-import { deleteImageAction } from "@/app/action";
 import { openModal } from "@/redux/features/modal-slice";
 import {
   setConfirmHeader,
@@ -58,15 +57,6 @@ export const useUpdateProperty = ({ property }: Props) => {
       await uploadImageHandler(uniqueKey, image);
       const imageUrl = createImageUrl(uniqueKey);
       handleUpdateProperty(data, imageUrl);
-    }
-    // TODO: I will need a flag later on in the model to decide if current image is URL or file
-    // If the image is not uploaded from the local machine, we don't need to send delete request to r2
-    const currentImageKey = property.image.split("/").pop();
-    const userIdInKey = currentImageKey?.includes(user.id ?? "");
-    const imageChanged = currentImageKey && property.image !== image;
-
-    if (userIdInKey && imageChanged) {
-      await deleteImageAction(currentImageKey);
     }
   };
 

@@ -28,9 +28,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # External
     "rest_framework",
     "djoser",
     "corsheaders",
+    "celery",
+    "djcelery",
+    # Internal
     "users",
     "property",
     "reservation",

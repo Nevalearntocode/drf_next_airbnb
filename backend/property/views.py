@@ -1,6 +1,7 @@
 import boto3
 from botocore.config import Config
 from django.conf import settings
+from backend.mixins import R2DestroyMixin
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
@@ -13,7 +14,7 @@ from property.paginations import PropertyPagination
 from property.serializers import PropertySerializer, PropertySerializerWithLandlord
 
 
-class PropertyViewset(ModelViewSet, PropertyQuerysetMixin):
+class PropertyViewset(ModelViewSet, PropertyQuerysetMixin, R2DestroyMixin):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
     pagination_class = PropertyPagination
@@ -53,34 +54,17 @@ class PropertyViewset(ModelViewSet, PropertyQuerysetMixin):
         serializer = serializer.save(landlord=self.request.user)
         return super().perform_create(serializer)
 
+    def update(self, request, *args, **kwargs):
+        current_image = self.get_object().image
+        request_image = request.data.get("image")
+        self.delete_from_r2_helper(current_image, request_image)
+        return super().update(request, *args, **kwargs)
+
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        image_url = instance.image  # Assuming the Property model has an image_url field
-        userId = str(request.user.id)
-        # Extract the file key from the URL
-        file_key = image_url.split("/")[-1]
+        image_url = instance.image
 
-        # Delete the image from Cloudflare R2
-        if userId in file_key:
-            self.delete_from_r2(file_key)
+        self.delete_from_r2_helper(image_url)
 
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-    def delete_from_r2(self, file_key):
-        s3_client = boto3.client(
-            "s3",
-            endpoint_url=settings.CLOUDFLARE_R2_ENDPOINT,
-            aws_access_key_id=settings.CLOUDFLARE_R2_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
-            config=Config(signature_version="s3v4"),
-        )
-
-        try:
-            response = s3_client.delete_object(
-                Bucket=settings.CLOUDFLARE_R2_BUCKET_NAME, Key=file_key
-            )
-            return response["ResponseMetadata"]["HTTPStatusCode"] == 204
-        except Exception as e:
-            print(f"Error deleting file from R2: {e}")
-            return False

@@ -2,6 +2,14 @@ import uuid
 from django.db import models
 from property.models import Property
 from users.models import CustomUser
+from django.utils import timezone
+
+
+STATUS_CHOICES = (
+    ("reserved", "Reserved"),
+    ("ongoing", "Ongoing"),
+    ("ended", "Ended"),
+)
 
 
 class Reservation(models.Model):
@@ -19,7 +27,18 @@ class Reservation(models.Model):
     nights = models.IntegerField()
     check_in = models.DateField()
     check_out = models.DateField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="reserved")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.guest.name} - {self.property.name} - {self.check_in} - {self.check_out}"
+
+    def update_status(self):
+        now = timezone.now().date()
+        if self.check_in <= now <= self.check_out:
+            self.status = "ongoing"
+        elif now > self.check_out:
+            self.status = "ended"
+        else:
+            self.status = "reserved"
+        self.save()
