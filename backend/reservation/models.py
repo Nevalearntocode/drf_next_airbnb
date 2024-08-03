@@ -35,6 +35,7 @@ class Reservation(models.Model):
 
     def update_status(self):
         now = timezone.now().date()
+        print("now", now)
         if self.check_in <= now <= self.check_out:
             self.status = "ongoing"
         elif now > self.check_out:

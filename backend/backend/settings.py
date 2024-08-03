@@ -32,8 +32,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "djoser",
     "corsheaders",
-    "celery",
-    "djcelery",
+    "django_celery_beat",
+    "django_celery_results",
     # Internal
     "users",
     "property",
@@ -73,18 +73,18 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 
 DATABASES = {
-    # "default": {
-    #     "ENGINE": getenv("SQL_ENGINE"),
-    #     "NAME": getenv("SQL_DATABASE"),
-    #     "USER": getenv("SQL_USER"),
-    #     "PASSWORD": getenv("SQL_PASSWORD"),
-    #     "HOST": getenv("SQL_HOST"),
-    #     "PORT": getenv("SQL_PORT"),
-    # },
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": getenv("SQL_ENGINE"),
+        "NAME": getenv("SQL_DATABASE"),
+        "USER": getenv("SQL_USER"),
+        "PASSWORD": getenv("SQL_PASSWORD"),
+        "HOST": getenv("SQL_HOST"),
+        "PORT": getenv("SQL_PORT"),
     },
+    # "default": {
+    #     "ENGINE": "django.db.backends.sqlite3",
+    #     "NAME": BASE_DIR / "db.sqlite3",
+    # },
 }
 
 
@@ -165,3 +165,12 @@ CLOUDFLARE_R2_ACCESS_KEY_ID = getenv("CLOUDFLARE_R2_ACCESS_KEY_ID")
 CLOUDFLARE_R2_SECRET_ACCESS_KEY = getenv("CLOUDFLARE_R2_SECRET_ACCESS_KEY")
 CLOUDFLARE_R2_BUCKET_NAME = getenv("CLOUDFLARE_R2_BUCKET_NAME")
 CLOUDFLARE_R2_ENDPOINT = getenv("CLOUDFLARE_R2_ENDPOINT")
+
+CELERY_BROKER_URL = "redis://redis:6379/0"
+CELERY_RESULT_BACKEND = "redis://redis:6379/0"
+CELERY_BEAT_SCHEDULE = {
+    "update-reservation-status-everyday": {
+        "task": "reservation.tasks.update_reservation_status",
+        "schedule": timedelta(days=1),  # Change the schedule as needed
+    },
+}
