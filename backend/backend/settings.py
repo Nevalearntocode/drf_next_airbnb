@@ -16,7 +16,7 @@ if path.isfile(dotenv_file):
 
 SECRET_KEY = getenv("SECRET_KEY")
 
-DEBUG = getenv("DEBUG") == "True"
+DEBUG = getenv("DEBUG") == "1"
 
 ALLOWED_HOSTS = getenv("ALLOWED_HOSTS").split(",")
 
@@ -71,20 +71,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "backend.wsgi.application"
 
+LOCAL = getenv("LOCAL") == "1"
+
+ENGINE = getenv("SQL_ENGINE")
+NAME= getenv("SQL_DATABASE")
+USER = getenv("DOCKER_SQL_USER")
+PASSWORD = getenv("DOCKER_SQL_PASSWORD")
+HOST = getenv("DOCKER_SQL_HOST")
+PORT = getenv("DOCKER_SQL_PORT")
+
+if LOCAL:
+    USER = getenv("LOCAL_SQL_USER")
+    PASSWORD = getenv("LOCAL_SQL_PASSWORD")
+    HOST = getenv("LOCAL_SQL_HOST")
+    PORT = getenv("LOCAL_SQL_PORT")
 
 DATABASES = {
     "default": {
-        "ENGINE": getenv("SQL_ENGINE"),
-        "NAME": getenv("SQL_DATABASE"),
-        "USER": getenv("SQL_USER"),
-        "PASSWORD": getenv("SQL_PASSWORD"),
-        "HOST": getenv("SQL_HOST"),
-        "PORT": getenv("SQL_PORT"),
+        "ENGINE": ENGINE,
+        "NAME": NAME,
+        "USER": USER,
+        "PASSWORD": PASSWORD,
+        "HOST": HOST,
+        "PORT": PORT,
     },
-    # "default": {
-    #     "ENGINE": "django.db.backends.sqlite3",
-    #     "NAME": BASE_DIR / "db.sqlite3",
-    # },
 }
 
 
@@ -171,6 +181,6 @@ CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 CELERY_BEAT_SCHEDULE = {
     "update-reservation-status-everyday": {
         "task": "reservation.tasks.update_reservation_status",
-        "schedule": timedelta(days=1),  # Change the schedule as needed
+        "schedule": timedelta(days=1),
     },
 }
