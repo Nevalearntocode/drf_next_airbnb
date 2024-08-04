@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 from users.models import CustomUser
 import uuid
 
@@ -23,6 +22,9 @@ CATEGORIES = {
 
 
 class Property(models.Model):
+    class Meta:
+        verbose_name_plural = "Properties"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -40,6 +42,7 @@ class Property(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     fee_percentage = models.FloatField(default=5)
+    revenue = models.IntegerField(default=0, editable=False)
 
     def __str__(self):
         return self.name

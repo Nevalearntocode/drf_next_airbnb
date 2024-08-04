@@ -7,6 +7,7 @@ from django.conf import settings
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 
 class LogoutView(APIView):
@@ -32,24 +33,35 @@ class LogoutView(APIView):
 
 
 class CustomTokenVerifyView(TokenVerifyView):
-    def post(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs) -> Response:
         access_token = request.COOKIES.get("access")
-
+        data = request.data.copy()
         if access_token:
-            request.data["token"] = access_token
+            data["token"] = access_token
+        serializer = self.get_serializer(data=data)
 
-        response = super().post(request, *args, **kwargs)
-        return response
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
 class CustomTokenRefreshView(TokenRefreshView):
     def post(self, request, *args, **kwargs):
         refresh_token = request.COOKIES.get("refresh")
-
+        data = request.data.copy()
         if refresh_token:
-            request.data["refresh"] = refresh_token
+            data["refresh"] = refresh_token
+        serializer = self.get_serializer(data=data)
 
-        response = super().post(request, *args, **kwargs)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        response = Response(serializer.validated_data, status=status.HTTP_200_OK)
 
         if response.status_code == 200:
             access_token = response.data["access"]

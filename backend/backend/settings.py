@@ -33,7 +33,6 @@ INSTALLED_APPS = [
     "djoser",
     "corsheaders",
     "django_celery_beat",
-    "django_celery_results",
     # Internal
     "users",
     "property",
@@ -73,8 +72,10 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 LOCAL = getenv("LOCAL") == "1"
 
+CELERY_BROKER = getenv("CELERY_BROKER")
+CELERY_BACKEND = getenv("CELERY_BACKEND")
 ENGINE = getenv("SQL_ENGINE")
-NAME= getenv("SQL_DATABASE")
+NAME = getenv("SQL_DATABASE")
 USER = getenv("DOCKER_SQL_USER")
 PASSWORD = getenv("DOCKER_SQL_PASSWORD")
 HOST = getenv("DOCKER_SQL_HOST")
@@ -85,6 +86,8 @@ if LOCAL:
     PASSWORD = getenv("LOCAL_SQL_PASSWORD")
     HOST = getenv("LOCAL_SQL_HOST")
     PORT = getenv("LOCAL_SQL_PORT")
+    CELERY_BROKER = "redis://127.0.0.1:6379/0"
+    CELERY_BACKEND = "django-db"
 
 DATABASES = {
     "default": {
@@ -96,6 +99,14 @@ DATABASES = {
         "PORT": PORT,
     },
 }
+
+CELERY_BROKER_URL = CELERY_BROKER
+CELERY_RESULT_BACKEND = CELERY_BACKEND
+
+if CELERY_RESULT_BACKEND == "django-db":
+    INSTALLED_APPS += [
+        "django_celery_results",
+    ]
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -176,11 +187,16 @@ CLOUDFLARE_R2_SECRET_ACCESS_KEY = getenv("CLOUDFLARE_R2_SECRET_ACCESS_KEY")
 CLOUDFLARE_R2_BUCKET_NAME = getenv("CLOUDFLARE_R2_BUCKET_NAME")
 CLOUDFLARE_R2_ENDPOINT = getenv("CLOUDFLARE_R2_ENDPOINT")
 
-CELERY_BROKER_URL = "redis://redis:6379/0"
-CELERY_RESULT_BACKEND = "redis://redis:6379/0"
-CELERY_BEAT_SCHEDULE = {
-    "update-reservation-status-everyday": {
-        "task": "reservation.tasks.update_reservation_status",
-        "schedule": timedelta(days=1),
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
     },
 }

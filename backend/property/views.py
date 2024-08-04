@@ -1,6 +1,3 @@
-import boto3
-from botocore.config import Config
-from django.conf import settings
 from backend.mixins import R2DestroyMixin
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly

@@ -24,7 +24,7 @@ const PropertyList = ({ route }: Props) => {
   }
 
   return (
-    <div>
+    <div className="container">
       {route === "all" && (
         <PropertyListAllWrapper>
           {data.results.map((property) => (
