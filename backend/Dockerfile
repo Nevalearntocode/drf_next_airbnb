@@ -1,7 +1,7 @@
 FROM python:3.12.2-slim-bullseye
 
 # Set the working directory in the container
-WORKDIR /backend
+WORKDIR /usr/src/django
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -23,18 +23,19 @@ RUN apt-get update && apt-get install -y \
 RUN python -m pip install --upgrade pip
 
 # Copy requirements.txt to the working directory and install dependencies
-COPY ./requirements.txt /backend/requirements.txt
+COPY requirements.txt ./
 
 RUN pip install -r requirements.txt
 
-COPY ./entrypoint.sh /entrypoint.sh
-RUN sed -i 's/\r$//g' /entrypoint.sh
+COPY entrypoint.sh ./
 
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//g' entrypoint.sh
+
+RUN chmod +x entrypoint.sh
 
 # Copy the rest of the application code to the working directory
-COPY backend /backend
+COPY . .
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+ENTRYPOINT [ "./entrypoint.sh" ]
 # Run the application
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

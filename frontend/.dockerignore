@@ -1,4 +1,18 @@
-# .env
-# node_modules
-# .next
-# next-env.d.ts
+# Node-specific
+node_modules
+.pnp
+.npm
+.yarn
+.pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Build artifacts
+.next
+out
+dist
+
+# IDE-specific
+.vscode
+.idea
+.env

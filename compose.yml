@@ -1,22 +1,25 @@
 services:
   redis:
     image: redis:7.4.0-alpine
+    container_name: redis
     command: redis-server --port 6380
+    profiles: [celery]
 
   django:
     build: ./backend
+    container_name: django
     volumes:
-      - ./backend:/backend
+      - django:/usr/src/django/
     ports:
       - "8000:8000"
     env_file:
       - ./.env.dev
     depends_on:
       - database
-      - redis
 
   database:
     image: postgres:16.3-alpine
+    container_name: database
     volumes:
       - postgres:/var/lib/postgresql/data/
     env_file:
@@ -27,9 +30,11 @@ services:
 
   celery:
     build: ./backend
+    container_name: celery
+    profiles: [celery]
     command: ["celery", "-A", "backend", "worker", "--loglevel=info"]
     volumes:
-      - ./backend:/backend
+      - django:/usr/src/django/
     env_file:
       - .env.dev
     depends_on:
@@ -37,22 +42,28 @@ services:
 
   celery-beat:
     build: ./backend
+    container_name: celery-beat
+    profiles: [celery]
     command: ["celery", "-A", "backend", "beat", "--loglevel=info"]
     volumes:
-      - ./backend:/backend
+      - django:/usr/src/django/
     env_file:
       - .env.dev
     depends_on:
       - redis
 
-  # nextjs:
-  #   build: ./frontend
-  #   volumes:
-  #     - ./frontend:/frontend
-  #   ports:
-  #     - "3000:3000"
-  #   env_file:
-  #     - ./frontend/.env
+  nextjs:
+    build: ./frontend
+    container_name: nextjs
+    volumes:
+      - nextjs:/usr/src/nextjs/
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    profiles: [nextjs]
 
 volumes:
   postgres:
+  nextjs:
+  django:

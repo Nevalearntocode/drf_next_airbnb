@@ -44,3 +44,4 @@ docker-compose.*
 
 # Ignore build directory
 build/
+celerybeat-schedule
