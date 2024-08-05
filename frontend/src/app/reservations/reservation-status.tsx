@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import { Reservation } from "@/types/reservations";
 import React from "react";
 
@@ -8,16 +9,16 @@ type Props = {
 };
 
 export default function ReservationStatus({ status }: Props) {
-  if (status === "ended") {
-    return <div className="h-2 w-2 rounded-full border bg-rose-500" />;
-  }
+  const color = {
+    reserved: "bg-yellow-500",
+    ongoing: "bg-green-500",
+    ended: "bg-rose-500",
+  };
 
-  if (status === "ongoing") {
-    return <div className="h-2 w-2 rounded-full border bg-green-500" />;
-  }
-  if (status === "reserved") {
-    return <div className="h-2 w-2 rounded-full border bg-yellow-500" />;
-  }
-
-  return <></>;
+  return (
+    <div className="flex items-center gap-4">
+      <p className="italic">{status}</p>
+      <div className={cn("h-2 w-2 rounded-full border", color[status])} />
+    </div>
+  );
 }

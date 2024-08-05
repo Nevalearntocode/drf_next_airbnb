@@ -1,15 +1,17 @@
+# when the service's volumes are set to ./*:/usr/src/*/, docker will reflect the changes in local environment
+
 services:
   redis:
     image: redis:7.4.0-alpine
     container_name: redis
-    command: redis-server --port 6380
     profiles: [celery]
 
   django:
     build: ./backend
     container_name: django
     volumes:
-      - django:/usr/src/django/
+      - ./backend:/usr/src/django/
+      # - django:/usr/src/django/
     ports:
       - "8000:8000"
     env_file:
@@ -34,7 +36,8 @@ services:
     profiles: [celery]
     command: ["celery", "-A", "backend", "worker", "--loglevel=info"]
     volumes:
-      - django:/usr/src/django/
+      - ./backend:/usr/src/django/
+      # - django:/usr/src/django/
     env_file:
       - .env.dev
     depends_on:
@@ -46,7 +49,8 @@ services:
     profiles: [celery]
     command: ["celery", "-A", "backend", "beat", "--loglevel=info"]
     volumes:
-      - django:/usr/src/django/
+      - ./backend:/usr/src/django/
+      # - django:/usr/src/django/
     env_file:
       - .env.dev
     depends_on:
@@ -56,14 +60,20 @@ services:
     build: ./frontend
     container_name: nextjs
     volumes:
-      - nextjs:/usr/src/nextjs/
+      - ./frontend:/usr/src/nextjs/
+      # - nextjs:/usr/src/nextjs/
     ports:
       - "3000:3000"
     env_file:
       - ./frontend/.env
     profiles: [nextjs]
 
+# but if you specify the volumes here, docker won't reflect the changes in local environment
+# and the only way to reflect the changes is delete the volume itself
+# when delete the volume, docker will copy the current working directory to set the volume, so it's like a one time snapshot
+# i don't know if this is a good approach
+# i'm thinking of making more profile for dev mode
 volumes:
   postgres:
-  nextjs:
-  django:
+  # nextjs:
+  # django:

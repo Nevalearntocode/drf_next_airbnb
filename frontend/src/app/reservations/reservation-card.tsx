@@ -42,7 +42,6 @@ const ReservationCard = ({ reservation }: Props) => {
       <div className="flex flex-col space-y-2">
         <div className="flex">
           <h2 className="mb-4 text-xl font-bold">{property_name}</h2>
-          <ReservationStatus status={status} />
         </div>
         <div className="relative flex h-full flex-col gap-4">
           <p className="flex items-center justify-between">
@@ -56,6 +55,10 @@ const ReservationCard = ({ reservation }: Props) => {
           <p className="flex items-center justify-between">
             <span className="font-semibold">Number of nights: </span> {nights}
           </p>
+          <div className="flex items-center justify-between">
+            <span className="font-semibold">Status: </span>
+            <ReservationStatus status={status} />
+          </div>
           <p className="absolute bottom-0 flex w-full items-center justify-between">
             <span className="font-semibold">Total price: </span>${total}
           </p>
