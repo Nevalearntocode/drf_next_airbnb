@@ -22,7 +22,7 @@ const LandlordPage = (props: Props) => {
         </div>
       </aside>
       <div className="col-span-3 pl-0 md:pl-6">
-        <PropertyList />
+        <PropertyList route="all" />
       </div>
     </div>
   );

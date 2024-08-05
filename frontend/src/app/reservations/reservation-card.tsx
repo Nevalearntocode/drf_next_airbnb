@@ -4,6 +4,7 @@ import { SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reservation } from "@/types/reservations";
 import { useRouter } from "next/navigation";
+import ReservationStatus from "./reservation-status";
 
 type Props = {
   reservation: Reservation;
@@ -19,6 +20,7 @@ const ReservationCard = ({ reservation }: Props) => {
     property_name,
     nights,
     guests,
+    status,
   } = reservation;
 
   const router = useRouter();
@@ -38,7 +40,10 @@ const ReservationCard = ({ reservation }: Props) => {
         />
       </div>
       <div className="flex flex-col space-y-2">
-        <h2 className="mb-4 text-xl font-bold">{property_name}</h2>
+        <div className="flex">
+          <h2 className="mb-4 text-xl font-bold">{property_name}</h2>
+          <ReservationStatus status={status} />
+        </div>
         <div className="relative flex h-full flex-col gap-4">
           <p className="flex items-center justify-between">
             <span className="font-semibold">Check in date: </span>

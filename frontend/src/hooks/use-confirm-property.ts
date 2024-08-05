@@ -30,7 +30,7 @@ export const useConfirmProperty = ({
     } else {
       setDisable(false);
     }
-  }, [inputValue, confirmType]);
+  }, [inputValue, confirmType, deletingPropertyInfo.name]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);

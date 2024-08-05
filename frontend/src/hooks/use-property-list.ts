@@ -12,20 +12,28 @@ export const usePropertyList = (route: PropertyRoute) => {
   const name = searchParams.get("name") || undefined;
   const id = searchParams.get("id") || undefined;
 
-  if (route === "me") {
-    const { data, isLoading } = useGetCurrentUserPropertiesQuery({
-      page,
-      name,
-      id,
-    });
+  // Conditionally define the query arguments
+  const queryArgs =
+    route === "me"
+      ? { page, name, id } // For current user
+      : { page, name, id }; // For all properties
 
+  // Call the appropriate query *outside* the conditional
+  const { data: allPropertiesData, isLoading: allPropertiesLoading } =
+    useGetAllPropertiesQuery(queryArgs);
+  const { data: myPropertiesData, isLoading: myPropertiesLoading } =
+    useGetCurrentUserPropertiesQuery(queryArgs);
+
+  // Now, conditionally return the data and loading state
+  if (route === "me") {
     return {
-      data,
-      isLoading,
+      data: myPropertiesData,
+      isLoading: myPropertiesLoading,
     };
   }
 
-  const { data, isLoading } = useGetAllPropertiesQuery({ page, name, id });
-
-  return { data, isLoading };
-}
+  return {
+    data: allPropertiesData,
+    isLoading: allPropertiesLoading,
+  };
+};

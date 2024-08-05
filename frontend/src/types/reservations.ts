@@ -10,6 +10,7 @@ type Reservation = {
   nights: number;
   check_in: string;
   check_out: string;
+  status: "reserved" | "ongoing" | "ended";
   created_at: Date;
 
   image_url: string;

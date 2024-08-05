@@ -19,15 +19,9 @@ const modalSlice = createSlice({
       state.isOpen = false;
       state.type = null;
     },
-    setProperty: (state, action: { payload: ModalState["property"] }) => {
-      state.property = action.payload;
-    },
-    clearProperty: (state) => {
-      state.property = undefined;
-    },
   },
 });
 
-export const { openModal, closeModal, setProperty, clearProperty } =
+export const { openModal, closeModal } =
   modalSlice.actions;
 export default modalSlice.reducer;

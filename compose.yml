@@ -5,7 +5,6 @@ services:
 
   django:
     build: ./backend
-    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./backend:/backend
     ports:
@@ -45,6 +44,15 @@ services:
       - .env.dev
     depends_on:
       - redis
+
+  # nextjs:
+  #   build: ./frontend
+  #   volumes:
+  #     - ./frontend:/frontend
+  #   ports:
+  #     - "3000:3000"
+  #   env_file:
+  #     - ./frontend/.env
 
 volumes:
   postgres:

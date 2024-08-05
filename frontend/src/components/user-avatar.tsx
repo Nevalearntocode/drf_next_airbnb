@@ -19,7 +19,7 @@ export function UserAvatar({ image, name, currentUser }: Props) {
           currentUser && "bg-primary text-primary-foreground",
         )}
       >
-        {name[0]}
+        {name[0].toUpperCase()}
       </AvatarFallback>
     </Avatar>
   );

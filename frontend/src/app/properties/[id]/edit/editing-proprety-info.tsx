@@ -48,7 +48,7 @@ const EditingPropertyInfo = ({ property }: Props) => {
       country: property.country,
       country_code: property.country_code,
     });
-  }, [property]);
+  }, [property, form]);
 
   const isLoading = form.formState.isSubmitting;
 

@@ -1,11 +1,11 @@
 from celery import shared_task
+from celery.schedules import crontab
 from reservation.models import Reservation
 from backend.celery import app
-from datetime import timedelta
 
 @shared_task
 def update_reservation_status():
-    reservations = Reservation.objects.all()
+    reservations = Reservation.objects.exclude(status="ended")
     for reservation in reservations:
         reservation.update_status()
 
@@ -18,6 +18,6 @@ def update_reservation_status():
 app.conf.beat_schedule = {
     "update-reservation-status-everyday": {
         "task": "reservation.tasks.update_reservation_status",
-        "schedule": timedelta(days=1),
+        "schedule": crontab(hour=0, minute=0),
     },
 }

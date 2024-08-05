@@ -34,20 +34,17 @@ class Reservation(models.Model):
         return f"{self.guest.name} - {self.property.name} - {self.check_in} - {self.check_out}"
 
     def update_status(self):
-        if self.status == "ended":
-            return
         now = timezone.now().date()
 
         if self.check_in <= now <= self.check_out:
             self.status = "ongoing"
         elif now > self.check_out:
             self.status = "ended"
+            total_price_without_fee = self.nights * self.property.price
+            Property.objects.filter(id=self.property.id).update(
+                revenue=models.F("revenue") + total_price_without_fee
+            )
         else:
             self.status = "reserved"
-
-        if self.status == "ended":
-            Property.objects.filter(id=self.property.id).update(
-                revenue=models.F("revenue") + self.total
-            )
 
         self.save()

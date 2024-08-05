@@ -23,10 +23,10 @@ const SelectCountry: React.FC<SelectCountryProps> = ({ value, onChange }) => {
     if (!value) {
       return false;
     }
-    const lowerCaseName = value.name.toLowerCase();
+    const lowerCaseName = value.country.toLowerCase();
     const lowerCaseCode = value.country_code.toLowerCase();
     return (
-      country.name.toLowerCase().includes(lowerCaseName) ||
+      country.country.toLowerCase().includes(lowerCaseName) ||
       country.country_code.toLowerCase().includes(lowerCaseCode)
     );
   });
@@ -36,11 +36,11 @@ const SelectCountry: React.FC<SelectCountryProps> = ({ value, onChange }) => {
       <Select
         onValueChange={() =>
           onChange({
-            name: value?.name || "",
+            country: value?.country || "",
             country_code: value?.country_code || "",
           })
         }
-        defaultValue={value?.name}
+        defaultValue={value?.country}
       >
         <FormControl>
           <SelectTrigger>
@@ -54,12 +54,12 @@ const SelectCountry: React.FC<SelectCountryProps> = ({ value, onChange }) => {
               value={country.country_code}
               onSelect={() =>
                 onChange({
-                  name: country.name,
+                  country: country.country,
                   country_code: country.country_code,
                 })
               }
             >
-              {country.name}
+              {country.country}
             </SelectItem>
           ))}
         </SelectContent>
