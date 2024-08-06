@@ -72,7 +72,7 @@ services:
 # and the only way to reflect the changes is delete the volume itself
 # when delete the volume, docker will copy the current working directory to set the volume, so it's like a one time snapshot
 # i don't know if this is a good approach
-# i'm thinking of making more profile for dev mode
+# i'm thinking of making more profile for dev mode 
 volumes:
   postgres:
   # nextjs:

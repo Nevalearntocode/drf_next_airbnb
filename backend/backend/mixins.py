@@ -3,11 +3,12 @@ from botocore.config import Config
 from django.conf import settings
 from rest_framework import status
 from rest_framework.response import Response
+from uuid import uuid4
 
 
-class R2DestroyMixin:
-    def delete_from_r2(self, file_key):
-        s3_client = boto3.client(
+class R2Mixin:
+    def get_s3_client(self):
+        return boto3.client(
             "s3",
             endpoint_url=settings.CLOUDFLARE_R2_ENDPOINT,
             aws_access_key_id=settings.CLOUDFLARE_R2_ACCESS_KEY_ID,
@@ -15,6 +16,27 @@ class R2DestroyMixin:
             config=Config(signature_version="s3v4"),
         )
 
+    def create_image_url(self, key):
+        return f"{settings.CLOUDFLARE_R2_BUCKET_URL}/{key}"
+
+    def generate_unique_key(self, key: str, user_id: str) -> str:
+        """
+        Generates a unique key for a given file and user ID.
+
+        Args:
+            key (str): The original file key.
+            user_id (str): The user ID.
+
+        Returns:
+            str: The generated unique key.
+        """
+        file = key.split(".")
+        extension = file.pop()
+        base_name = ".".join(file)
+        return f"{user_id}{base_name}{uuid4()}.{extension}"
+
+    def delete_from_r2(self, file_key):
+        s3_client = self.get_s3_client()
         try:
             response = s3_client.delete_object(
                 Bucket=settings.CLOUDFLARE_R2_BUCKET_NAME, Key=file_key
@@ -22,6 +44,19 @@ class R2DestroyMixin:
             return response["ResponseMetadata"]["HTTPStatusCode"] == 204
         except Exception as e:
             print(f"Error deleting file from R2: {e}")
+            return False
+
+    def upload_to_r2(self, file, key):
+        s3_client = self.get_s3_client()
+        try:
+            response = s3_client.put_object(
+                Bucket=settings.CLOUDFLARE_R2_BUCKET_NAME,
+                Key=key,
+                Body=file,
+            )
+            return response["ResponseMetadata"]["HTTPStatusCode"] == 200
+        except Exception as e:
+            print(f"Error uploading file to R2: {e}")
             return False
 
     def delete_from_r2_helper(self, current_image, request_image=None):

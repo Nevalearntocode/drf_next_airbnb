@@ -1,4 +1,4 @@
-from backend.mixins import R2DestroyMixin
+from backend.mixins import R2Mixin
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
@@ -11,7 +11,7 @@ from property.paginations import PropertyPagination
 from property.serializers import PropertySerializer, PropertySerializerWithLandlord
 
 
-class PropertyViewset(ModelViewSet, PropertyQuerysetMixin, R2DestroyMixin):
+class PropertyViewset(ModelViewSet, PropertyQuerysetMixin, R2Mixin):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
     pagination_class = PropertyPagination
@@ -40,8 +40,13 @@ class PropertyViewset(ModelViewSet, PropertyQuerysetMixin, R2DestroyMixin):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        self.permission_classes = [IsAuthenticatedOrReadOnly]
         return super().create(request, *args, **kwargs)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def list(self, request, *args, **kwargs):
         self.permission_classes = [IsAuthenticatedOrReadOnly]
