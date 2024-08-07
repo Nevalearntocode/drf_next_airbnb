@@ -5,4 +5,10 @@ type User = {
   avatar: string | null;
 };
 
-export type { User };
+type UserForm = {
+  name: string;
+  avatar: string | null;
+  avatar_file: File | null;
+}
+
+export type { User, UserForm };

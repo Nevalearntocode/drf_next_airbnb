@@ -1,46 +1,43 @@
+from backend.serializers import ImageSerializerMixin, FileFieldWithoutValidation
 from rest_framework import serializers
 from property.models import Property
 from users.serializers import CustomUserSerializer
-from backend.mixins import R2Mixin
 from reservation.models import Reservation
 
 
 class ReservationSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Reservation
         fields = ["id", "check_in", "check_out"]
 
 
-class BasePropertySerializer(serializers.ModelSerializer, R2Mixin):
+class BasePropertySerializer(serializers.ModelSerializer, ImageSerializerMixin):
     fee_percentage = serializers.ReadOnlyField()
     landlord = CustomUserSerializer(read_only=True)
-    image = serializers.URLField(required=False)
-    image_file = serializers.FileField(required=False, allow_null=True, write_only=True)
+    image = serializers.CharField(required=False, allow_blank=True)
+    image_file = FileFieldWithoutValidation(
+        required=False, allow_null=True, write_only=True
+    )
 
     class Meta:
         model = Property
         fields = "__all__"
 
     def validate(self, attrs):
-        request = self.context.get("request")
-        image = request.data.get("image")
-        if image is None:
-            image = request.FILES.get("image_file")
-        attrs.pop("image_file", None)
-        attrs["image"] = image
-        return attrs
+        return self.validate_and_process_image(attrs, "image")
 
-    def create(self, validated_data):
-        image = validated_data["image"]
-        if type(image) != str:
-            request = self.context.get("request")
-            user_id = str(request.user.id)
-            unique_key = self.generate_unique_key(image.name, user_id)
-            self.upload_to_r2(image, unique_key)
-            image = self.create_image_url(unique_key)
-        validated_data["image"] = image
-        return super().create(validated_data)
+    def update(self, instance, validated_data):
+        current_image = instance.image
+        request_image = self.upload_image(validated_data["image"])
+        self.delete_image(current_image, request_image)
+        validated_data["image"] = request_image
+        return super().update(instance, validated_data)
+
+    def delete(self, instance):
+        image_url = instance.image
+        self.delete_image(image_url)
+        instance.delete()
+        return instance
 
 
 class PropertySerializer(BasePropertySerializer):

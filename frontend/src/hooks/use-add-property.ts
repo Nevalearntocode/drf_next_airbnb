@@ -5,21 +5,22 @@ import { closeModal } from "@/redux/features/modal-slice";
 import { useAddPropertyMutation } from "@/redux/features/property-slice";
 import { toast } from "sonner";
 import { useAppDispatch, useAppSelector } from "./use-redux-store";
-import { useUploadImage } from "./use-upload-image";
-import { createImageUrl, generateUniqueKey } from "@/lib/utils";
 
 export const useAddProperty = () => {
   const [addProperty] = useAddPropertyMutation();
   const dispatch = useAppDispatch();
-  const { uploadImageHandler } = useUploadImage();
-  const { user } = useAppSelector((state) => state.auth);
 
-  const handleAddProperty = (data: PropertyFormType, image: string) => {
+  const handleAddProperty = (
+    data: PropertyFormType,
+    image: string | null,
+    image_file: File | null,
+  ) => {
     addProperty({
       ...data,
       country: data.location.country,
       country_code: data.location.country_code,
-      image: image,
+      image,
+      image_file,
     })
       .unwrap()
       .then(async () => {
@@ -28,6 +29,7 @@ export const useAddProperty = () => {
       })
       .catch(async (error) => {
         // TODO: This might be more specific in the future
+        console.log(error);
         toast.error("Failed to add property");
       });
   };
@@ -39,13 +41,10 @@ export const useAddProperty = () => {
       return;
     }
     if (typeof image === "string") {
-      handleAddProperty(data, image);
+      handleAddProperty(data, image, null);
     }
-    if (typeof image == "object") {
-      const uniqueKey = generateUniqueKey(image.name, user!.id);
-      await uploadImageHandler(uniqueKey, image);
-      const imageUrl = createImageUrl(uniqueKey);
-      handleAddProperty(data, imageUrl);
+    if (typeof image === "object") {
+      handleAddProperty(data, null, image);
     }
   };
 

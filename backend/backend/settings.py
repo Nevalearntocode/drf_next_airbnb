@@ -151,6 +151,7 @@ DJOSER = {
         "current_user": "users.serializers.CustomUserSerializer",
     },
     "HIDE_USERS": False,
+    "SET_PASSWORD_RETYPE": True,
 }
 
 SIMPLE_JWT = {

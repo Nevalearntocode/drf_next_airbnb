@@ -1,6 +1,6 @@
 import { LoginArgs, RegisterArgs } from "@/types/redux";
 import { apiSlice } from "../services/api-slice";
-import { User } from "@/types/user";
+import { User, UserForm } from "@/types/user";
 
 export const userSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -34,11 +34,19 @@ export const userSlice = apiSlice.injectEndpoints({
       providesTags: ["User"],
     }),
     updateUser: builder.mutation({
-      query: (args: { name: string; avatar: string | null }) => ({
-        url: "/users/me/",
-        method: "PUT",
-        body: args,
-      }),
+      query: (args: UserForm) => {
+        const form = new FormData();
+
+        for (const [key, value] of Object.entries(args)) {
+          form.append(key, value as string);
+        }
+
+        return {
+          url: "/users/me/",
+          method: "PUT",
+          body: form,
+        };
+      },
     }),
     verify: builder.mutation<undefined, void>({
       query: () => ({

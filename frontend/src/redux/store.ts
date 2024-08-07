@@ -1,7 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { reservationSlice } from "./features/reservation-slice";
 import { propertySlice } from "./features/property-slice";
-import { r2Slice } from "./features/r2-slice";
 import { userSlice } from "./features/user-slice";
 import authReducer from "./features/auth-slice";
 import modalReducer from "./features/modal-slice";
@@ -14,13 +13,11 @@ export const store = configureStore({
     confirm: confirmReducer,
     property: propertySlice.reducer,
     reservation: reservationSlice.reducer,
-    [r2Slice.reducerPath]: r2Slice.reducer,
     [userSlice.reducerPath]: userSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
-      .concat(userSlice.middleware)
-      .concat(r2Slice.middleware),
+      .concat(userSlice.middleware),
 
   devTools: process.env.NODE_ENV !== "production",
 });

@@ -19,7 +19,7 @@ class R2Mixin:
     def create_image_url(self, key):
         return f"{settings.CLOUDFLARE_R2_BUCKET_URL}/{key}"
 
-    def generate_unique_key(self, key: str, user_id: str) -> str:
+    def generate_unique_key(self, user_id: str, key: str) -> str:
         """
         Generates a unique key for a given file and user ID.
 
@@ -59,19 +59,18 @@ class R2Mixin:
             print(f"Error uploading file to R2: {e}")
             return False
 
-    def delete_from_r2_helper(self, current_image, request_image=None):
+    def delete_from_r2_helper(self, user_id, current_image, request_image=None):
         # if the image is uploaded by a user from local computer their id will be included in the file key
         file_key = current_image.split("/")[-1]
-        userId = str(self.request.user.id)
 
         # if request image is not None means we are updating the image
         if request_image is not None:
             # if request image and current image are different and user is the owner of the current image
-            should_delete = current_image != request_image and userId in file_key
+            should_delete = current_image != request_image and user_id in file_key
             if should_delete:
                 return self.delete_from_r2(file_key)
         else:
-            if userId in file_key:
+            if user_id in file_key:
                 return self.delete_from_r2(file_key)
 
         return Response(status=status.HTTP_204_NO_CONTENT)

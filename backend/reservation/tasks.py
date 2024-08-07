@@ -2,7 +2,6 @@ from celery import shared_task
 from celery.schedules import crontab
 from reservation.models import Reservation
 from backend.celery import app
-from datetime import timedelta
 
 
 @shared_task
@@ -21,6 +20,6 @@ def thirty_second_func():
 app.conf.beat_schedule = {
     "update-reservation-status-everyday": {
         "task": "reservation.tasks.update_reservation_status",
-        "schedule": crontab(hour=1, minute=31),
+        "schedule": crontab(hour=0, minute=0),
     },
 }

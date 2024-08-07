@@ -30,9 +30,11 @@ type PropertyForm = Pick<
   | "guests"
   | "bedrooms"
   | "bathrooms"
-  | "image"
->;
-
+  // | "image"
+> & {
+  image: string | null;
+  image_file: File | null;
+};
 type PropertyWithLandlord = Property & { landlord: User };
 
 type PropertyWithLandlordAndReservation = PropertyWithLandlord & {

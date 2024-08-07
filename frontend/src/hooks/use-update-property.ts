@@ -1,11 +1,9 @@
 "use client";
 
-import { createImageUrl, generateUniqueKey } from "@/lib/utils";
 import { PropertyFormType } from "@/modals/add-property-modal";
 import { useUpdatePropertyMutation } from "@/redux/features/property-slice";
 import { PropertyWithLandlordAndReservation } from "@/types/property";
 import { toast } from "sonner";
-import { useUploadImage } from "./use-upload-image";
 import { useAppDispatch, useAppSelector } from "./use-redux-store";
 import { openModal } from "@/redux/features/modal-slice";
 import {
@@ -19,18 +17,22 @@ type Props = {
 
 export const useUpdateProperty = ({ property }: Props) => {
   const [updateProperty] = useUpdatePropertyMutation();
-  const { uploadImageHandler } = useUploadImage();
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
-  const handleUpdateProperty = (data: PropertyFormType, image: string) => {
+  const handleUpdateProperty = (
+    data: PropertyFormType,
+    image: string | null,
+    image_file: File | null,
+  ) => {
     updateProperty({
       id: property.id,
       data: {
         ...data,
         country: data.location.country,
         country_code: data.location.country_code,
-        image: image,
+        image,
+        image_file,
       },
     })
       .unwrap()
@@ -50,13 +52,10 @@ export const useUpdateProperty = ({ property }: Props) => {
       return;
     }
     if (typeof image === "string") {
-      handleUpdateProperty(data, image);
+      handleUpdateProperty(data, image, null);
     }
-    if (typeof image == "object") {
-      const uniqueKey = generateUniqueKey(image.name, user.id);
-      await uploadImageHandler(uniqueKey, image);
-      const imageUrl = createImageUrl(uniqueKey);
-      handleUpdateProperty(data, imageUrl);
+    if (typeof image === "object") {
+      handleUpdateProperty(data, null, image);
     }
   };
 

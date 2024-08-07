@@ -1,4 +1,3 @@
-from backend.mixins import R2Mixin
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.viewsets import ModelViewSet
@@ -11,7 +10,7 @@ from property.paginations import PropertyPagination
 from property.serializers import PropertySerializer, PropertySerializerWithLandlord
 
 
-class PropertyViewset(ModelViewSet, PropertyQuerysetMixin, R2Mixin):
+class PropertyViewset(ModelViewSet, PropertyQuerysetMixin):
     queryset = Property.objects.all()
     serializer_class = PropertySerializer
     pagination_class = PropertyPagination
@@ -40,14 +39,9 @@ class PropertyViewset(ModelViewSet, PropertyQuerysetMixin, R2Mixin):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
+        self.permission_classes = [IsAuthenticatedOrReadOnly]
         return super().create(request, *args, **kwargs)
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        return Response(status=status.HTTP_204_NO_CONTENT)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
+    
     def list(self, request, *args, **kwargs):
         self.permission_classes = [IsAuthenticatedOrReadOnly]
         return super().list(request, *args, **kwargs)
@@ -56,17 +50,8 @@ class PropertyViewset(ModelViewSet, PropertyQuerysetMixin, R2Mixin):
         serializer = serializer.save(landlord=self.request.user)
         return super().perform_create(serializer)
 
-    def update(self, request, *args, **kwargs):
-        current_image = self.get_object().image
-        request_image = request.data.get("image")
-        self.delete_from_r2_helper(current_image, request_image)
-        return super().update(request, *args, **kwargs)
-
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        image_url = instance.image
-
-        self.delete_from_r2_helper(image_url)
-
-        instance.delete()
+        serializer = self.get_serializer(instance)
+        serializer.delete(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
