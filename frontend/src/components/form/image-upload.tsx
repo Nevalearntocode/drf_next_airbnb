@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ImagePlus, Plus, Send, X } from "lucide-react";
+import { ImagePlus, Send, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

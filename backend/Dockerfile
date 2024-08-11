@@ -7,7 +7,7 @@ WORKDIR /usr/src/django
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# # Install gcc and other build dependencies
+# Install gcc and other build dependencies
 RUN apt-get update && apt-get install -y \
     # build-essential \
     netcat \
@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     # gcc \
     # g++ \
     # make \
+    # i want to delete the volume name drf_next_airbnb_django in this line, the regular command is: docker volume rm drf_next_airbnb_django
     && rm -rf /var/lib/apt/lists/* 
     # Clean up apt cache to reduce image size
 

@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { useAppSelector } from "@/hooks/use-redux-store";
 import ImageUpload from "@/components/form/image-upload";
+import { useUpdateUserMutation } from "@/redux/features/user-slice";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -30,25 +32,39 @@ type FormType = z.infer<typeof formSchema>;
 
 const Profile = ({}: Props) => {
   const { user } = useAppSelector((state) => state.auth);
+  const [updateUser] = useUpdateUserMutation();
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      avatar: "",
+      avatar: null,
     },
   });
 
   useEffect(() => {
     if (user) {
       form.setValue("name", user.name);
-      form.setValue("avatar", user.avatar ?? "");
+      form.setValue("avatar", user.avatar ?? null);
     }
   }, [user, form]);
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: FormType) => {
-    console.log(data);
+    const image = data.avatar && data.avatar !== "" ? data.avatar : user?.avatar;
+    updateUser({
+      name: data.name,
+      avatar: typeof image === "string" ? image : null,
+      avatar_file: typeof image === "object" ? image : null,
+    })
+      .unwrap()
+      .then(async () => {
+        toast.success("Profile update successfully");
+      })
+      .catch(async (error) => {
+        console.log(error)
+        toast.error("Failed to update profile");
+      });
   };
 
   return (
