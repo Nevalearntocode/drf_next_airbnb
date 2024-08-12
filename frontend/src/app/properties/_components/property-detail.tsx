@@ -16,7 +16,7 @@ const PropertyDetail = ({ id }: Props) => {
 
   return (
     <>
-      <PropertyImage image={data.image} alt={data.name} />
+      <PropertyImage {...data} />
       <PropertyInfo property={data} />
     </>
   );

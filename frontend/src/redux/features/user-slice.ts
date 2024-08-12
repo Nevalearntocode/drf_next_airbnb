@@ -10,14 +10,17 @@ export const userSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: args,
       }),
-      invalidatesTags: ["Properties", "User"],
+      invalidatesTags: [
+        "User",
+        { type: "Properties", id: "LIST" },
+        { type: "MyProperties", id: "LIST" },
+      ],
     }),
     logout: builder.mutation<undefined, void>({
       query: () => ({
         url: "/logout/",
         method: "POST",
       }),
-      invalidatesTags: ["Properties", "User"],
     }),
     register: builder.mutation({
       query: (args: RegisterArgs) => ({
@@ -31,7 +34,7 @@ export const userSlice = apiSlice.injectEndpoints({
         url: "/users/me/",
         method: "GET",
       }),
-      providesTags: ["User"],
+      providesTags: (result) => (result ? [{ type: "User" }] : []),
     }),
     updateUser: builder.mutation({
       query: (args: UserForm) => {
@@ -47,6 +50,7 @@ export const userSlice = apiSlice.injectEndpoints({
           body: form,
         };
       },
+      invalidatesTags: ["User"],
     }),
     verify: builder.mutation<undefined, void>({
       query: () => ({

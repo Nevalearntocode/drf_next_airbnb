@@ -1,23 +1,31 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useAppDispatch } from "@/hooks/use-redux-store";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { cn } from "@/lib/utils";
+import { useFavoriteToggleMutation } from "@/redux/features/favorite-slice";
 import { openModal } from "@/redux/features/modal-slice";
+import { Favorite } from "@/types/property";
 import React, { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { toast } from "sonner";
 
 type Props = {
-  isAuthenticated: boolean;
-  defaultState: boolean;
+  favorites: Favorite[];
+  id: string;
 };
 
-const HeartToggle = ({ isAuthenticated, defaultState }: Props) => {
-  const [favorited, setFavorited] = useState(defaultState);
+const HeartToggle = ({ favorites, id }: Props) => {
+  const { isAuthenticated, user } = useAppSelector((state) => state.auth);
+  const isFavorite = favorites.some((favorite) => favorite.user === user?.id);
+
+  const [favorited, setFavorited] = useState(isFavorite);
+  const [favoriteToggle] = useFavoriteToggleMutation();
   const dispatch = useAppDispatch();
 
-  useEffect(() => {});
+  useEffect(() => {
+    setFavorited(isFavorite);
+  }, [isAuthenticated, isFavorite]);
 
   const onFavorite = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -31,6 +39,8 @@ const HeartToggle = ({ isAuthenticated, defaultState }: Props) => {
       return;
     }
     setFavorited(!favorited);
+
+    favoriteToggle({ property: id }).unwrap();
   };
 
   return (

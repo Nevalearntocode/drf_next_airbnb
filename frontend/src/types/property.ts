@@ -62,4 +62,5 @@ export type {
   PropertyWithLandlord,
   PropertyForm,
   PropertyWithLandlordAndReservation,
+  Favorite
 };

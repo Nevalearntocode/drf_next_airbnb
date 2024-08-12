@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { favoriteSlice } from "./features/favorite-slice";
 import { reservationSlice } from "./features/reservation-slice";
 import { propertySlice } from "./features/property-slice";
 import { userSlice } from "./features/user-slice";
@@ -13,6 +14,7 @@ export const store = configureStore({
     confirm: confirmReducer,
     property: propertySlice.reducer,
     reservation: reservationSlice.reducer,
+    favorite: favoriteSlice.reducer,
     [userSlice.reducerPath]: userSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>

@@ -8,7 +8,12 @@ export const favoriteSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: args,
       }),
-      invalidatesTags: ["MyProperties", "Properties", "Property"],
+      invalidatesTags: (args) =>
+        args
+          ? [{ type: "Properties", id: args.property }]
+          : [{ type: "Properties", id: "LIST" }],
     }),
   }),
 });
+
+export const { useFavoriteToggleMutation } = favoriteSlice;

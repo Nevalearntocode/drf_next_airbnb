@@ -18,10 +18,9 @@ export const propertySlice = apiSlice.injectEndpoints({
         };
       },
       providesTags: (data) =>
-        // Safeguard: Check if 'data' exists before mapping
         data
           ? [
-              ...data.results.map(({ id }) => ({ type: "Property", id }) as const),
+              ...data.results.map(({ id }) => ({ type: "Properties", id }) as const),
               { type: "Properties", id: "LIST" },
             ]
           : [{ type: "Properties", id: "LIST" }],
@@ -37,7 +36,7 @@ export const propertySlice = apiSlice.injectEndpoints({
       providesTags: (data) =>
         data
           ? [
-              ...data.results.map(({ id }) => ({ type: "Property", id }) as const),
+              ...data.results.map(({ id }) => ({ type: "MyProperties", id }) as const),
               { type: "MyProperties", id: "LIST" },
             ]
           : [{ type: "MyProperties", id: "LIST" }],
@@ -89,8 +88,8 @@ export const propertySlice = apiSlice.injectEndpoints({
       },
       invalidatesTags: (result, error, args) => [
         { type: "Property", id: args.id },
-        { type: "MyProperties", id: "LIST" },
-        { type: "Properties", id: "LIST" },
+        { type: "MyProperties", id: args.id },
+        { type: "Properties", id: args.id },
       ],
     }),
     deleteProperty: builder.mutation({
