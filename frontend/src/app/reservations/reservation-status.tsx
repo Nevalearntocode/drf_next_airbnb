@@ -17,7 +17,7 @@ export default function ReservationStatus({ status }: Props) {
 
   return (
     <div className="flex items-center gap-4">
-      <p className="italic">{status}</p>
+      <p className="italic">{status.charAt(0).toUpperCase() + status.slice(1)}</p>
       <div className={cn("h-2 w-2 rounded-full border", color[status])} />
     </div>
   );

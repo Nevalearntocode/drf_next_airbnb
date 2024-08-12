@@ -15,7 +15,12 @@ type Property = {
   bathrooms: number;
   fee_percentage: number;
   image: string;
+  favorites: Favorite[];
   created_at: string;
+};
+
+type Favorite = {
+  user: string;
 };
 
 type PropertyForm = Pick<

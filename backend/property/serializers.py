@@ -3,6 +3,7 @@ from rest_framework import serializers
 from property.models import Property
 from users.serializers import CustomUserSerializer
 from reservation.models import Reservation
+from favorite.models import Favorite
 
 
 class ReservationSerializer(serializers.ModelSerializer):
@@ -11,17 +12,28 @@ class ReservationSerializer(serializers.ModelSerializer):
         fields = ["id", "check_in", "check_out"]
 
 
+class FavoriteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Favorite
+        fields = ["user"]
+
+
 class BasePropertySerializer(serializers.ModelSerializer, ImageSerializerMixin):
+    favorites = FavoriteSerializer(many=True, read_only=True)
     fee_percentage = serializers.ReadOnlyField()
     landlord = CustomUserSerializer(read_only=True)
     image = serializers.CharField(required=False, allow_blank=True)
     image_file = FileFieldWithoutValidation(
         required=False, allow_null=True, write_only=True
     )
+    favorite_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Property
         fields = "__all__"
+
+    def get_favorite_count(self, obj):
+        return obj.favorites.count()
 
     def validate(self, attrs):
         return self.validate_and_process_image(attrs, "image")

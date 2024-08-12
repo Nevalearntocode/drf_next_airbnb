@@ -19,6 +19,7 @@ import { useLogoutMutation } from "@/redux/features/user-slice";
 import { setAuth, setLoading, setUser } from "@/redux/features/auth-slice";
 import { UserAvatar } from "@/components/user-avatar";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 
 type Props = {};
 
@@ -59,21 +60,33 @@ const UserButton = (props: Props) => {
         <>
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            className=""
-            onClick={() => router.push("/properties/me")}
-          >
-            Profile & Properties
-            <UserRound className="ml-auto h-4 w-4" />
+          <DropdownMenuItem className="">
+            <Link
+              href={"/properties/me"}
+              className="flex w-full items-center justify-between"
+            >
+              Profile & Properties
+              <UserRound className="ml-auto h-4 w-4" />
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => router.push("/reservations/me")}>
-            Reservations
-            <Ticket className="ml-auto h-4 w-4" />
+          <DropdownMenuItem>
+            <Link
+              href={"/reservations/me"}
+              className="flex w-full items-center justify-between"
+            >
+              Reservations
+              <Ticket className="ml-auto h-4 w-4" />
+            </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => router.push("/conversations")}>
+          <DropdownMenuItem>
+            <Link
+              href={"/conversations"}
+              className="flex w-full items-center justify-between"
+            >
             Inbox
             <MessageSquare className="ml-auto h-4 w-4" />
+            </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={onLogOut}>

@@ -7,5 +7,5 @@ export const useOwnerCheck = (propertyOwnerId: string) => {
     (state) => state.auth,
   );
   const isOwner = user?.id === propertyOwnerId;
-  return { isOwner, isAuthenticated, isLoading };
+  return { isOwner, isAuthenticated, isLoading, user };
 };

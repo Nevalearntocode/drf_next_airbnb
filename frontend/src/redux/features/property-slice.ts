@@ -17,7 +17,14 @@ export const propertySlice = apiSlice.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["Properties"],
+      providesTags: (data) =>
+        // Safeguard: Check if 'data' exists before mapping
+        data
+          ? [
+              ...data.results.map(({ id }) => ({ type: "Property", id }) as const),
+              { type: "Properties", id: "LIST" },
+            ]
+          : [{ type: "Properties", id: "LIST" }],
     }),
     getCurrentUserProperties: builder.query<PropertyList, getPropertiesArgs>({
       query: (args) => {
@@ -27,7 +34,13 @@ export const propertySlice = apiSlice.injectEndpoints({
           method: "GET",
         };
       },
-      providesTags: ["MyProperties"],
+      providesTags: (data) =>
+        data
+          ? [
+              ...data.results.map(({ id }) => ({ type: "Property", id }) as const),
+              { type: "MyProperties", id: "LIST" },
+            ]
+          : [{ type: "MyProperties", id: "LIST" }],
     }),
     getPropertyDetails: builder.query<
       PropertyWithLandlordAndReservation,
@@ -37,7 +50,9 @@ export const propertySlice = apiSlice.injectEndpoints({
         url: `/properties/${args.id}/`,
         method: "GET",
       }),
-      providesTags: ["Property"],
+      providesTags: (result, error, args) => [
+        { type: "Property", id: args.id },
+      ],
     }),
     addProperty: builder.mutation({
       query: (args: PropertyForm) => {
@@ -53,7 +68,10 @@ export const propertySlice = apiSlice.injectEndpoints({
           body: form,
         };
       },
-      invalidatesTags: ["MyProperties", "Properties"],
+      invalidatesTags: [
+        { type: "MyProperties", id: "LIST" },
+        { type: "Properties", id: "LIST" },
+      ],
     }),
     updateProperty: builder.mutation({
       query: (args: { id: string; data: PropertyForm }) => {
@@ -69,14 +87,22 @@ export const propertySlice = apiSlice.injectEndpoints({
           body: form,
         };
       },
-      invalidatesTags: ["Property", "MyProperties", "Properties"],
+      invalidatesTags: (result, error, args) => [
+        { type: "Property", id: args.id },
+        { type: "MyProperties", id: "LIST" },
+        { type: "Properties", id: "LIST" },
+      ],
     }),
     deleteProperty: builder.mutation({
       query: (args: { id: string }) => ({
         url: `/properties/${args.id}/`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Property", "MyProperties", "Properties"],
+      invalidatesTags: (result, error, args) => [
+        { type: "Property", id: args.id },
+        { type: "MyProperties", id: "LIST" },
+        { type: "Properties", id: "LIST" },
+      ],
     }),
   }),
 });

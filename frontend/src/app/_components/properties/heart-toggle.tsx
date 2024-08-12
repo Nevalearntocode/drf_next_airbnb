@@ -10,10 +10,11 @@ import { toast } from "sonner";
 
 type Props = {
   isAuthenticated: boolean;
+  defaultState: boolean;
 };
 
-const HeartToggle = ({isAuthenticated}: Props) => {
-  const [favorited, setFavorited] = useState(false);
+const HeartToggle = ({ isAuthenticated, defaultState }: Props) => {
+  const [favorited, setFavorited] = useState(defaultState);
   const dispatch = useAppDispatch();
 
   useEffect(() => {});

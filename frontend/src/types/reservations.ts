@@ -27,6 +27,7 @@ type ReservationWithPropertyWithLandlord = Pick<
   | "check_in"
   | "check_out"
   | "created_at"
+  | "status"
 > & { property: PropertyWithLandlord };
 
 type ShortenReservation = Pick<Reservation, "id" | "check_in" | "check_out">;

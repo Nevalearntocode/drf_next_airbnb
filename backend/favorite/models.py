@@ -4,10 +4,10 @@ from django.db import models
 class Favorite(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(
-        "users.CustomUser", on_delete=models.CASCADE, related_name="favorites_user"
+        "users.CustomUser", on_delete=models.CASCADE, related_name="favorites"
     )
     property = models.ForeignKey(
-        "property.Property", on_delete=models.CASCADE, related_name="favorites_property"
+        "property.Property", on_delete=models.CASCADE, related_name="favorites"
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

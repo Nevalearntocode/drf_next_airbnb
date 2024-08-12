@@ -15,16 +15,21 @@ type Props = {
 
 const PropertyCard = ({ property }: Props) => {
   const router = useRouter();
-  const { isAuthenticated, isOwner } = useOwnerCheck(property.landlord.id);
+  const { isAuthenticated, isOwner, user } = useOwnerCheck(
+    property.landlord.id,
+  );
 
   const onClick = () => {
     router.push(`/properties/${property.id}`);
   };
 
-
   const onEdit = () => {
     router.push(`/properties/${property.id}/edit`);
   };
+
+  const isFavorite = property.favorites.some(
+    (favorite) => favorite.user === user?.id,
+  );
 
   return (
     <Card className="rounded-xl border-b border-none">
@@ -40,7 +45,7 @@ const PropertyCard = ({ property }: Props) => {
           sizes="(max-width: 768px) 768px, (max-width: 1200px) 768px, 768px"
           className="h-auto w-auto rounded-xl object-cover transition duration-1000 hover:scale-110"
         />
-        {!isOwner && <HeartToggle isAuthenticated={isAuthenticated} />}
+        {!isOwner && <HeartToggle defaultState={isFavorite} isAuthenticated={isAuthenticated} />}
         {isOwner && (
           <Button
             variant={"ghost"}

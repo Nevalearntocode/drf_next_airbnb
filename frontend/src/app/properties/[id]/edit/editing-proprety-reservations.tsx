@@ -15,7 +15,7 @@ export default function EditingPropertyReservations({ reservations }: Props) {
   return (
     <div className="flex flex-1 flex-col gap-4">
       <h2 className="text-2xl font-bold">Reservations</h2>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {reservations.map((reservation) => (
           <EditingPropertyReservationCard
             key={reservation.id}
