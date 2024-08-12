@@ -5,6 +5,6 @@ from .views import (
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register("properties", PropertyViewset, basename="property")
+router.register(r"properties", PropertyViewset, basename="property")
 
 urlpatterns = router.urls
