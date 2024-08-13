@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     # External
     "rest_framework",
     "djoser",
+    "social_django",
     "corsheaders",
     "django_celery_beat",
     # Internal
@@ -133,6 +134,24 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+AUTHENTICATION_BACKENDS = (
+    "social_core.backends.google.GoogleOAuth2",
+    "django.contrib.auth.backends.ModelBackend",
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = getenv("GOOGLE_OAUTH2_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = getenv("GOOGLE_OAUTH2_SECRET")
+# This line specifies the scopes that the Google OAuth2 authentication backend should request from the user's Google account.
+# The scopes are URLs that define the types of information that the application is allowed to access. Here are the scopes that are being requested:
+# - "https://www.googleapis.com/auth/userinfo.email": This scope allows the application to access the user's email address.
+# - "https://www.googleapis.com/auth/userinfo.profile": This scope allows the application to access the user's basic profile information, such as their name and profile picture.
+# - "openid": This scope allows the application to authenticate the user and obtain an OpenID Connect ID token. This token contains information about the user, such as their email address and name.
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
+]
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "users.authentication.CustomJWTAuthentication",
@@ -153,6 +172,7 @@ DJOSER = {
     },
     "HIDE_USERS": False,
     "SET_PASSWORD_RETYPE": True,
+    "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": getenv("REDIRECT_URIS").split(","),
 }
 
 SIMPLE_JWT = {
