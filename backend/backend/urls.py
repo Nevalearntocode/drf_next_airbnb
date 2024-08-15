@@ -10,6 +10,7 @@ api_urlpatterns = [
     path("", include("property.urls")),
     path("", include("reservation.urls")),
     path("", include("favorite.urls")),
+    path("", include("chat.urls")),
 ]
 
 urlpatterns = [
