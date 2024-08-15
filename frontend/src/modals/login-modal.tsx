@@ -29,6 +29,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import { closeModal, openModal } from "@/redux/features/modal-slice";
 import { useLoginMutation } from "@/redux/features/user-slice";
 import { setAuth, setLoading } from "@/redux/features/auth-slice";
+import { continueWithGoogleAuth } from "@/lib/oauth";
 
 type Props = {};
 
@@ -153,7 +154,7 @@ const LoginModal = ({}: Props) => {
               <Button
                 disabled={isLoading}
                 className="flex w-full items-center justify-center"
-                onClick={() => {}}
+                onClick={continueWithGoogleAuth}
                 variant={"outline"}
               >
                 <p className="m-auto">Google</p>

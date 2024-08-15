@@ -2,8 +2,31 @@ import { LoginArgs, RegisterArgs } from "@/types/redux";
 import { apiSlice } from "../services/api-slice";
 import { User, UserForm } from "@/types/user";
 
+type SocialArgs = {
+  provider: string;
+  state: string;
+  code: string;
+};
+
 export const userSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    loginWithSocial: builder.mutation({
+      query: ({ provider, state, code }: SocialArgs) => ({
+        url: `/o/${provider}/?state=${encodeURIComponent(
+          state,
+        )}&code=${encodeURIComponent(code)}`,
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }),
+      invalidatesTags: [
+        "User",
+        { type: "Properties", id: "LIST" },
+        { type: "MyProperties", id: "LIST" },
+      ],
+    }),
     login: builder.mutation({
       query: (args: LoginArgs) => ({
         url: "/jwt/create/",
@@ -63,6 +86,7 @@ export const userSlice = apiSlice.injectEndpoints({
 
 export const {
   useLoginMutation,
+  useLoginWithSocialMutation,
   useLogoutMutation,
   useRegisterMutation,
   useRetrieveUserQuery,

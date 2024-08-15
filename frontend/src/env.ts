@@ -5,8 +5,10 @@ export const env = createEnv({
   server: {},
   client: {
     NEXT_PUBLIC_HOST: z.string().min(1),
+    NEXT_PUBLIC_REDIRECT_URL: z.string().min(1),
   },
   runtimeEnv: {
     NEXT_PUBLIC_HOST: process.env.NEXT_PUBLIC_HOST,
+    NEXT_PUBLIC_REDIRECT_URL: process.env.NEXT_PUBLIC_REDIRECT_URL,
   },
 });

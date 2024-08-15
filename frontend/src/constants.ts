@@ -29,6 +29,10 @@ export enum STEPS {
   PRICE = 4,
 }
 
+export enum SOCIALPROVIDERS {
+  google = "google-oauth2",
+}
+
 export const DefaultPropertyValues = {
   category: "",
   name: "",
