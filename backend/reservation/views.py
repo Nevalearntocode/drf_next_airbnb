@@ -1,5 +1,5 @@
 from datetime import datetime
-from django.db import models
+from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
@@ -17,7 +17,7 @@ class ReservationViewSet(ModelViewSet):
     def get_queryset(self):
         request = self.request
         queryset = self.queryset.filter(
-            models.Q(guest=request.user) | models.Q(property__landlord=request.user)
+            Q(guest=request.user) | Q(property__landlord=request.user)
         )
         return queryset
 
