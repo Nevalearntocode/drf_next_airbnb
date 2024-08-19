@@ -1,24 +1,16 @@
 import React from "react";
-import Conversation from "./conversation";
+import ConversationList from "./conversation-list";
+import ConversationDetail from "./conversation-detail";
 
 type Props = {};
 
 const Conversations = (props: Props) => {
   return (
-    <main className="container pb-6">
-      <h1 className="my-6 text-2xl font-bold">Conversations</h1>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <Conversation />
-        <Conversation />
-        <Conversation />
-        <Conversation />
-        <Conversation />
-        <Conversation />
-        <Conversation />
-        <Conversation />
-        <Conversation />
-        <Conversation />
+    <main className="container relative pb-6">
+      <div className="fixed z-10 w-full bg-white pt-2">
+        <h1 className="text-2xl font-bold">Conversations</h1>
       </div>
+        <ConversationList />
     </main>
   );
 };

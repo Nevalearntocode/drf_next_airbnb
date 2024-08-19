@@ -12,13 +12,17 @@ class CustomUserSerializer(UserSerializer, ImageSerializerMixin):
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ("avatar", "avatar_file")
 
-
     def validate(self, attrs):
         return self.validate_and_process_image(attrs, "avatar")
-    
+
     def update(self, instance, validated_data):
         current_image = instance.avatar
         request_image = self.upload_image(validated_data["avatar"])
         self.delete_image(current_image, request_image)
         validated_data["avatar"] = request_image
         return super().update(instance, validated_data)
+
+
+class CustomUserForConversationsSerializer(UserSerializer, ImageSerializerMixin):
+    class Meta(UserSerializer.Meta):
+        fields = ["id", "name", "avatar"]

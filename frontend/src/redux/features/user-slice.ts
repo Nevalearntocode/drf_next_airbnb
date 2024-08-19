@@ -25,6 +25,7 @@ export const userSlice = apiSlice.injectEndpoints({
         "User",
         { type: "Properties", id: "LIST" },
         { type: "MyProperties", id: "LIST" },
+        { type: "Conversations", id: "LIST" },
       ],
     }),
     login: builder.mutation({
@@ -37,6 +38,7 @@ export const userSlice = apiSlice.injectEndpoints({
         "User",
         { type: "Properties", id: "LIST" },
         { type: "MyProperties", id: "LIST" },
+        { type: "Conversations", id: "LIST" },
       ],
     }),
     logout: builder.mutation<undefined, void>({

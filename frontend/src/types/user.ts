@@ -5,10 +5,12 @@ type User = {
   avatar: string | null;
 };
 
+type ConversationUser = Omit<User, "email">;
+
 type UserForm = {
   name: string;
   avatar: string | null;
   avatar_file: File | null;
-}
+};
 
-export type { User, UserForm };
+export type { User, UserForm, ConversationUser };

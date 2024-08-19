@@ -2,36 +2,12 @@ from rest_framework import serializers
 from chat.models import Message, Conversation
 from django.db.models import Q
 from users.models import CustomUser
-
-# Features:
-# User only has access to the conversations they are part of
-# User can only edit and delete their message
-# User need to be authenticated to access the chat
-
-# A response to a list request of conversation should return:
-# a list of conversations, each with:
-# - id, list of user associated with the conversation (name and avatar)
-# - last message
-
-# A response to a retrieve request of conversation should return:
-# - list of messages in the conversation, each with: sender, receptitor, content, updated_at
-# - users in the conversation
-
-# First message from a sender to receptitor will create a conversation, if users try to create another conversation with the same users, they will get the existing conversation instead (group feature will be added later)
-
-# If user using API to send message before the conversation exists, create a new conversation
+from users.serializers import CustomUserForConversationsSerializer
 
 
-class BaseMessageSerializer(serializers.ModelSerializer):
+class MessageBaseSerializer(serializers.ModelSerializer):
     sender = serializers.ReadOnlyField(source="sender.name")
     conversation = serializers.ReadOnlyField(source="conversation.id")
-
-    class Meta:
-        model = Message
-        fields = "__all__"
-
-
-class CreateMessageSerializer(BaseMessageSerializer):
     receiver = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.all(),
         write_only=True,
@@ -41,8 +17,39 @@ class CreateMessageSerializer(BaseMessageSerializer):
         model = Message
         fields = "__all__"
 
+    def validate(self, data):
+        request = self.context.get("request")
+        sender = request.user
+        receiver = data["receiver"]
+        conversation = Conversation.objects.filter(
+            (Q(initiator=sender) & Q(receptitor=receiver))
+            | (Q(initiator=receiver) & Q(receptitor=sender))
+        )
 
-class MessageDetailSerializer(BaseMessageSerializer):
+        data["conversation"] = conversation.first()
+
+        if not conversation.exists():
+            conversation = Conversation.objects.create(
+                initiator=sender, receptitor=receiver
+            )
+            data["conversation"] = conversation
+
+        data["sender"] = sender
+
+        data.pop("receiver")
+
+        return data
+
+
+class MessageListSerializer(MessageBaseSerializer):
+    url = serializers.HyperlinkedIdentityField(view_name="message-detail")
+
+    class Meta:
+        model = Message
+        fields = "__all__"
+
+
+class MessageDetailSerializer(MessageBaseSerializer):
     receiver = serializers.ReadOnlyField()
 
     class Meta:
@@ -50,14 +57,14 @@ class MessageDetailSerializer(BaseMessageSerializer):
         fields = "__all__"
 
 
-class ConversationMessagesSerializer(BaseMessageSerializer):
+class MessageForConversationSerializer(MessageBaseSerializer):
     class Meta:
         model = Message
         exclude = ["conversation"]
 
 
-class BaseConversationSerializer(serializers.ModelSerializer):
-    initiator = serializers.ReadOnlyField(source="initiator.name")
+class ConversationBaseSerializer(serializers.ModelSerializer):
+    initiator = CustomUserForConversationsSerializer(read_only=True)
 
     class Meta:
         model = Conversation
@@ -79,11 +86,11 @@ class BaseConversationSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
-class ConversationSerializer(BaseConversationSerializer):
-    receptitor = serializers.ReadOnlyField(source="receptitor.name")
+class ConversationListSerializer(ConversationBaseSerializer):
+    receptitor = CustomUserForConversationsSerializer()
     url = serializers.HyperlinkedIdentityField(view_name="conversation-detail")
 
 
-class ConversationWithMessagesSerializer(BaseConversationSerializer):
-    receptitor = serializers.ReadOnlyField(source="receptitor.name")
-    messages = ConversationMessagesSerializer(many=True)
+class ConversationDetailSerializer(ConversationBaseSerializer):
+    receptitor = CustomUserForConversationsSerializer(read_only=True)
+    messages = MessageBaseSerializer(many=True)

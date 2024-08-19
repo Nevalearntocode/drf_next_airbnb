@@ -1,14 +1,14 @@
 from rest_framework.viewsets import ModelViewSet
 from chat.serializers import (
-    BaseMessageSerializer,
+    MessageBaseSerializer,
+    MessageListSerializer,
     MessageDetailSerializer,
-    CreateMessageSerializer,
-    BaseConversationSerializer,
-    ConversationSerializer,
-    ConversationWithMessagesSerializer,
+    ConversationBaseSerializer,
+    ConversationListSerializer,
+    ConversationDetailSerializer,
 )
 from chat.models import Message, Conversation
-from chat.permissions import IsChatMember
+from chat.permissions import IsChatMember, IsSender
 from django.db.models import Q
 from rest_framework import mixins
 from rest_framework.viewsets import GenericViewSet
@@ -17,13 +17,14 @@ from rest_framework import status
 
 
 class MessageViewSet(ModelViewSet):
-    serializer_class = BaseMessageSerializer
+    serializer_class = MessageBaseSerializer
     queryset = Message.objects.all()
+    permission_classes = [IsSender]
 
     def list(self, request, *args, **kwargs):
-        self.serializer_class = CreateMessageSerializer
+        self.serializer_class = MessageListSerializer
         return super().list(request, *args, **kwargs)
-
+    
     def retrieve(self, request, *args, **kwargs):
         self.serializer_class = MessageDetailSerializer
         return super().retrieve(request, *args, **kwargs)
@@ -32,11 +33,10 @@ class MessageViewSet(ModelViewSet):
 class ConversationViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
     mixins.ListModelMixin,
     GenericViewSet,
 ):
-    serializer_class = BaseConversationSerializer
+    serializer_class = ConversationBaseSerializer
     queryset = Conversation.objects.all()
     permission_classes = [IsChatMember]
 
@@ -59,9 +59,9 @@ class ConversationViewSet(
             return self.get_paginated_response(serializer.data)
 
         context = {"request": request}
-        serializer = ConversationSerializer(queryset, many=True, context=context)
+        serializer = ConversationListSerializer(queryset, many=True, context=context)
         return Response(serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
-        self.serializer_class = ConversationWithMessagesSerializer
+        self.serializer_class = ConversationDetailSerializer
         return super().retrieve(request, *args, **kwargs)

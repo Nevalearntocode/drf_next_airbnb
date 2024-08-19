@@ -10,6 +10,7 @@ class BaseReservationSerializer(serializers.ModelSerializer):
     guest = CustomUserSerializer(read_only=True)
     total = serializers.ReadOnlyField()
     nights = serializers.ReadOnlyField()
+    status = serializers.ReadOnlyField()
 
     class Meta:
         model = Reservation

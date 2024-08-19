@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import { chatSlice } from "./features/chat-slice";
 import { favoriteSlice } from "./features/favorite-slice";
 import { reservationSlice } from "./features/reservation-slice";
 import { propertySlice } from "./features/property-slice";
@@ -15,6 +16,7 @@ export const store = configureStore({
     property: propertySlice.reducer,
     reservation: reservationSlice.reducer,
     favorite: favoriteSlice.reducer,
+    chat: chatSlice.reducer,
     [userSlice.reducerPath]: userSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
