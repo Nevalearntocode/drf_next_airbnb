@@ -1,34 +1,54 @@
-"use client";
-
-import { UserAvatar } from "@/components/user-avatar";
-import { ConversationUser } from "@/types/user";
 import React from "react";
+import { UserAvatar } from "@/components/user-avatar";
+import { Conversation as ConversationType } from "@/types/chat";
+import { ConversationUser } from "@/types/user";
+import { formatDistanceToNowStrict, parseISO } from "date-fns";
 
 type Props = {
   otherUser: ConversationUser;
   userId: string;
   conversationId: string;
+  last: ConversationType["last"];
 };
 
-const Conversation = ({ otherUser, userId, conversationId }: Props) => {
+const Conversation = ({ otherUser, userId, conversationId, last }: Props) => {
   const onClick = () => {
     const url = new URL(window.location.href);
     url.searchParams.set("conversation", conversationId);
     window.history.replaceState({}, "", url.toString());
   };
 
+  const sender = last && userId === last.sender ? "You" : otherUser.name;
+
   return (
     <div
-      className="cursor-pointer rounded-xl border border-gray-300 px-6 py-4 shadow-xl"
+      className="flex cursor-pointer gap-2 rounded-xl border border-gray-300 px-6 py-4 shadow-xl"
       onClick={onClick}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex h-full gap-2">
         <UserAvatar
           currentUser={userId === otherUser.id}
           name={otherUser.name}
           image={otherUser.avatar ?? undefined}
         />
-        <p className="text-md font-bold">{otherUser.name}</p>
+      </div>
+      <div className="flex flex-col">
+        <p className="text-lg font-bold">{otherUser.name}</p>
+        {last ? (
+          <>
+            <p className="text-sm italic">
+              <span className="font-semibold">{sender}: </span>
+              {last.content}
+            </p>
+            <p className="text-xs text-gray-500">
+              {formatDistanceToNowStrict(parseISO(last.created_at), {
+                addSuffix: true,
+              })}
+            </p>
+          </>
+        ) : (
+          <p className="text-sm italic">Start a conversation</p>
+        )}
       </div>
     </div>
   );

@@ -292,7 +292,6 @@ auction/src/db/drop-table.pgsql
 postman_requests
 notes
 .env.dev
-backend/media
 migrations
 dump.rdb
 backend/celerybeat-schedule.bak

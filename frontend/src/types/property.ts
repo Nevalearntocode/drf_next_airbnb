@@ -1,3 +1,4 @@
+import { PaginatedResults } from "./general";
 import { ShortenReservation } from "./reservations";
 import { User } from "./user";
 
@@ -46,10 +47,7 @@ type PropertyWithLandlordAndReservation = PropertyWithLandlord & {
   reservations: ShortenReservation[];
 };
 
-type PropertyList = {
-  count: number;
-  next: string | null;
-  previous: string | null;
+type PropertyList = PaginatedResults & {
   results: PropertyWithLandlord[];
 };
 
@@ -62,5 +60,5 @@ export type {
   PropertyWithLandlord,
   PropertyForm,
   PropertyWithLandlordAndReservation,
-  Favorite
+  Favorite,
 };

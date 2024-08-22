@@ -6,7 +6,7 @@ from users.serializers import CustomUserForConversationsSerializer
 
 
 class MessageBaseSerializer(serializers.ModelSerializer):
-    sender = serializers.ReadOnlyField(source="sender.name")
+    sender = serializers.ReadOnlyField(source="sender.id")
     conversation = serializers.ReadOnlyField(source="conversation.id")
     receiver = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.all(),
@@ -57,10 +57,10 @@ class MessageDetailSerializer(MessageBaseSerializer):
         fields = "__all__"
 
 
-class MessageForConversationSerializer(MessageBaseSerializer):
+class LastMessageSerializer(MessageBaseSerializer):
     class Meta:
         model = Message
-        exclude = ["conversation"]
+        fields = ["sender", "content", "created_at"]
 
 
 class ConversationBaseSerializer(serializers.ModelSerializer):
@@ -86,11 +86,17 @@ class ConversationBaseSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class ConversationDetailSerializer(ConversationBaseSerializer):
+    receptitor = CustomUserForConversationsSerializer()
+
+
 class ConversationListSerializer(ConversationBaseSerializer):
     receptitor = CustomUserForConversationsSerializer()
+    last = serializers.SerializerMethodField()
     url = serializers.HyperlinkedIdentityField(view_name="conversation-detail")
 
-
-class ConversationDetailSerializer(ConversationBaseSerializer):
-    receptitor = CustomUserForConversationsSerializer(read_only=True)
-    messages = MessageBaseSerializer(many=True)
+    def get_last(self, obj):
+        last = obj.messages.order_by("-created_at").first()
+        if last:
+            return LastMessageSerializer(last).data
+        return None

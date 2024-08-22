@@ -1,15 +1,13 @@
+import { PaginatedResults } from "./general";
 import { ConversationUser } from "./user";
 
 type Conversation = {
   id: string;
   initiator: ConversationUser;
   receptitor: ConversationUser;
-  created_at: Date;
-  updated_at: Date;
-};
-
-type ConversationDetail = Conversation & {
-  messages: Message[];
+  created_at: string;
+  updated_at: string;
+  last: Pick<Message, "sender" | "content" | "created_at">;
 };
 
 type Message = {
@@ -17,8 +15,12 @@ type Message = {
   sender: string;
   conversation: string;
   content: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
 };
 
-export type { Conversation, ConversationDetail, Message };
+type Messages = PaginatedResults & {
+  results: Message[];
+};
+
+export type { Conversation, Message, Messages };

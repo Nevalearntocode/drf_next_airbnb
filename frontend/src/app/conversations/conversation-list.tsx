@@ -36,6 +36,7 @@ export default function ConversationList({}: Props) {
               conversationId={id}
               otherUser={otherUser}
               userId={currentUser.id}
+              last={conversation.last}
             />
           );
         })}

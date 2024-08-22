@@ -1,4 +1,4 @@
-import { Conversation, ConversationDetail } from "@/types/chat";
+import { Conversation, Messages } from "@/types/chat";
 import { apiSlice } from "../services/api-slice";
 
 export const chatSlice = apiSlice.injectEndpoints({
@@ -21,7 +21,7 @@ export const chatSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: "Conversations", id: "LIST" }],
     }),
-    getConversationDetails: builder.query<ConversationDetail, string>({
+    getConversationDetails: builder.query<Conversation, string>({
       query: (id) => ({
         url: `/conversations/${id}/`,
         method: "GET",
@@ -34,8 +34,32 @@ export const chatSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: "Conversations", id: "DETAIL" }],
     }),
+    getConversationMessage: builder.query<
+      Messages,
+      { conversation?: string; page?: number }
+    >({
+      query: (args) => {
+        let url = "/messages/";
+
+        if (args.conversation) {
+          url += `?conversation=${args.conversation}`;
+        }
+
+        if(args.page) {
+          url += `&page=${args.page}`
+        }
+
+        return {
+          url,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetConversationsQuery, useGetConversationDetailsQuery } =
-  chatSlice;
+export const {
+  useGetConversationsQuery,
+  useGetConversationDetailsQuery,
+  useGetConversationMessageQuery,
+} = chatSlice;
