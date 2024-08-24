@@ -45,8 +45,8 @@ export const chatSlice = apiSlice.injectEndpoints({
           url += `?conversation=${args.conversation}`;
         }
 
-        if(args.page) {
-          url += `&page=${args.page}`
+        if (args.page) {
+          url += `&page=${args.page}`;
         }
 
         return {
@@ -54,6 +54,29 @@ export const chatSlice = apiSlice.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.results.map(
+                ({ id }) => ({ type: "Messages", id }) as const,
+              ),
+              {
+                type: "Messages",
+                id: "LIST",
+              },
+            ]
+          : [{ type: "Messages", id: "LIST" }],
+    }),
+    sendMessage: builder.mutation<void, { receiver: string; content: string }>({
+      query: (args) => ({
+        url: "/messages/",
+        method: "POST",
+        body: args,
+      }),
+      invalidatesTags: [
+        { type: "Messages", id: "LIST" },
+        { type: "Conversations", id: "LIST" },
+      ],
     }),
   }),
 });
@@ -62,4 +85,5 @@ export const {
   useGetConversationsQuery,
   useGetConversationDetailsQuery,
   useGetConversationMessageQuery,
+  useSendMessageMutation,
 } = chatSlice;

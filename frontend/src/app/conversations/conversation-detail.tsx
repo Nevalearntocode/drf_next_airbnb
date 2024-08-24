@@ -6,9 +6,11 @@ import { identifyUsers } from "@/lib/utils";
 import {
   useGetConversationDetailsQuery,
   useGetConversationMessageQuery,
+  useSendMessageMutation,
 } from "@/redux/features/chat-slice";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
+import { toast } from "sonner";
 
 type Props = {
   initialConversationId: string;
@@ -18,12 +20,15 @@ type Props = {
 const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversation");
+  const [sendMessage] = useSendMessageMutation();
+  const [message, setMessage] = useState<string>("");
   const { data } = useGetConversationDetailsQuery(
     conversationId ?? initialConversationId,
   );
   const { data: messages } = useGetConversationMessageQuery({
     conversation: conversationId ?? initialConversationId,
   });
+  let currentMessageBatch = messages?.results ?? [];
 
   if (!data) return null;
 
@@ -34,14 +39,21 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
     receptitor,
   );
 
-  const handleInput = (message: string) => {};
-
-  const onSubmit = () => {};
+  const onSubmit = () => {
+    sendMessage({
+      content: message,
+      receiver: otherUser.id,
+    })
+      .unwrap()
+      .catch((err) => {
+        console.log(err), toast.error("Failed to send message");
+      });
+  };
 
   return (
     <div className="relative h-[calc(100vh-180px)] w-full">
       <div className="flex max-h-[400px] flex-col space-y-4 overflow-auto">
-        {messages?.results
+        {currentMessageBatch
           .slice()
           .reverse()
           .map((message) => {
@@ -51,8 +63,8 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
                   key={message.id}
                   className="mr-auto max-w-[80%] rounded-xl bg-gray-200 px-6 py-4"
                 >
-                  <p className="font-bold text-gray-500">John Doe</p>
-                  <p>{message.content}</p>
+                  <p className="font-bold text-gray-500">{otherUser.name}</p>
+                  <p className="">{message.content}</p>
                 </div>
               );
             } else {
@@ -73,6 +85,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
           type="text"
           placeholder="Type your message..."
           className="w-full rounded-xl bg-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0"
+          onChange={(e) => setMessage(e.target.value)}
         />
         <Button onClick={onSubmit}>send</Button>
       </div>

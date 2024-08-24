@@ -10,7 +10,6 @@ from rest_framework import status
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from djoser.social.views import ProviderAuthView
 
-
 class CustomProviderAuthView(ProviderAuthView):
     def post(self, request, *args, **kwargs):
         response = super().post(request, *args, **kwargs)

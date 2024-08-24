@@ -32,11 +32,11 @@ const Conversation = ({ otherUser, userId, conversationId, last }: Props) => {
           image={otherUser.avatar ?? undefined}
         />
       </div>
-      <div className="flex flex-col">
+      <div className="flex max-w-[150px] flex-col">
         <p className="text-lg font-bold">{otherUser.name}</p>
         {last ? (
           <>
-            <p className="text-sm italic">
+            <p className="line-clamp-1 text-sm italic">
               <span className="font-semibold">{sender}: </span>
               {last.content}
             </p>

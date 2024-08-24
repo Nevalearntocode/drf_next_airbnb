@@ -22,18 +22,20 @@ ALLOWED_HOSTS = getenv("ALLOWED_HOSTS").split(",")
 
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
     # External
     "rest_framework",
     "djoser",
     "social_django",
     "corsheaders",
     "django_celery_beat",
+    "channels",
+    "daphne",
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     # Internal
     "users",
     "property",
@@ -72,6 +74,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "backend.wsgi.application"
+ASGI_APPLICATION = "backend.asgi.application"
 
 LOCAL = getenv("LOCAL") == "1"
 
@@ -164,6 +167,12 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "users.CustomUser"
 
+CHANNELS_LAYER = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
 DJOSER = {
     "LOGIN_FIELD": "email",
     "USER_CREATE_PASSWORD_RETYPE": True,
@@ -174,6 +183,7 @@ DJOSER = {
     "HIDE_USERS": False,
     "SET_PASSWORD_RETYPE": True,
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": getenv("REDIRECT_URIS").split(","),
+    "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
 }
 
 SIMPLE_JWT = {
