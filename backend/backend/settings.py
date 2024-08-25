@@ -30,13 +30,13 @@ INSTALLED_APPS = [
     "django_celery_beat",
     "channels",
     "daphne",
+    # Internal
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # Internal
     "users",
     "property",
     "reservation",
@@ -167,7 +167,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "users.CustomUser"
 
-CHANNELS_LAYER = {
+CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     }

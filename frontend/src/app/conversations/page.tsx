@@ -1,10 +1,13 @@
 import React from "react";
 import ConversationList from "./conversation-list";
-import ConversationDetail from "./conversation-detail";
+import { headers } from "next/headers";
 
 type Props = {};
 
 const Conversations = (props: Props) => {
+
+  console.log("headers", headers())
+
   return (
     <main className="container relative pb-6">
       <div className="fixed z-10 w-full bg-white pt-2">
