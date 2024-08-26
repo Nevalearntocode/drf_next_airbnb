@@ -16,6 +16,8 @@ def get_user(user_id):
 class TokenAuthMiddleware(BaseMiddleware):
     async def __call__(self, scope, receive, send):
         query = dict((x.split("=") for x in scope["query_string"].decode().split("&")))
+        print(scope)
+        print("reach here")
         user_id = query.get("user")
         scope["user"] = await get_user(user_id)
         return await super().__call__(scope, receive, send)

@@ -1,4 +1,8 @@
-import { Conversation, Messages } from "@/types/chat";
+import {
+  Conversation,
+  CreateConversationResponse,
+  Messages,
+} from "@/types/chat";
 import { apiSlice } from "../services/api-slice";
 
 export const chatSlice = apiSlice.injectEndpoints({
@@ -67,6 +71,19 @@ export const chatSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: "Messages", id: "LIST" }],
     }),
+    createConversation: builder.mutation<
+      CreateConversationResponse,
+      { receptitor: string }
+    >({
+      query: (args) => ({
+        url: "/conversations/",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: args,
+      }),
+    }),
     sendMessage: builder.mutation<void, { receiver: string; content: string }>({
       query: (args) => ({
         url: "/messages/",
@@ -82,6 +99,7 @@ export const chatSlice = apiSlice.injectEndpoints({
 });
 
 export const {
+  useCreateConversationMutation,
   useGetConversationsQuery,
   useGetConversationDetailsQuery,
   useGetConversationMessageQuery,

@@ -32,7 +32,7 @@ const PropertyList = ({ route }: Props) => {
           ))}
         </PropertyListAllWrapper>
       )}
-      {route === "me" && (
+      {(route === "me" || route === "landlord") && (
         <div className="flex flex-1 flex-col gap-4">
           <h1 className="text-2xl font-bold">Properties</h1>
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">

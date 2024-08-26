@@ -6,14 +6,15 @@ import { identifyUsers } from "@/lib/utils";
 import {
   useGetConversationDetailsQuery,
   useGetConversationMessageQuery,
+  useSendMessageMutation,
 } from "@/redux/features/chat-slice";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { toast } from "sonner";
-import useWebSocket from "react-use-websocket";
 import { useRef } from "react";
 import { Message } from "@/types/chat";
-import { useAppSelector } from "@/hooks/use-redux-store";
+import { toast } from "sonner";
+// import useWebSocket from "react-use-websocket";
+// import { useAppSelector } from "@/hooks/use-redux-store";
 
 type Props = {
   initialConversationId: string;
@@ -27,25 +28,26 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
 
   const messagesDiv = useRef<HTMLDivElement>(null);
 
-  const { user } = useAppSelector((state) => state.auth);
+  // const { user } = useAppSelector((state) => state.auth);
   const { data } = useGetConversationDetailsQuery(
     conversationId ?? initialConversationId,
   );
   const { data: messages } = useGetConversationMessageQuery({
     conversation: conversationId ?? initialConversationId,
   });
+  const [sendMessage] = useSendMessageMutation();
 
   const [realtimeMessages, setRealtimeMessages] = useState<Message[]>(
     messages?.results ?? [],
   );
 
-  const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
-    `ws://localhost:8000/ws/${conversationId ?? initialConversationId}/?user=${user?.id}`,
-    {
-      share: false,
-      shouldReconnect: () => true,
-    },
-  );
+  // const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
+  //   `ws://localhost:8000/ws/${conversationId ?? initialConversationId}/?user=${user?.id}`,
+  //   {
+  //     share: false,
+  //     shouldReconnect: () => true,
+  //   },
+  // );
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -59,27 +61,11 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
     if (messages) {
       setRealtimeMessages(messages.results.slice().reverse());
     }
-  }, [messages]);
+  }, [messages, conversationId, initialConversationId]);
 
   useEffect(() => {
-    if (
-      lastJsonMessage &&
-      typeof lastJsonMessage === "object" &&
-      "content" in lastJsonMessage
-    ) {
-      const newMessage: Message = {
-        id: "",
-        sender: user?.id as string,
-        content: lastJsonMessage.content as string,
-        created_at: new Date().toISOString(),
-        conversation: conversationId ?? initialConversationId,
-        updated_at: new Date().toISOString(),
-      };
-      setRealtimeMessages((prev) => [...prev, newMessage]);
-    }
-
     scrollToBottom();
-  }, [lastJsonMessage]);
+  }, []);
 
   if (!data) return null;
 
@@ -91,15 +77,26 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   );
 
   const onSubmit = () => {
-    sendJsonMessage({
-      event: "chat_message",
-      data: {
-        content: message,
-        conversation_id: conversationId ?? initialConversationId,
-      },
-    });
-    setMessage("");
-    scrollToBottom();
+    sendMessage({
+      content: message,
+      receiver: otherUser.id,
+    })
+      .unwrap()
+      .then(() => {
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to send message");
+      });
+      // sendJsonMessage({
+      //   event: "chat_message",
+      //   data: {
+      //     content: message,
+      //     conversation_id: conversationId ?? initialConversationId,
+      //   },
+      // });
+      // setMessage("");
+      // scrollToBottom();
   };
 
   return (

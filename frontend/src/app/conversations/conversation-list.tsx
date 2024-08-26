@@ -6,6 +6,8 @@ import { useGetConversationsQuery } from "@/redux/features/chat-slice";
 import ConversationDetail from "./conversation-detail";
 import { useAppSelector } from "@/hooks/use-redux-store";
 import { identifyUsers } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 type Props = {};
 
@@ -15,7 +17,15 @@ export default function ConversationList({}: Props) {
 
   const hasConversations = data && data.length > 0;
 
-  if (!hasConversations || !user) return <div>No conversations</div>;
+  if (!hasConversations || !user)
+    return (
+      <div className="flex h-full w-full flex-col items-center gap-4 pt-44">
+        <h1 className="text-2xl font-bold">No conversations found</h1>
+        <Button>
+          <Link href={"/"}>Go back to homepage</Link>
+        </Button>
+      </div>
+    );
 
   const initialConversationId = data[0].id;
 

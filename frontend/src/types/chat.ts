@@ -10,6 +10,14 @@ type Conversation = {
   last: Pick<Message, "sender" | "content" | "created_at">;
 };
 
+type CreateConversationResponse = {
+  id: string;
+  initiator: ConversationUser;
+  receptitor: string;
+  created_at: string;
+  updated_at: string;
+};
+
 type Message = {
   id: string;
   sender: string;
@@ -23,4 +31,4 @@ type Messages = PaginatedResults & {
   results: Message[];
 };
 
-export type { Conversation, Message, Messages };
+export type { Conversation, Message, Messages, CreateConversationResponse };
