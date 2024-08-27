@@ -18,6 +18,21 @@ export function paramsAppender(args: getPropertiesArgs) {
   if (args.id) {
     params.append("id", args.id);
   }
+  if (args.location) {
+    params.append("location", args.location);
+  }
+  if (args.checkIn) {
+    params.append("check-in", args.checkIn);
+  }
+  if (args.checkOut) {
+    params.append("check-out", args.checkOut);
+  }
+  if (args.guests) {
+    params.append("guests", args.guests.toString());
+  }
+  if (args.category) {
+    params.append("category", args.category);
+  }
 
   return params;
 }

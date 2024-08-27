@@ -8,7 +8,16 @@ type AuthState = {
 
 type ModalState = {
   isOpen: boolean;
-  type: "login" | "register" | "confirm" | "add-property" | null;
+  type:
+    | "login"
+    | "register"
+    | "confirm"
+    | "add-property"
+    | "location"
+    | "check-in"
+    | "check-out"
+    | "guests"
+    | null;
 };
 
 type ConfirmState = {
@@ -47,6 +56,11 @@ type getPropertiesArgs = {
   page?: string;
   name?: string;
   id?: string;
+  category?: string;
+  location?: string;
+  checkIn?: string;
+  checkOut?: string;
+  guests?: string;
 };
 
 export type {

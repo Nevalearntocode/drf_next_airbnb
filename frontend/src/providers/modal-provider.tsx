@@ -2,6 +2,9 @@
 
 import AddPropertyModal from "@/modals/add-property-modal";
 import ConfirmModal from "@/modals/confirm-modal";
+import DateModal from "@/modals/date-modal";
+import GuestModal from "@/modals/guest-modal";
+import LocationModal from "@/modals/location-modal";
 import LoginModal from "@/modals/login-modal";
 import RegisterModal from "@/modals/register-modal";
 import React from "react";
@@ -26,6 +29,9 @@ const ModalProvider = (props: Props) => {
       <RegisterModal />
       <AddPropertyModal />
       <ConfirmModal />
+      <LocationModal />
+      <DateModal />
+      <GuestModal />
     </>
   );
 };

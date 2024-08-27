@@ -11,12 +11,17 @@ export const usePropertyList = (route: PropertyRoute) => {
   const page = searchParams.get("page") || undefined;
   const name = searchParams.get("name") || undefined;
   const id = searchParams.get("id") || undefined;
+  const category = searchParams.get("category") || undefined;
+  const location = searchParams.get("location") || undefined;
+  const checkIn = searchParams.get("check-in") || undefined;
+  const checkOut = searchParams.get("check-out") || undefined;
+  const guests = searchParams.get("guests") || undefined;
 
   // Conditionally define the query arguments
   const queryArgs =
     route === "me"
-      ? { page, name, id } // For current user
-      : { page, name, id }; // For all properties
+      ? { page, name, id, category, location, checkIn, checkOut, guests } // For current user
+      : { page, name, id, category, location, checkIn, checkOut, guests }; // For all properties
 
   // Call the appropriate query *outside* the conditional
   const { data: allPropertiesData, isLoading: allPropertiesLoading } =
