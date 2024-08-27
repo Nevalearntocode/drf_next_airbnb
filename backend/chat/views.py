@@ -46,6 +46,11 @@ class MessageViewSet(ModelViewSet, MessageQuerysetMixin):
 
         return Response(serializer.data)
 
+    def perform_destroy(self, instance):
+        instance.deleted = True
+        instance.content = ""
+        instance.save()
+
     def get_receiver(self, request):
         instance = self.get_object()
         if request.user != instance.conversation.receptitor:

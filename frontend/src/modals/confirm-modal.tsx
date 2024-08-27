@@ -13,11 +13,13 @@ import { Input } from "@/components/ui/input";
 import { useConfirmProperty } from "@/hooks/use-confirm-property";
 import { useConfirmReservation } from "@/hooks/use-confirm-reservation";
 import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
+import { useDeleteMessageMutation } from "@/redux/features/chat-slice";
 import {
   clearDeletingPropertyInfo,
   clearReservationFormData,
 } from "@/redux/features/confirm-slice";
 import { closeModal } from "@/redux/features/modal-slice";
+import { toast } from "sonner";
 
 type Props = {};
 
@@ -28,6 +30,7 @@ export default function ConfirmModal({}: Props) {
     confirmType,
     deletingPropertyInfo,
     reservationFormData,
+    messageId,
   } = useAppSelector((state) => state.confirm);
   const { isOpen, type } = useAppSelector((state) => state.modal);
   const isModalOpen = isOpen && type === "confirm";
@@ -39,6 +42,8 @@ export default function ConfirmModal({}: Props) {
   const { onDeleteProperty, isLoading, disable, onChange } = useConfirmProperty(
     { deletingPropertyInfo, confirmType },
   );
+
+  const [deleteMessage] = useDeleteMessageMutation();
 
   const onClose = () => {
     dispatch(closeModal());
@@ -52,6 +57,14 @@ export default function ConfirmModal({}: Props) {
     }
     if (confirmType === "delete-property") {
       return onDeleteProperty();
+    }
+    if (confirmType === "delete-message") {
+      return deleteMessage(messageId).unwrap().then(() => {
+        dispatch(closeModal());
+      }).catch((err) => {
+        console.log(err);
+        toast.error("Failed to delete message");
+      });
     }
   };
 

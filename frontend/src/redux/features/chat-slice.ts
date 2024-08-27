@@ -95,6 +95,23 @@ export const chatSlice = apiSlice.injectEndpoints({
         { type: "Conversations", id: "LIST" },
       ],
     }),
+    updateMessage: builder.mutation<void, { id: string; content: string }>({
+      query: (args) => ({
+        url: `/messages/${args.id}/`,
+        method: "PUT",
+        body: {
+          content: args.content,
+        },
+      }),
+      invalidatesTags: [{ type: "Messages", id: "LIST" }],
+    }),
+    deleteMessage: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/messages/${id}/`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "Messages", id: "LIST" }],
+    }),
   }),
 });
 
@@ -104,4 +121,6 @@ export const {
   useGetConversationDetailsQuery,
   useGetConversationMessageQuery,
   useSendMessageMutation,
+  useUpdateMessageMutation,
+  useDeleteMessageMutation,
 } = chatSlice;

@@ -8,6 +8,7 @@ from users.serializers import CustomUserForConversationsSerializer
 class MessageBaseSerializer(serializers.ModelSerializer):
     sender = serializers.ReadOnlyField(source="sender.id")
     conversation = serializers.ReadOnlyField(source="conversation.id")
+    deleted = serializers.ReadOnlyField()
     receiver = serializers.PrimaryKeyRelatedField(
         queryset=CustomUser.objects.all(),
         write_only=True,

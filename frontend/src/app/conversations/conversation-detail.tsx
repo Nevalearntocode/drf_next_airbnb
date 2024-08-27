@@ -7,14 +7,18 @@ import {
   useGetConversationDetailsQuery,
   useGetConversationMessageQuery,
   useSendMessageMutation,
+  useUpdateMessageMutation,
 } from "@/redux/features/chat-slice";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { Message } from "@/types/chat";
 import { toast } from "sonner";
-// import useWebSocket from "react-use-websocket";
-// import { useAppSelector } from "@/hooks/use-redux-store";
+import useWebSocket from "react-use-websocket";
+import { useAppSelector } from "@/hooks/use-redux-store";
+import MessageDisplay from "./message-display";
+import { env } from "@/env";
+import useScrollToBottom from "@/hooks/use-scroll-to-bottom";
 
 type Props = {
   initialConversationId: string;
@@ -24,11 +28,14 @@ type Props = {
 const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   const searchParams = useSearchParams();
   const [message, setMessage] = useState<string>("");
+  const [messageId, setMessageId] = useState<string>("");
   const conversationId = searchParams.get("conversation");
 
   const messagesDiv = useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-  // const { user } = useAppSelector((state) => state.auth);
+  const { user } = useAppSelector((state) => state.auth);
   const { data } = useGetConversationDetailsQuery(
     conversationId ?? initialConversationId,
   );
@@ -36,67 +43,103 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
     conversation: conversationId ?? initialConversationId,
   });
   const [sendMessage] = useSendMessageMutation();
+  const [updateMessage] = useUpdateMessageMutation();
 
   const [realtimeMessages, setRealtimeMessages] = useState<Message[]>(
     messages?.results ?? [],
   );
+  const scrollToBottom = useScrollToBottom();
 
-  // const { lastJsonMessage, sendJsonMessage, readyState } = useWebSocket(
-  //   `ws://localhost:8000/ws/${conversationId ?? initialConversationId}/?user=${user?.id}`,
-  //   {
-  //     share: false,
-  //     shouldReconnect: () => true,
-  //   },
-  // );
-
-  const scrollToBottom = () => {
-    setTimeout(() => {
-      if (messagesDiv.current) {
-        messagesDiv.current.scrollTop = messagesDiv.current.scrollHeight;
-      }
-    }, 100);
-  };
+  const { lastJsonMessage, sendJsonMessage } = useWebSocket(
+    `ws://${env.NEXT_PUBLIC_SOCKET}/ws/${conversationId ?? initialConversationId}/`,
+    {
+      share: false,
+      shouldReconnect: () => true,
+    },
+  );
 
   useEffect(() => {
     if (messages) {
-      setRealtimeMessages(messages.results.slice().reverse());
+      setRealtimeMessages(messages.results);
     }
   }, [messages, conversationId, initialConversationId]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, []);
+    if (
+      lastJsonMessage &&
+      typeof lastJsonMessage === "object" &&
+      "content" in lastJsonMessage
+    ) {
+      const newMessage: Message = {
+        id: "",
+        sender: user?.id ?? "",
+        deleted: false,
+        content: lastJsonMessage.content as string,
+        conversation: conversationId ?? initialConversationId,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      setRealtimeMessages((prevMessages) => {
+        return [newMessage, ...prevMessages];
+      });
+    }
+
+    scrollToBottom(messagesDiv);
+  }, [lastJsonMessage, conversationId, initialConversationId]);
 
   if (!data) return null;
 
   const { receptitor, initiator } = data;
-  const { currentUser, otherUser } = identifyUsers(
-    userId,
-    initiator,
-    receptitor,
-  );
+  const { otherUser } = identifyUsers(userId, initiator, receptitor);
 
   const onSubmit = () => {
+    setLoading(true);
     sendMessage({
       content: message,
       receiver: otherUser.id,
     })
       .unwrap()
       .then(() => {
+        sendJsonMessage({
+          event: "chat_message",
+          data: {
+            content: message,
+            conversation_id: conversationId ?? initialConversationId,
+          },
+        });
+        setMessage("");
+        scrollToBottom(messagesDiv);
       })
       .catch((err) => {
         console.log(err);
         toast.error("Failed to send message");
+      })
+      .finally(() => {
+        setLoading(false);
       });
-      // sendJsonMessage({
-      //   event: "chat_message",
-      //   data: {
-      //     content: message,
-      //     conversation_id: conversationId ?? initialConversationId,
-      //   },
-      // });
-      // setMessage("");
-      // scrollToBottom();
+  };
+
+  // add real-time here
+  const onUpdate = () => {
+    setLoading(true);
+    updateMessage({
+      id: messageId,
+      content: message,
+    })
+      .unwrap()
+      .then(() => {
+        setIsEditing(false);
+        setMessageId("");
+        setMessage("");
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to update message");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -105,38 +148,46 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
         className="flex max-h-[400px] flex-col space-y-4 overflow-auto"
         ref={messagesDiv}
       >
-        {realtimeMessages.map((message) => {
-          if (message.sender === otherUser.id) {
+        {realtimeMessages
+          .slice()
+          .reverse()
+          .map((message) => {
+            const updated_at = new Date(message.updated_at);
+            const created_at = new Date(message.created_at);
+            const isEdited = updated_at.getTime() !== created_at.getTime();
+
             return (
-              <div
+              <MessageDisplay
+                setIsEditing={setIsEditing}
+                setMessageId={setMessageId}
+                setMessage={setMessage}
+                id={message.id}
+                isDeleted={message.deleted}
+                isEdited={isEdited}
+                content={message.content}
+                isOther={message.sender === otherUser.id}
                 key={message.id}
-                className="mr-auto max-w-[80%] rounded-xl bg-gray-200 px-6 py-4"
-              >
-                <p className="font-bold text-gray-500">{otherUser.name}</p>
-                <p className="">{message.content}</p>
-              </div>
+              />
             );
-          } else {
-            return (
-              <div
-                key={message.id}
-                className="ml-auto max-w-[80%] rounded-xl bg-blue-200 px-6 py-4"
-              >
-                <p className="font-bold text-gray-500">{currentUser.name}</p>
-                <p className="">{message.content}</p>
-              </div>
-            );
-          }
-        })}
+          })}
       </div>
-      <div className="absolute bottom-2 mt-4 flex w-full space-x-4 rounded-xl px-6 py-2">
-        <Input
-          type="text"
-          placeholder="Type your message..."
-          className="w-full rounded-xl bg-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0"
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        <Button onClick={onSubmit}>send</Button>
+      <div className="absolute bottom-2 mt-4 w-full">
+        {isEditing && (
+          <div className="container">
+            <p className="italic">Editing message...</p>
+          </div>
+        )}
+        <div className="flex w-full space-x-4 rounded-xl px-6 py-2">
+          <Input
+            disabled={loading}
+            type="text"
+            placeholder="Type your message..."
+            value={message}
+            className="w-full rounded-xl bg-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0"
+            onChange={(e) => setMessage(e.target.value)}
+          />
+          <Button onClick={isEditing ? onUpdate : onSubmit}>send</Button>
+        </div>
       </div>
     </div>
   );

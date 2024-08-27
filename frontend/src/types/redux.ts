@@ -14,7 +14,7 @@ type ModalState = {
 type ConfirmState = {
   title: string;
   message: string;
-  confirmType: "add-reservation" | "delete-property" | null;
+  confirmType: "add-reservation" | "delete-property" | "delete-message" | null;
 
   reservationFormData: {
     property: string;
@@ -27,6 +27,8 @@ type ConfirmState = {
     id: string;
     name: string;
   };
+
+  messageId: string;
 };
 
 type LoginArgs = {
