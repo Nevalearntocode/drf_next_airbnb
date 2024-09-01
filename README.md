@@ -70,7 +70,6 @@ npm install
 
 ### nextjs development server:
     ```
-    cd .\frontend\
     npm run dev
     ``` 
 
