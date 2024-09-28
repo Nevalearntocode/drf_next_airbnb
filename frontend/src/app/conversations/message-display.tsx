@@ -17,9 +17,7 @@ type Props = {
   isOther: boolean;
   isEdited: boolean;
   isDeleted: boolean;
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  setMessage: React.Dispatch<React.SetStateAction<string>>;
-  setMessageId: React.Dispatch<React.SetStateAction<string>>;
+  handleEdit: (messageId: string) => void;
 };
 
 export default function MessageDisplay({
@@ -28,15 +26,8 @@ export default function MessageDisplay({
   isOther,
   isEdited,
   isDeleted,
-  setIsEditing,
-  setMessage,
-  setMessageId,
+  handleEdit,
 }: Props) {
-  const onClickEdit = () => {
-    setIsEditing(true);
-    setMessage(content);
-    setMessageId(id);
-  };
   const dispatch = useAppDispatch();
 
   const onClickDelete = () => {
@@ -93,23 +84,23 @@ export default function MessageDisplay({
             {!isOther && (
               <div
                 className={cn(
-                  "hidden gap-1 group-hover:flex",
+                  "hidden gap-2 group-hover:flex",
                   isOther ? "self-start" : "self-end",
                 )}
               >
                 <Button
                   className="m-0 p-2"
-                  variant={`ghost`}
-                  onClick={onClickDelete}
+                  variant={`secondary`}
+                  onClick={() => handleEdit(id)}
                 >
-                  <Trash className="h-4 w-4" />
+                  <Pencil className="h-4 w-4" />
                 </Button>
                 <Button
                   className="m-0 p-2"
-                  variant={`ghost`}
-                  onClick={onClickEdit}
+                  variant={`destructive`}
+                  onClick={onClickDelete}
                 >
-                  <Pencil className="h-4 w-4" />
+                  <Trash className="h-4 w-4" />
                 </Button>
               </div>
             )}

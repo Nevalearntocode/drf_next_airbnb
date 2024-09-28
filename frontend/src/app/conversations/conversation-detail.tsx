@@ -6,19 +6,18 @@ import { identifyUsers } from "@/lib/utils";
 import {
   useGetConversationDetailsQuery,
   useGetConversationMessageQuery,
-  useSendMessageMutation,
-  useUpdateMessageMutation,
 } from "@/redux/features/chat-slice";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { Message } from "@/types/chat";
-import { toast } from "sonner";
 import useWebSocket from "react-use-websocket";
 import { useAppSelector } from "@/hooks/use-redux-store";
 import MessageDisplay from "./message-display";
 import { env } from "@/env";
 import useScrollToBottom from "@/hooks/use-scroll-to-bottom";
+import { Textarea } from "@/components/ui/textarea";
+import { X } from "lucide-react";
 
 type Props = {
   initialConversationId: string;
@@ -27,119 +26,128 @@ type Props = {
 
 const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   const searchParams = useSearchParams();
+  const conversationId = searchParams.get("conversation");
+  const messagesDiv = useRef<HTMLDivElement>(null);
+
   const [message, setMessage] = useState<string>("");
   const [messageId, setMessageId] = useState<string>("");
-  const conversationId = searchParams.get("conversation");
 
-  const messagesDiv = useRef<HTMLDivElement>(null);
+  const [newMessages, setNewMessages] = useState<Message[]>([]);
+  const [type, setType] = useState<"edit" | "send">("send");
+
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const { user } = useAppSelector((state) => state.auth);
-  const { data } = useGetConversationDetailsQuery(
+  const adjustHeight = () => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 96)}px`;
+    }
+  };
+
+  const { data: conversation } = useGetConversationDetailsQuery(
     conversationId ?? initialConversationId,
   );
+
   const { data: messages } = useGetConversationMessageQuery({
     conversation: conversationId ?? initialConversationId,
   });
-  const [sendMessage] = useSendMessageMutation();
-  const [updateMessage] = useUpdateMessageMutation();
 
-  const [realtimeMessages, setRealtimeMessages] = useState<Message[]>(
-    messages?.results ?? [],
-  );
   const scrollToBottom = useScrollToBottom();
-
-  const { lastJsonMessage, sendJsonMessage } = useWebSocket(
-    `ws://${env.NEXT_PUBLIC_SOCKET}/ws/${conversationId ?? initialConversationId}/`,
-    {
-      share: false,
-      shouldReconnect: () => true,
-    },
-  );
 
   useEffect(() => {
     if (messages) {
-      setRealtimeMessages(messages.results);
+      setNewMessages(messages.results ?? []);
     }
   }, [messages, conversationId, initialConversationId]);
 
   useEffect(() => {
-    if (
-      lastJsonMessage &&
-      typeof lastJsonMessage === "object" &&
-      "content" in lastJsonMessage
-    ) {
-      const newMessage: Message = {
-        id: "",
-        sender: user?.id ?? "",
-        deleted: false,
-        content: lastJsonMessage.content as string,
-        conversation: conversationId ?? initialConversationId,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+    adjustHeight();
+  }, [message]);
 
-      setRealtimeMessages((prevMessages) => {
-        return [newMessage, ...prevMessages];
-      });
+  const { sendJsonMessage } = useWebSocket(
+    `ws://${env.NEXT_PUBLIC_SOCKET}/ws/conversations/${conversationId ?? initialConversationId}/`,
+    {
+      share: false,
+      shouldReconnect: () => true,
+      onMessage: (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === "send") {
+          setNewMessages([...newMessages, data.new_message]);
+        }
+        if (data.type !== "send") {
+          setNewMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.id === data.new_message.id ? data.new_message : msg,
+            ),
+          );
+        }
+      },
+      onOpen: () => {
+        console.log("WebSocket connection opened");
+      },
+      onError: (err) => {
+        console.log(err);
+      },
+    },
+  );
+
+  useEffect(() => {
+    if (messagesDiv.current) {
+      scrollToBottom(messagesDiv);
     }
+  }, [newMessages, scrollToBottom]);
 
-    scrollToBottom(messagesDiv);
-  }, [lastJsonMessage, conversationId, initialConversationId]);
+  if (!conversation) return null;
 
-  if (!data) return null;
+  const { receptitor, initiator } = conversation;
 
-  const { receptitor, initiator } = data;
   const { otherUser } = identifyUsers(userId, initiator, receptitor);
 
-  const onSubmit = () => {
-    setLoading(true);
-    sendMessage({
-      content: message,
-      receiver: otherUser.id,
-    })
-      .unwrap()
-      .then(() => {
-        sendJsonMessage({
-          event: "chat_message",
-          data: {
-            content: message,
-            conversation_id: conversationId ?? initialConversationId,
-          },
-        });
-        setMessage("");
-        scrollToBottom(messagesDiv);
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Failed to send message");
-      })
-      .finally(() => {
-        setLoading(false);
+  const sendMessage = () => {
+    if (type === "edit") {
+      sendJsonMessage({
+        type,
+        message: {
+          id: messageId,
+          content: message,
+        },
       });
+    }
+    if (type === "send") {
+      sendJsonMessage({ type, message });
+    }
+    setType("send");
+    setMessage("");
+  };
+  const handleEdit = (messageId: string) => {
+    setType("edit");
+    const messageToEdit = newMessages.find(
+      (message) => message.id === messageId,
+    );
+    setMessageId(messageId);
+    setMessage(messageToEdit?.content ?? "");
   };
 
-  // add real-time here
-  const onUpdate = () => {
-    setLoading(true);
-    updateMessage({
-      id: messageId,
-      content: message,
-    })
-      .unwrap()
-      .then(() => {
-        setIsEditing(false);
-        setMessageId("");
-        setMessage("");
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error("Failed to update message");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  const onUpdate = (messageId: string) => {
+    setType("edit");
+    const messageToEdit = newMessages.find(
+      (message) => message.id === messageId,
+    );
+    setMessageId(messageId);
+    setMessage(messageToEdit?.content ?? "");
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      if (message.trim() === "") {
+        event.preventDefault();
+        return;
+      }
+      event.preventDefault();
+      sendMessage();
+    }
   };
 
   return (
@@ -148,45 +156,58 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
         className="flex max-h-[400px] flex-col space-y-4 overflow-auto"
         ref={messagesDiv}
       >
-        {realtimeMessages
-          .slice()
-          .reverse()
-          .map((message) => {
-            const updated_at = new Date(message.updated_at);
-            const created_at = new Date(message.created_at);
-            const isEdited = updated_at.getTime() !== created_at.getTime();
+        {newMessages.map((message) => {
+          const updated_at = new Date(message.updated_at);
+          const created_at = new Date(message.created_at);
+          const isEdited = updated_at.getTime() !== created_at.getTime();
 
-            return (
-              <MessageDisplay
-                setIsEditing={setIsEditing}
-                setMessageId={setMessageId}
-                setMessage={setMessage}
-                id={message.id}
-                isDeleted={message.deleted}
-                isEdited={isEdited}
-                content={message.content}
-                isOther={message.sender === otherUser.id}
-                key={message.id}
-              />
-            );
-          })}
+          return (
+            <MessageDisplay
+              handleEdit={handleEdit}
+              id={message.id}
+              isDeleted={message.deleted}
+              isEdited={isEdited}
+              content={message.content}
+              isOther={message.sender === otherUser.id}
+              key={message.id}
+            />
+          );
+        })}
       </div>
       <div className="absolute bottom-2 mt-4 w-full">
-        {isEditing && (
-          <div className="container">
-            <p className="italic">Editing message...</p>
+        {type === "edit" && (
+          <div className="container flex items-center">
+            <p className="italic">Editing...</p>
+            <Button
+              variant="ghost"
+              size={`icon`}
+              className="rounded-full"
+              onClick={() => {
+                setType("send");
+                setMessage("");
+              }}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
         )}
-        <div className="flex w-full space-x-4 rounded-xl px-6 py-2">
-          <Input
+        <div className="relative flex w-full space-x-4 rounded-xl px-6 py-2 pr-[72px]">
+          <Textarea
             disabled={loading}
-            type="text"
             placeholder="Type your message..."
+            ref={textareaRef}
             value={message}
-            className="w-full rounded-xl bg-gray-300 focus-visible:ring-0 focus-visible:ring-offset-0"
+            className="max-h-24 min-h-[40px] resize-none overflow-y-auto"
             onChange={(e) => setMessage(e.target.value)}
+            rows={1}
+            onKeyDown={handleKeyDown}
           />
-          <Button onClick={isEditing ? onUpdate : onSubmit}>send</Button>
+          <Button
+            onClick={isEditing ? () => onUpdate(messageId) : sendMessage}
+            className="absolute right-0"
+          >
+            send
+          </Button>
         </div>
       </div>
     </div>

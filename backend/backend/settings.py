@@ -28,8 +28,6 @@ INSTALLED_APPS = [
     "social_django",
     "corsheaders",
     "django_celery_beat",
-    "channels",
-    "daphne",
     # Internal
     "django.contrib.admin",
     "django.contrib.auth",
@@ -169,8 +167,14 @@ AUTH_USER_MODEL = "users.CustomUser"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-    }
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [
+                # f"redis://{getenv('REDIS_USER')}:{getenv('REDIS_PASSWORD')}@{getenv('REDIS_HOST')}:{getenv('REDIS_PORT')}/0",
+                ("redis", 6379),
+            ],
+        },
+    },
 }
 
 DJOSER = {
@@ -232,5 +236,11 @@ LOGGING = {
     "root": {
         "handlers": ["console"],
         "level": "INFO",
+    },
+    "daphne": {
+        "handlers": [
+            "console",
+        ],
+        "level": "DEBUG",
     },
 }

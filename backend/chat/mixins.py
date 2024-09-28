@@ -11,4 +11,6 @@ class MessageQuerysetMixin(GenericViewSet):
         if conversation_id:
             queryset = queryset.filter(conversation=conversation_id)
 
+        queryset = queryset.order_by("created_at")
+
         return queryset
