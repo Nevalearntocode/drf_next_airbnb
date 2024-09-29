@@ -23,10 +23,10 @@ const AddPropertyButton = (props: Props) => {
   };
 
   return (
-    <div className="p-2 text-sm">
+    <div className="flex items-center p-2 text-sm">
       <Button className="rounded-full shadow-md" onClick={onClick}>
-        <p>Airbnb your home</p>
-        <Globe className="ml-2 h-4 w-4" />
+        <p className="hidden lg:flex">Airbnb your home</p>
+        <Globe className="ml-0 h-4 w-4 lg:ml-2" />
       </Button>
     </div>
   );

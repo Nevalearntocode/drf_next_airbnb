@@ -34,40 +34,48 @@ const SearchFilter = (props: Props) => {
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex h-[64px] flex-row items-center justify-between rounded-full border">
-        <div className="hidden lg:block">
+      <div className="flex h-[64px] flex-row items-center justify-between rounded-full border-0 md:border">
+        <div className="hidden md:block">
           <div className="flex h-[48px] flex-row items-center justify-between lg:h-[64px]">
             <Button
-              className="flex h-full w-[250px] flex-col justify-center rounded-full px-8"
+              className="flex h-full flex-col justify-center rounded-full px-2 md:px-4 lg:px-6 xl:px-8"
               variant={`ghost`}
               onClick={onLocationClick}
             >
               <p className="text-xs font-semibold">Where</p>
-              <p className="text-sm">{location ?? "Add location"}</p>
+              <p className="hidden text-sm lg:block">
+                {location ?? "Add location"}
+              </p>
             </Button>
             <Button
-              className="flex h-full flex-col justify-center rounded-full px-8"
+              className="flex h-full flex-col justify-center rounded-full px-2 md:px-4 lg:px-6 xl:px-8"
               variant={`ghost`}
               onClick={() => onDateClick("check-in")}
             >
               <p className="text-xs font-semibold">Check in</p>
-              <p className="text-sm">{checkIn ?? "Add dates"}</p>
+              <p className="hidden text-sm lg:block">
+                {checkIn ?? "Add dates"}
+              </p>
             </Button>
             <Button
-              className="flex h-full flex-col justify-center rounded-full px-8"
+              className="flex h-full flex-col justify-center rounded-full px-2 md:px-4 lg:px-6 xl:px-8"
               variant={`ghost`}
               onClick={() => onDateClick("check-out")}
             >
               <p className="text-xs font-semibold">Check out</p>
-              <p className="text-sm">{checkOut ?? "Add dates"}</p>
+              <p className="hidden text-sm lg:block">
+                {checkOut ?? "Add dates"}
+              </p>
             </Button>
             <Button
-              className="flex h-full flex-col justify-center rounded-full px-8"
+              className="flex h-full flex-col justify-center rounded-full px-2 md:px-4 lg:px-6 xl:px-8"
               variant={`ghost`}
               onClick={onGuestClick}
             >
               <p className="text-xs font-semibold">Guest</p>
-              <p className="text-sm">{guests ?? "Add guests"}</p>
+              <p className="hidden text-sm lg:block">
+                {guests ?? "Add guests"}
+              </p>
             </Button>
           </div>
         </div>

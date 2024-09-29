@@ -4,13 +4,12 @@ import Link from "next/link";
 
 const Logo = () => {
   return (
-    <div className="relative flex aspect-video max-h-20 items-center justify-center">
+    <div className="relative flex aspect-video h-[45px] w-[80px] items-center justify-center md:h-[67.5px] md:w-[120px]">
       <Link href={`/`}>
         <Image
           src={`/images/logo.png`}
           priority
-          width={150}
-          height={50}
+          fill
           alt={`logo`}
           className="h-auto w-auto"
         />
