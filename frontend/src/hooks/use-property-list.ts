@@ -3,10 +3,12 @@ import {
   useGetCurrentUserPropertiesQuery,
 } from "@/redux/features/property-slice";
 import { PropertyRoute } from "@/types/property";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 export const usePropertyList = (route: PropertyRoute) => {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const landlordId = pathname.split("/")[2];
 
   const page = searchParams.get("page") || undefined;
   const name = searchParams.get("name") || undefined;
@@ -28,12 +30,21 @@ export const usePropertyList = (route: PropertyRoute) => {
     useGetAllPropertiesQuery(queryArgs);
   const { data: myPropertiesData, isLoading: myPropertiesLoading } =
     useGetCurrentUserPropertiesQuery(queryArgs);
+  const { data: landlordPropertiesData, isLoading: landlordPropertiesLoading } =
+    useGetAllPropertiesQuery({ landlord: landlordId });
 
   // Now, conditionally return the data and loading state
   if (route === "me") {
     return {
       data: myPropertiesData,
       isLoading: myPropertiesLoading,
+    };
+  }
+
+  if (route === "landlord") {
+    return {
+      data: landlordPropertiesData,
+      isLoading: landlordPropertiesLoading,
     };
   }
 

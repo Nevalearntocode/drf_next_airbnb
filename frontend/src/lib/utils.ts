@@ -33,6 +33,9 @@ export function paramsAppender(args: getPropertiesArgs) {
   if (args.category) {
     params.append("category", args.category);
   }
+  if (args.landlord) {
+    params.append("landlord", args.landlord);
+  }
 
   return params;
 }

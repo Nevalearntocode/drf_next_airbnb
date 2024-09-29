@@ -83,6 +83,12 @@ export const userSlice = apiSlice.injectEndpoints({
         method: "POST",
       }),
     }),
+    getLandlord: builder.query<User, string>({
+      query: (args) => ({
+        url: `/users/${args}/`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -94,4 +100,5 @@ export const {
   useRetrieveUserQuery,
   useUpdateUserMutation,
   useVerifyMutation,
+  useGetLandlordQuery
 } = userSlice;
