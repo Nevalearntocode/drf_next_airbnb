@@ -16,9 +16,11 @@ import MessageDisplay from "./message-display";
 import { env } from "@/env";
 import useScrollToBottom from "@/hooks/use-scroll-to-bottom";
 import { Textarea } from "@/components/ui/textarea";
-import { X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useAppDispatch } from "@/hooks/use-redux-store";
 import { apiSlice } from "@/redux/services/api-slice";
+import { UserAvatar } from "@/components/user-avatar";
+import ConversationSheet from "./conversation-sheet";
 
 type Props = {
   initialConversationId: string;
@@ -158,9 +160,23 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   };
 
   return (
-    <div className="relative h-[calc(100vh-180px)] w-full">
+    <div className="relative h-full w-full">
+      <div className="mb-2 flex items-center justify-between rounded-xl bg-muted px-2 py-2 sm:hidden">
+        <div className="flex items-center gap-2">
+          <UserAvatar
+            image={otherUser.avatar ?? undefined}
+            name={otherUser.name}
+          />
+          <p>{otherUser.name}</p>
+        </div>
+        <ConversationSheet>
+          <Button className="" variant={`ghost`} size={`icon`}>
+            <Menu className="h-4 w-4" />
+          </Button>
+        </ConversationSheet>
+      </div>
       <div
-        className="flex max-h-[400px] flex-col space-y-4 overflow-auto"
+        className="flex max-h-[430px] flex-col space-y-4 overflow-auto md:max-h-[440px]"
         ref={messagesDiv}
       >
         {newMessages.map((message) => {
@@ -181,7 +197,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
           );
         })}
       </div>
-      <div className="absolute bottom-2 mt-4 w-full">
+      <div className="absolute bottom-0 mt-4 w-full">
         {type === "edit" && (
           <div className="container flex items-center">
             <p className="italic">Editing...</p>
@@ -198,7 +214,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
             </Button>
           </div>
         )}
-        <div className="relative flex w-full space-x-4 rounded-xl px-6 py-2 pr-[72px]">
+        <div className="relative flex w-full rounded-xl pr-[72px]">
           <Textarea
             disabled={loading}
             placeholder="Type your message..."

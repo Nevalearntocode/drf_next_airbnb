@@ -30,8 +30,8 @@ export default function ConversationList({}: Props) {
   const initialConversationId = data[0].id;
 
   return (
-    <div className="flex h-full w-full gap-4 pt-12">
-      <div className="flex w-auto max-w-[560px] flex-col gap-2">
+    <div className="flex h-full w-full gap-4 pt-2 md:pt-12">
+      <div className="hidden flex-col gap-2 md:flex md:w-1/3 lg:w-1/4">
         {data.map((conversation) => {
           const { initiator, receptitor, id } = conversation;
           const { currentUser, otherUser } = identifyUsers(
@@ -52,13 +52,11 @@ export default function ConversationList({}: Props) {
         })}
       </div>
       {hasConversations && (
-        <div className="relative h-full w-full flex-1">
-          <div className="fixed w-[76%] pr-20">
-            <ConversationDetail
-              initialConversationId={initialConversationId}
-              userId={user.id}
-            />
-          </div>
+        <div className="relative h-full w-full">
+          <ConversationDetail
+            initialConversationId={initialConversationId}
+            userId={user.id}
+          />
         </div>
       )}
     </div>

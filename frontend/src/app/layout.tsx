@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={cn("h-full", inter.className)}>
         <RootProvider>
           <Navbar />
-          <div className="h-full pt-32">{children}</div>
+          <div className="h-full pt-28 md:pt-32">{children}</div>
         </RootProvider>
       </body>
     </html>
