@@ -1,10 +1,11 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
 import PropertyReservation from "./property-reservation";
 import Link from "next/link";
 import { PropertyWithLandlordAndReservation } from "@/types/property";
 import { UserAvatar } from "@/components/user-avatar";
+import ContactButton from "@/app/landlords/contact-button";
+import { useAppSelector } from "@/hooks/use-redux-store";
 
 type Props = {
   property: PropertyWithLandlordAndReservation;
@@ -22,6 +23,10 @@ const PropertyInfo = ({ property }: Props) => {
     id,
   } = property;
 
+  const { user } = useAppSelector((state) => state.auth);
+
+  const isOwner = user?.id === landlord.id;
+
   return (
     <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-5">
       <div className="col-span-3 py-6 pr-6">
@@ -30,7 +35,7 @@ const PropertyInfo = ({ property }: Props) => {
           {guests} guests · {bedrooms} bedroom · {bathrooms} bath
         </span>
         <Separator />
-        <div className="flex items-center py-6">
+        <div className="flex items-center justify-between py-6">
           <Link
             href={`/landlords/${landlord.id}`}
             className="flex items-center space-x-4"
@@ -43,6 +48,7 @@ const PropertyInfo = ({ property }: Props) => {
               {landlord.name}
             </p>
           </Link>
+          {!isOwner && <ContactButton id={landlord.id} />}
         </div>
         <Separator />
         <p className="mt-6 text-lg">{description}</p>

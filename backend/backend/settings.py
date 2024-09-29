@@ -188,6 +188,7 @@ DJOSER = {
     "SET_PASSWORD_RETYPE": True,
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": getenv("REDIRECT_URIS").split(","),
     "user": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
+    "user_list": ["djoser.permissions.CurrentUserOrAdminOrReadOnly"],
 }
 
 SIMPLE_JWT = {

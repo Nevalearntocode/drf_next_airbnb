@@ -30,7 +30,7 @@ export default function ConversationList({}: Props) {
   const initialConversationId = data[0].id;
 
   return (
-    <div className="flex gap-4 pt-12">
+    <div className="flex h-full w-full gap-4 pt-12">
       <div className="flex w-auto max-w-[560px] flex-col gap-2">
         {data.map((conversation) => {
           const { initiator, receptitor, id } = conversation;

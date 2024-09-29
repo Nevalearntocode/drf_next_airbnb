@@ -19,10 +19,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("", inter.className)}>
+      <body className={cn("h-full", inter.className)}>
         <RootProvider>
           <Navbar />
-          <div className="pt-32">{children}</div>
+          <div className="h-full pt-32">{children}</div>
         </RootProvider>
       </body>
     </html>

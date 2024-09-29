@@ -5,12 +5,14 @@ import { Button } from "@/components/ui/button";
 import { useCreateConversationMutation } from "@/redux/features/chat-slice";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 type Props = {
   id: string;
+  className?: string
 };
 
-const ContactButton = ({ id }: Props) => {
+const ContactButton = ({ id, className }: Props) => {
   const [createConversation] = useCreateConversationMutation();
   const router = useRouter();
 
@@ -27,7 +29,7 @@ const ContactButton = ({ id }: Props) => {
   };
 
   return (
-    <Button className="flex w-full" onClick={onClick}>
+    <Button className={cn("", className)} onClick={onClick}>
       Contact
     </Button>
   );

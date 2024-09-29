@@ -12,12 +12,13 @@ import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import { Message } from "@/types/chat";
 import useWebSocket from "react-use-websocket";
-import { useAppSelector } from "@/hooks/use-redux-store";
 import MessageDisplay from "./message-display";
 import { env } from "@/env";
 import useScrollToBottom from "@/hooks/use-scroll-to-bottom";
 import { Textarea } from "@/components/ui/textarea";
 import { X } from "lucide-react";
+import { useAppDispatch } from "@/hooks/use-redux-store";
+import { apiSlice } from "@/redux/services/api-slice";
 
 type Props = {
   initialConversationId: string;
@@ -38,6 +39,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const dispatch = useAppDispatch();
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -83,6 +85,11 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
             ),
           );
         }
+        dispatch(
+          apiSlice.util.invalidateTags([
+            { type: "Conversations", id: conversationId ?? "LIST" },
+          ]),
+        );
       },
       onOpen: () => {
         console.log("WebSocket connection opened");

@@ -6,11 +6,11 @@ import PropertyList from "@/app/_components/properties/property-list";
 type Props = {
   params: {
     id: string;
-  }
+  };
 };
 
 const LandlordPage = ({ params }: Props) => {
-  const landlordId = params.id
+  const landlordId = params.id;
 
   return (
     <div className="container grid grid-cols-1 gap-4 pt-12 md:grid-cols-4">
@@ -24,7 +24,7 @@ const LandlordPage = ({ params }: Props) => {
             className="rounded-xl bg-muted"
           />
           <h1 className="my-6 text-2xl font-bold">Landlord's name</h1>
-          <ContactButton id={landlordId} />
+          <ContactButton id={landlordId} className="flex w-full" />
         </div>
       </aside>
       <div className="col-span-3 pl-0 md:pl-6">
