@@ -7,6 +7,7 @@ import GuestModal from "@/modals/guest-modal";
 import LocationModal from "@/modals/location-modal";
 import LoginModal from "@/modals/login-modal";
 import RegisterModal from "@/modals/register-modal";
+import SearchModal from "@/modals/search-modal";
 import React from "react";
 import { useState, useEffect } from "react";
 
@@ -32,6 +33,7 @@ const ModalProvider = (props: Props) => {
       <LocationModal />
       <DateModal />
       <GuestModal />
+      <SearchModal />
     </>
   );
 };

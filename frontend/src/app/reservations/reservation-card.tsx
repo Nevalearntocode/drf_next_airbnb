@@ -15,14 +15,7 @@ type Props = {
 const ReservationCard = ({ reservation }: Props) => {
   const {
     image_url,
-    check_in,
-    check_out,
-    total,
     property,
-    property_name,
-    nights,
-    guests,
-    status,
   } = reservation;
 
   const router = useRouter();

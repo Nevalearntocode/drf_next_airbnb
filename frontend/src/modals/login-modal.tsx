@@ -77,8 +77,18 @@ const LoginModal = ({}: Props) => {
         router.refresh();
       })
       .catch((err) => {
-        console.log(err);
-        toast.error(err.data.message);
+        if (err.data) {
+          if (Array.isArray(err.data)) {
+            for (const error of err.data) {
+              toast.error(error);
+            }
+          } else {
+            toast.error(err.data.detail);
+          }
+        } else {
+          console.log(err);
+          toast.error("Failed to login");
+        }
       })
       .finally(() => {
         dispatch(setLoading(false));

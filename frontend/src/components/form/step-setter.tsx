@@ -4,7 +4,6 @@ import React from "react";
 import { Button } from "../ui/button";
 import { STEPS } from "@/constants";
 import { cn } from "@/lib/utils";
-import { useAppDispatch } from "@/hooks/use-redux-store";
 
 type Props = {
   step: STEPS;

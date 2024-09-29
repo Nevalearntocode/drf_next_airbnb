@@ -29,6 +29,12 @@ export enum STEPS {
   PRICE = 4,
 }
 
+export enum SEARCHSTEPS {
+  LOCATION = 0,
+  DATES = 1,
+  GUESTS = 2,
+}
+
 export enum SOCIALPROVIDERS {
   google = "google-oauth2",
 }

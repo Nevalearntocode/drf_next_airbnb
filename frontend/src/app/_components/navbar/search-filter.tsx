@@ -11,7 +11,6 @@ type Props = {};
 const SearchFilter = (props: Props) => {
   const dispatch = useAppDispatch();
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const location = searchParams.get("location");
   const checkIn = searchParams.get("check-in");
@@ -30,7 +29,7 @@ const SearchFilter = (props: Props) => {
   };
 
   const onSearch = () => {
-    router.refresh();
+    dispatch(openModal("search"));
   };
 
   return (

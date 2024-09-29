@@ -70,32 +70,16 @@ const ImageUpload = ({ onChange, value, onRemove }: Props) => {
         </div>
       ) : (
         <div className="relative flex flex-col gap-4">
-          <Input
-            placeholder="Or copy and paste your image URL"
-            defaultValue={value ?? ""}
-            ref={inputImageUrl}
-          />
-          <div className="absolute flex self-end">
-            <Button
-              size={`icon`}
-              variant={`ghost`}
-              onClick={(e) => {
-                e.preventDefault();
-                uploadImageRef.current?.click();
-              }}
-            >
-              <ImagePlus className="h-4 w-4" />
-            </Button>
-            <Button
-              size={`icon`}
-              onClick={(e) => {
-                e.preventDefault();
-                handleUrlChange(inputImageUrl.current?.value ?? "");
-              }}
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button
+            size={`icon`}
+            variant={`ghost`}
+            onClick={(e) => {
+              e.preventDefault();
+              uploadImageRef.current?.click();
+            }}
+          >
+            <ImagePlus className="h-4 w-4" />
+          </Button>
           <Input
             type="file"
             ref={uploadImageRef}

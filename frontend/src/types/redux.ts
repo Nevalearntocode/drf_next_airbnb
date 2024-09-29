@@ -17,6 +17,7 @@ type ModalState = {
     | "check-in"
     | "check-out"
     | "guests"
+    | "search"
     | null;
 };
 
