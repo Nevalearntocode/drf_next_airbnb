@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Conversation from "./conversation";
 import { useGetConversationsQuery } from "@/redux/features/chat-slice";
 import ConversationDetail from "./conversation-detail";
@@ -8,14 +8,23 @@ import { useAppSelector } from "@/hooks/use-redux-store";
 import { identifyUsers } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Separator } from "@/components/ui/separator";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 export default function ConversationList({}: Props) {
   const { data } = useGetConversationsQuery();
   const { user } = useAppSelector((state) => state.auth);
+  const router = useRouter();
 
   const hasConversations = data && data.length > 0;
+
+  useEffect(() => {
+    if (hasConversations && user) {
+      router.push(`/conversations/?conversation=${data[0].id}`);
+    }
+  }, [hasConversations, user, data, router]);
 
   if (!hasConversations || !user)
     return (
@@ -30,7 +39,7 @@ export default function ConversationList({}: Props) {
   const initialConversationId = data[0].id;
 
   return (
-    <div className="flex h-full w-full gap-4 pt-2 md:pt-12">
+    <div className="flex h-full w-full gap-4 pt-2 md:pt-14">
       <div className="hidden flex-col gap-2 md:flex md:w-1/3 lg:w-1/4">
         {data.map((conversation) => {
           const { initiator, receptitor, id } = conversation;
@@ -51,6 +60,7 @@ export default function ConversationList({}: Props) {
           );
         })}
       </div>
+      <Separator orientation="vertical" />
       {hasConversations && (
         <div className="relative h-full w-full">
           <ConversationDetail

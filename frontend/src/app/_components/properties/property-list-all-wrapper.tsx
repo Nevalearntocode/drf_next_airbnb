@@ -1,5 +1,6 @@
 "use client";
 
+import PropertyPagination from "@/app/properties/_components/proprety-pagination";
 import React from "react";
 
 type Props = {

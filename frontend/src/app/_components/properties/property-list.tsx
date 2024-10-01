@@ -7,6 +7,7 @@ import { usePropertyList } from "@/hooks/use-property-list";
 import Loading from "@/app/loading";
 import PropertyEmpty from "./property-empty";
 import { PropertyListAllWrapper } from "./property-list-all-wrapper";
+import PropertyPagination from "@/app/properties/_components/proprety-pagination";
 
 type Props = {
   route: PropertyRoute;
@@ -42,6 +43,7 @@ const PropertyList = ({ route }: Props) => {
           </div>
         </div>
       )}
+      <PropertyPagination pagination={{ ...data }} />
     </div>
   );
 };
