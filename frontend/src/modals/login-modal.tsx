@@ -160,7 +160,7 @@ const LoginModal = ({}: Props) => {
         </Form>
         <DialogFooter className="mb-2 w-full px-8">
           <div className="flex w-full flex-col">
-            <div className="mb-4 flex w-full gap-x-4">
+            {/* <div className="mb-4 flex w-full gap-x-4">
               <Button
                 disabled={isLoading}
                 className="flex w-full items-center justify-center"
@@ -170,7 +170,7 @@ const LoginModal = ({}: Props) => {
                 <p className="m-auto">Google</p>
                 <FcGoogle size={18} />
               </Button>
-            </div>
+            </div> */}
             <Button
               disabled={isLoading}
               variant={"link"}

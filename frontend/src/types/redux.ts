@@ -18,6 +18,7 @@ type ModalState = {
     | "check-out"
     | "guests"
     | "search"
+    | "change-password"
     | null;
 };
 
@@ -62,7 +63,7 @@ type getPropertiesArgs = {
   checkIn?: string;
   checkOut?: string;
   guests?: string;
-  landlord?: string
+  landlord?: string;
 };
 
 export type {

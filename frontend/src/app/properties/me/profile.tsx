@@ -16,10 +16,11 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
-import { useAppSelector } from "@/hooks/use-redux-store";
+import { useAppDispatch, useAppSelector } from "@/hooks/use-redux-store";
 import ImageUpload from "@/components/form/image-upload";
 import { useUpdateUserMutation } from "@/redux/features/user-slice";
 import { toast } from "sonner";
+import { openModal } from "@/redux/features/modal-slice";
 
 type Props = {};
 
@@ -32,6 +33,7 @@ type FormType = z.infer<typeof formSchema>;
 
 const Profile = ({}: Props) => {
   const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const [updateUser] = useUpdateUserMutation();
   const form = useForm<FormType>({
     resolver: zodResolver(formSchema),
@@ -51,7 +53,8 @@ const Profile = ({}: Props) => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (data: FormType) => {
-    const image = data.avatar && data.avatar !== "" ? data.avatar : user?.avatar;
+    const image =
+      data.avatar && data.avatar !== "" ? data.avatar : user?.avatar;
     updateUser({
       name: data.name,
       avatar: typeof image === "string" ? image : null,
@@ -62,9 +65,14 @@ const Profile = ({}: Props) => {
         toast.success("Profile update successfully");
       })
       .catch(async (error) => {
-        console.log(error)
+        console.log(error);
         toast.error("Failed to update profile");
       });
+  };
+
+  const onChangePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    dispatch(openModal("change-password"));
   };
 
   return (
@@ -104,16 +112,27 @@ const Profile = ({}: Props) => {
             </FormItem>
           )}
         />
-        <Button disabled={isLoading}>
-          {isLoading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            "Save"
-          )}
-        </Button>
+        <div className="flex w-full gap-4">
+          <Button
+            variant="secondary"
+            type="submit"
+            className=""
+            onClick={onChangePassword}
+          >
+            Change password
+          </Button>
+
+          <Button disabled={isLoading} className="w-full">
+            {isLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              "Save"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

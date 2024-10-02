@@ -3,6 +3,7 @@
 from pathlib import Path
 from os import getenv, path
 from datetime import timedelta
+import dj_database_url
 import dotenv
 
 
@@ -104,6 +105,9 @@ DATABASES = {
     },
 }
 
+DATABASES["default"] = dj_database_url.parse(getenv("DATABASE_URL"))
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -170,8 +174,8 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [
-                # f"redis://{getenv('REDIS_USER')}:{getenv('REDIS_PASSWORD')}@{getenv('REDIS_HOST')}:{getenv('REDIS_PORT')}/0",
-                ("redis", 6379),
+                f"redis://{getenv('REDIS_USER')}:{getenv('REDIS_PASSWORD')}@{getenv('REDIS_HOST')}:{getenv('REDIS_PORT')}/0",
+                # ("redis", 6379),
             ],
         },
     },

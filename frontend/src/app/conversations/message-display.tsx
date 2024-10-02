@@ -46,7 +46,7 @@ export default function MessageDisplay({
     <div
       className={cn(
         "group flex max-w-[80%] flex-col",
-        isOther ? "mr-auto" : "ml-auto",
+        !isOther ? "ml-auto" : "mr-auto",
       )}
     >
       {isDeleted ? (

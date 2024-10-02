@@ -1,24 +1,23 @@
 # when the service's volumes are set to ./*:/usr/src/*/, docker will reflect the changes in local environment
 
 services:
-  redis:
-    image: redis:7.4.0-alpine
-    container_name: airbnb_redis
+  # redis:
+  #   image: redis:7.4.0-alpine
+  #   container_name: airbnb_redis
 
   django:
     build: ./backend
     container_name: airbnb_django
     volumes:
       - ./backend:/usr/src/django/
-      # - django:/usr/src/django/
-    # command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8000:8000"
     env_file:
       - ./.env.dev
     depends_on:
-      - database
       - uvicorn
+      # - database
       # - redis
 
   uvicorn:
@@ -31,19 +30,19 @@ services:
       - "8002:8002"
     env_file:
       - .env.dev
-    depends_on:
-      - redis
+    # depends_on:
+    #   - redis
 
-  database:
-    image: postgres:16.3-alpine
-    container_name: airbnb_database
-    volumes:
-      - postgres:/var/lib/postgresql/data/
-    env_file:
-      - .env.dev
-    ports:
-      - "1234:1234"
-    command: -p 1234
+  # database:
+  #   image: postgres:16.3-alpine
+  #   container_name: airbnb_database
+  #   volumes:
+  #     - postgres:/var/lib/postgresql/data/
+  #   env_file:
+  #     - .env.dev
+  #   ports:
+  #     - "1234:1234"
+  #   command: -p 1234
 
   celery:
     build: ./backend
@@ -52,7 +51,6 @@ services:
     command: ["celery", "-A", "backend", "worker", "--loglevel=info"]
     volumes:
       - ./backend:/usr/src/django/
-      # - django:/usr/src/django/
     env_file:
       - .env.dev
     depends_on:
@@ -65,7 +63,6 @@ services:
     command: ["celery", "-A", "backend", "beat", "--loglevel=info"]
     volumes:
       - ./backend:/usr/src/django/
-      # - django:/usr/src/django/
     env_file:
       - .env.dev
     depends_on:
@@ -75,20 +72,14 @@ services:
     build: ./frontend
     container_name: nextjs
     volumes:
-      - ./frontend:/usr/src/nextjs/
-      # - nextjs:/usr/src/nextjs/
+      - nextjs:/usr/src/nextjs/
     ports:
       - "3000:3000"
     env_file:
       - ./frontend/.env
     profiles: [nextjs]
 
-# but if you specify the volumes here, docker won't reflect the changes in local environment
-# and the only way to reflect the changes is delete the volume itself
-# when delete the volume, docker will copy the current working directory to set the volume, so it's like a one time snapshot
-# i don't know if this is a good approach
-# i'm thinking of making more profile for dev mode 
-volumes:
-  postgres:
+# volumes:
+#   postgres:
   # nextjs:
   # django:

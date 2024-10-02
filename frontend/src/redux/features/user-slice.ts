@@ -89,6 +89,20 @@ export const userSlice = apiSlice.injectEndpoints({
         method: "GET",
       }),
     }),
+    changePassword: builder.mutation<
+      void,
+      {
+        current_password: string;
+        new_password: string;
+        re_new_password: string;
+      }
+    >({
+      query: (args) => ({
+        url: "/users/set_password/",
+        method: "POST",
+        body: args,
+      }),
+    }),
   }),
 });
 
@@ -100,5 +114,6 @@ export const {
   useRetrieveUserQuery,
   useUpdateUserMutation,
   useVerifyMutation,
-  useGetLandlordQuery
+  useGetLandlordQuery,
+  useChangePasswordMutation,
 } = userSlice;

@@ -78,7 +78,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
       onMessage: (event) => {
         const data = JSON.parse(event.data);
         if (data.type === "send") {
-          setNewMessages([...newMessages, data.new_message]);
+          setNewMessages((prevMessages) => [...prevMessages, data.new_message]);
         }
         if (data.type !== "send") {
           setNewMessages((prevMessages) =>
@@ -160,7 +160,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   };
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative flex h-full w-full flex-col">
       <div className="mb-2 flex items-center justify-between rounded-xl bg-muted px-2 py-2 sm:hidden">
         <div className="flex items-center gap-2">
           <UserAvatar
@@ -176,7 +176,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
         </ConversationSheet>
       </div>
       <div
-        className="flex max-h-[430px] flex-col space-y-4 overflow-auto md:max-h-[440px]"
+        className="flex flex-1 flex-col justify-end space-y-4 overflow-auto"
         ref={messagesDiv}
       >
         {newMessages.map((message) => {
@@ -197,7 +197,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
           );
         })}
       </div>
-      <div className="absolute bottom-0 mt-4 w-full">
+      <div className="mt-4 w-full">
         {type === "edit" && (
           <div className="container flex items-center">
             <p className="italic">Editing...</p>

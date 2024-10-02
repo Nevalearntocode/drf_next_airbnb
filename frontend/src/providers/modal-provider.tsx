@@ -1,6 +1,7 @@
 "use client";
 
 import AddPropertyModal from "@/modals/add-property-modal";
+import ChangePasswordModal from "@/modals/change-password-modal";
 import ConfirmModal from "@/modals/confirm-modal";
 import DateModal from "@/modals/date-modal";
 import GuestModal from "@/modals/guest-modal";
@@ -34,6 +35,7 @@ const ModalProvider = (props: Props) => {
       <DateModal />
       <GuestModal />
       <SearchModal />
+      <ChangePasswordModal />
     </>
   );
 };
