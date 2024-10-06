@@ -20,6 +20,7 @@ const initialState: ConfirmState = {
   reservationFormData: defaultRervationFormData,
   deletingPropertyInfo: defaultDeletingPropertyInfo,
   messageId: "",
+  deleteReservationId: "",
 };
 
 const confirmSlice = createSlice({
@@ -69,6 +70,12 @@ const confirmSlice = createSlice({
     clearDeleteMessageId: (state) => {
       state.messageId = "";
     },
+    setDeleteReservationId: (state, action: { payload: string }) => {
+      state.deleteReservationId = action.payload;
+    },
+    clearDeleteReservationId: (state) => {
+      state.deleteReservationId = "";
+    },
   },
 });
 
@@ -81,5 +88,7 @@ export const {
   clearDeletingPropertyInfo,
   setDeleteMessageId,
   clearDeleteMessageId,
+  setDeleteReservationId,
+  clearDeleteReservationId,
 } = confirmSlice.actions;
 export default confirmSlice.reducer;

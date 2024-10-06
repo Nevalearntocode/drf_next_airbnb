@@ -20,12 +20,6 @@ export default function ConversationList({}: Props) {
 
   const hasConversations = data && data.length > 0;
 
-  useEffect(() => {
-    if (hasConversations && user) {
-      router.push(`/conversations/?conversation=${data[0].id}`);
-    }
-  }, [hasConversations, user, data, router]);
-
   if (!hasConversations || !user)
     return (
       <div className="flex h-full w-full flex-col items-center gap-4 pt-44">

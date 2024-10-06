@@ -30,7 +30,7 @@ type ReservationWithPropertyWithLandlord = Pick<
   | "status"
 > & { property: PropertyWithLandlord };
 
-type ShortenReservation = Pick<Reservation, "id" | "check_in" | "check_out">;
+type ShortenReservation = Pick<Reservation, "id" | "check_in" | "check_out" | "guests">;
 
 type ReservationForm = {
   property: string;

@@ -1,103 +1,99 @@
-# Airbnb clone with django backend and nextjs frontend
+# Airbnb Clone
 
-## Overview
-- Web app that allows users to list their properties for rent, make reservations and chat with other users.
+A web app that allows users to list their properties for rent, make reservations and chat with other users.
 
-## Tech-stack
-- Backend: 
-  - Django rest framework for API building
-  - PostgreSQL for database
-  - Djoser for authentication
-  - Celery for update reservations status daily
-  - Channels for real-time communication 
+[Link to live app](#)
 
-- Frontend:
-  - Nextjs with typescript
-  - Tailwindcss, shadcn ui for styling
-  - Redux for state management and rtk query for data fetching
+## App Structure
 
-## How to run
+- Each property belongs to a category
+- Users can list their properties and make reservations
+- Users can chat with each other in real-time
+- Users can manage their properties and reservations
+- Users can search for properties with advanced filters
 
-### Clone the project
-```
-git clone https://github.com/Nevalearntocode/drf_next_airbnb
-```
+## Features
 
-### Environment variables:
-```
-echo > .env.dev
-```
-```python
-DEBUG=
-SECRET_KEY=
-ALLOWED_HOSTS=
-LOCAL=
+- User authentication and registration
+- Property listing and reservation
+- Real-time messaging
+- Responsive design for mobile and desktop
 
-CELERY_BROKER=
-CELERY_BACKEND=
+## Tech Stack
 
-SQL_DATABASE=
-SQL_ENGINE=
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS and Redux
+- **Backend:** Django, Django REST Framework
+- **Database:** PostgreSQL
+- **Message broker:** Celery
+- **Cloud Storage:** 
+- **Deployment:** 
 
-DOCKER_SQL_USER=
-DOCKER_SQL_PASSWORD=
-DOCKER_SQL_HOST=
-DOCKER_SQL_PORT=
+## Getting Started
 
-POSTGRES_USER=
-POSTGRES_PASSWORD=
-POSTGRES_DB=
+### Prerequisites
 
-AUTH_COOKIE_HTTPONLY=
-AUTH_COOKIE_SECURE=
-AUTH_COOKIE_SAMESITE=
-AUTH_COOKIE_PATH=
+- Node.js (LTS version)
+- Python (LTS version)
+- Docker and Docker Compose (if run locally)
 
-SIGNING_KEY=
-CORS_ALLOWED_ORIGINS=
-WEBSITE_URL=
-REDIRECT_URIS=
+### Installation
 
-GOOGLE_OAUTH2_KEY=
-GOOGLE_OAUTH2_SECRET=
-
-R2_ACCOUNT_ID=
-CLOUDFLARE_R2_ACCESS_KEY_ID=
-CLOUDFLARE_R2_SECRET_ACCESS_KEY=
-CLOUDFLARE_R2_BUCKET_NAME=
-CLOUDFLARE_R2_ENDPOINT=
-CLOUDFLARE_R2_BUCKET_URL=
-```
-
-### django development server on docker:
-Run docker with or without celery
-- Create images and run containers for the first time:
-    ```
-    docker compose up --build
+1. **Clone the repository**
+    ```bash
+    git clone https://github.com/Nevalearntocode/drf_next_airbnb
     ```
 
-- Without celery (only django server and database):
-    ```
-    docker compose up
-    ```
-- With celery (update reservations status daily): 
-    ```
-    docker compose --profile celery up
+2. **Install frontend dependencies**
+    ```bash
+    cd frontend
+    npm install
     ```
 
-### install nextjs dependencies
+3. **Set up environment variables**
+    - Create `.env.local` file in frontend and `.env.dev` file backend directory.
+    - Follow the .env.example files in frontend and backend directory.
 
-```
-cd .\frontend\
-npm install
-```
+### Running with Docker
 
-### nextjs development server:
-    ```
-    npm run dev
-    ``` 
+- In settings.py, comment out the following lines: 
+- ![Redis and Database Configs](/images/redis-and-database-configs.png)
 
-## Known issues:
-- Google authentication is currently having the error "State could not be found in server-side session data."
-- Real-time communication only works for sending messages (update and delete will be updated later).
-- Paginations are not added for properties and messages at the moment.
+### Running the Application
+
+- **Frontend**: Run `npm run dev` in the frontend directory.
+- **Backend**: Run `docker compose up --build` in the backend directory.
+
+### Deployment
+
+- The following Github repo is a guide to how to deploy the application with separate PostgreSQL database and Redis service.
+- [Deployment guide](#)
+- Notes: 
+
+## Images
+
+### Home Page
+![home page](/images/home-page.png)
+
+### Property Page
+![property page](/images/property-page.png)
+
+### Chat interface
+![chat interface](/images/chat-interface.png)
+
+### Search Pages
+![search 1](/images/search.png)
+![search 2](/images/search-2.png)
+
+## Mobile
+
+### Home Page
+![mobile home page 1](/images/mobile-home-page.png)
+![mobile home page 2](/images/mobile-home-page-2.png)
+
+### Mobile Chat Interface
+![mobile chat interface](/images/mobile-chat-interface.png)
+
+### Mobile Property Page
+![mobile property page](/images/mobile-property-page.png)
+
+Please note that I've added some comments and placeholders where information is missing. You can fill in the missing information and update the file as needed.

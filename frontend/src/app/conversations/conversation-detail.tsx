@@ -71,7 +71,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   }, [message]);
 
   const { sendJsonMessage } = useWebSocket(
-    `ws://${env.NEXT_PUBLIC_SOCKET}/ws/conversations/${conversationId ?? initialConversationId}/`,
+    `${env.NEXT_PUBLIC_SOCKET}/${conversationId ?? initialConversationId}/`,
     {
       share: false,
       shouldReconnect: () => true,
@@ -113,6 +113,13 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
   const { receptitor, initiator } = conversation;
 
   const { otherUser } = identifyUsers(userId, initiator, receptitor);
+
+  if (!conversationId) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("conversation", initialConversationId);
+    window.history.replaceState({}, "", url.toString());
+    return null;
+  }
 
   const sendMessage = () => {
     if (type === "edit") {
@@ -176,7 +183,7 @@ const ConversationDetail = ({ initialConversationId, userId }: Props) => {
         </ConversationSheet>
       </div>
       <div
-        className="flex flex-1 flex-col justify-end space-y-4 overflow-auto"
+        className="flex flex-1 flex-col space-y-4 overflow-auto"
         ref={messagesDiv}
       >
         {newMessages.map((message) => {

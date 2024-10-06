@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "./_components/navbar/navbar";
 import { cn } from "@/lib/utils";
 import RootProvider from "@/providers/root-provider";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,8 +23,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={cn("h-full", inter.className)}>
         <RootProvider>
-          <Navbar />
-          <div className="h-full pt-28 md:pt-32">{children}</div>
+          <Suspense fallback={<Loading />}>
+            <Navbar />
+            <div className="h-full pt-28 md:pt-32">{children}</div>
+          </Suspense>
         </RootProvider>
       </body>
     </html>

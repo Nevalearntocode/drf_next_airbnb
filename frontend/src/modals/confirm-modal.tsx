@@ -19,6 +19,7 @@ import {
   clearReservationFormData,
 } from "@/redux/features/confirm-slice";
 import { closeModal } from "@/redux/features/modal-slice";
+import { useDeleteReservationMutation } from "@/redux/features/reservation-slice";
 import { toast } from "sonner";
 
 type Props = {};
@@ -31,6 +32,7 @@ export default function ConfirmModal({}: Props) {
     deletingPropertyInfo,
     reservationFormData,
     messageId,
+    deleteReservationId,
   } = useAppSelector((state) => state.confirm);
   const { isOpen, type } = useAppSelector((state) => state.modal);
   const isModalOpen = isOpen && type === "confirm";
@@ -44,6 +46,7 @@ export default function ConfirmModal({}: Props) {
   );
 
   const [deleteMessage] = useDeleteMessageMutation();
+  const [deleteReservation] = useDeleteReservationMutation();
 
   const onClose = () => {
     dispatch(closeModal());
@@ -59,12 +62,26 @@ export default function ConfirmModal({}: Props) {
       return onDeleteProperty();
     }
     if (confirmType === "delete-message") {
-      return deleteMessage(messageId).unwrap().then(() => {
-        dispatch(closeModal());
-      }).catch((err) => {
-        console.log(err);
-        toast.error("Failed to delete message");
-      });
+      return deleteMessage(messageId)
+        .unwrap()
+        .then(() => {
+          dispatch(closeModal());
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Failed to delete message");
+        });
+    }
+    if (confirmType === "cancel-reservation") {
+      return deleteReservation({ id: deleteReservationId })
+        .unwrap()
+        .then(() => {
+          dispatch(closeModal());
+        })
+        .catch((err) => {
+          console.log(err);
+          toast.error("Failed to delete reservation");
+        });
     }
   };
 

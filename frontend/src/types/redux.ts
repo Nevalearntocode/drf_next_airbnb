@@ -1,3 +1,4 @@
+import { ShortenReservation } from "./reservations";
 import { User } from "./user";
 
 type AuthState = {
@@ -19,13 +20,21 @@ type ModalState = {
     | "guests"
     | "search"
     | "change-password"
+    | "update-reservation"
     | null;
+  reservations: ShortenReservation[];
+  reservationId: string;
 };
 
 type ConfirmState = {
   title: string;
   message: string;
-  confirmType: "add-reservation" | "delete-property" | "delete-message" | null;
+  confirmType:
+    | "add-reservation"
+    | "delete-property"
+    | "delete-message"
+    | "cancel-reservation"
+    | null;
 
   reservationFormData: {
     property: string;
@@ -40,6 +49,7 @@ type ConfirmState = {
   };
 
   messageId: string;
+  deleteReservationId: string;
 };
 
 type LoginArgs = {

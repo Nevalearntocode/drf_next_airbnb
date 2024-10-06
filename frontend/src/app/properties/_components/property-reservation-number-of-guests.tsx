@@ -34,10 +34,13 @@ export default function PropertyReservationNumberOfGuests({
       render={({ field }) => (
         <FormItem className="rounded-xl">
           <FormLabel>Guests</FormLabel>
-          <Select onValueChange={onHandleGuestsChange} defaultValue={`${field.value} guest`}>
+          <Select
+            onValueChange={onHandleGuestsChange}
+            defaultValue={`${field.value} guest`}
+          >
             <FormControl>
               <SelectTrigger>
-                <SelectValue placeholder="1 guest" />
+                {field.value} guest{field.value > 1 && "s"}
               </SelectTrigger>
             </FormControl>
             <SelectContent>

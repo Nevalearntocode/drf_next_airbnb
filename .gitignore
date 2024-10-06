@@ -297,3 +297,10 @@ backend/celerybeat-schedule.bak
 backend/celerybeat-schedule.dat
 backend/celerybeat-schedule.dir
 .vscode
+boot.sh
+celery-beat.service.txt
+celery.service.txt
+djangoairbnbapi.txt
+gunicorn.service.txt
+placeholder
+uvicorn.service.txt

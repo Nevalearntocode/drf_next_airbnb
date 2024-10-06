@@ -32,8 +32,22 @@ export const useConfirmReservation = ({ reservationFormData }: Props) => {
         router.push("/reservations/me");
       })
       .catch((err) => {
-        // TODO: this error needs to be handled properly in the future
-        toast.error("Failed to add reservation");
+        console.log(err);
+        if (err.data) {
+          if (Array.isArray(err.data)) {
+            for (const field in err.data) {
+              err.data[field].forEach((errorMessage: string) => {
+                toast.error(errorMessage);
+              });
+            }
+          } else {
+            console.error(err.data);
+            toast.error(err.data.non_field_errors[0]);
+          }
+        } else {
+          console.error(err);
+          toast.error("Failed to add reservation");
+        }
       });
   };
 

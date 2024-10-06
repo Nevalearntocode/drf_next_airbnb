@@ -4,24 +4,57 @@ import { SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Reservation } from "@/types/reservations";
 import { useRouter } from "next/navigation";
-import ReservationStatus from "./reservation-status";
 import ReservationInfo from "./reservation-info";
-import Link from "next/link";
+import { useAppDispatch } from "@/hooks/use-redux-store";
+import {
+  setConfirmHeader,
+  setDeleteReservationId,
+} from "@/redux/features/confirm-slice";
+import {
+  openModal,
+  setReservationId,
+  setReservations,
+} from "@/redux/features/modal-slice";
+import { useGetPropertyDetailsQuery } from "@/redux/features/property-slice";
 
 type Props = {
   reservation: Reservation;
 };
 
 const ReservationCard = ({ reservation }: Props) => {
-  const {
-    image_url,
-    property,
-  } = reservation;
+  const { image_url, property, id } = reservation;
+  const { data: propertyDetail } = useGetPropertyDetailsQuery({ id: property });
 
   const router = useRouter();
 
+  const dispatch = useAppDispatch();
+
+  if (!propertyDetail) {
+    return null;
+  }
+
+  const { reservations } = propertyDetail;
+
+  const onCancelReservation = () => {
+    dispatch(setDeleteReservationId(id));
+    dispatch(openModal("confirm"));
+    dispatch(
+      setConfirmHeader({
+        title: "Cancel Reservation",
+        confirmType: "cancel-reservation",
+        message: "Are you sure you want to cancel this reservation?",
+      }),
+    );
+  };
+
   const onClick = () => {
     router.push(`/properties/${property}`);
+  };
+
+  const onChangeSchedule = () => {
+    dispatch(openModal("update-reservation"));
+    dispatch(setReservations(reservations));
+    dispatch(setReservationId(id));
   };
 
   return (
@@ -36,15 +69,19 @@ const ReservationCard = ({ reservation }: Props) => {
         />
       </div>
       <ReservationInfo {...reservation} />
-      <Button onClick={onClick} className="w-full" variant={`secondary`}>
+      <Button
+        onClick={onCancelReservation}
+        className="w-full"
+        variant={`secondary`}
+      >
         Cancel reservation
       </Button>
-      <Button onClick={onClick} className="w-full">
-        <Link href={`/properties/${property}`}>Go to property</Link>
+      <Button onClick={onChangeSchedule} className="w-full">
+        Change schedule
       </Button>
       <Button
         variant={`ghost`}
-        className="absolute right-0 top-0 hidden items-center justify-center focus-visible:ring-0 focus-visible:ring-offset-0 lg:flex"
+        className="absolute right-0 top-0 items-center justify-center focus-visible:ring-0 focus-visible:ring-offset-0 lg:flex"
         size={"icon"}
         onClick={onClick}
       >

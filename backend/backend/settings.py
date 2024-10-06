@@ -75,24 +75,15 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 ASGI_APPLICATION = "backend.asgi.application"
 
-LOCAL = getenv("LOCAL") == "1"
+CELERY_BROKER = getenv("CELERY_BROKER", "redis://redis:6379/0")
+CELERY_BACKEND = getenv("CELERY_BACKEND", "redis://redis:6379/0")
 
-CELERY_BROKER = getenv("CELERY_BROKER", "redis://127.0.0.1:6379/0")
-CELERY_BACKEND = getenv("CELERY_BACKEND", "django-db")
 ENGINE = getenv("SQL_ENGINE")
 NAME = getenv("SQL_DATABASE")
 USER = getenv("DOCKER_SQL_USER")
 PASSWORD = getenv("DOCKER_SQL_PASSWORD")
 HOST = getenv("DOCKER_SQL_HOST")
 PORT = getenv("DOCKER_SQL_PORT")
-
-if LOCAL:
-    USER = getenv("LOCAL_SQL_USER")
-    PASSWORD = getenv("LOCAL_SQL_PASSWORD")
-    HOST = getenv("LOCAL_SQL_HOST")
-    PORT = getenv("LOCAL_SQL_PORT")
-    CELERY_BROKER = "redis://127.0.0.1:6379/0"
-    CELERY_BACKEND = "django-db"
 
 DATABASES = {
     "default": {
@@ -104,8 +95,6 @@ DATABASES = {
         "PORT": PORT,
     },
 }
-
-DATABASES["default"] = dj_database_url.parse(getenv("DATABASE_URL"))
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -166,6 +155,8 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "users.CustomUser"
 
+DATABASES["default"] = dj_database_url.parse(getenv("DATABASE_URL"))
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -221,28 +212,3 @@ CLOUDFLARE_R2_BUCKET_URL = getenv("CLOUDFLARE_R2_BUCKET_URL")
 CELERY_BROKER_URL = CELERY_BROKER
 CELERY_RESULT_BACKEND = CELERY_BACKEND
 CELERY_TIMEZONE = "Asia/Bangkok"
-
-if CELERY_RESULT_BACKEND == "django-db":
-    INSTALLED_APPS += [
-        "django_celery_results",
-    ]
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-    },
-    "root": {
-        "handlers": ["console"],
-        "level": "INFO",
-    },
-    "daphne": {
-        "handlers": [
-            "console",
-        ],
-        "level": "DEBUG",
-    },
-}
