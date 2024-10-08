@@ -20,7 +20,7 @@ class BaseReservationSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
         property_instance = attrs["property"]
 
-        if request and request.user == property_instance.landlord:
+        if request and request.user == property_instance.landlord and request.method == "POST":
             raise ValidationError("You can't book a reservation on your own property.")
 
         if self.instance and self.instance.property != property_instance:

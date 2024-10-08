@@ -13,14 +13,30 @@ export const reservationSlice = apiSlice.injectEndpoints({
         url: "reservations/",
         method: "GET",
       }),
-      providesTags: ["Reservations"],
+      providesTags: (result, error, arg) => {
+        return result
+          ? [
+              ...result.map(({ id }) => ({ type: "Reservation", id }) as const),
+              { type: "Reservation", id: "LIST" },
+            ]
+          : [{ type: "Reservation", id: "LIST" }];
+      },
     }),
     getCurrentUserReservations: builder.query<Reservation[], void>({
       query: () => ({
         url: "reservations/me/",
         method: "GET",
       }),
-      providesTags: ["MyReservations"],
+      providesTags: (result, error, arg) => {
+        return result
+          ? [
+              ...result.map(
+                ({ id }) => ({ type: "Reservations", id }) as const,
+              ),
+              { type: "Reservations", id: "LIST" },
+            ]
+          : [{ type: "Reservations", id: "LIST" }];
+      },
     }),
     getReservationDetails: builder.query<
       ReservationWithPropertyWithLandlord,
@@ -30,7 +46,14 @@ export const reservationSlice = apiSlice.injectEndpoints({
         url: `reservations/${args.id}/`,
         method: "GET",
       }),
-      providesTags: ["Reservation"],
+      providesTags: (result, error, arg) => {
+        return result
+          ? [
+              { type: "Reservations", id: result.id },
+              { type: "Reservations", id: "DETAIL" },
+            ]
+          : [{ type: "Reservations", id: "DETAIL" }];
+      },
     }),
     addReservation: builder.mutation({
       query: (args: ReservationForm) => ({
@@ -38,7 +61,7 @@ export const reservationSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: args,
       }),
-      invalidatesTags: ["Reservations", "MyReservations", "Property"],
+      invalidatesTags: [{ type: "Reservations", id: "LIST" }],
     }),
     updateReservation: builder.mutation({
       query: (args: { id: string; reservation: UpdateReservationForm }) => ({
@@ -46,14 +69,17 @@ export const reservationSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: args.reservation,
       }),
-      invalidatesTags: ["Reservations", "MyReservations"],
+      invalidatesTags: (args) => [
+        { type: "Reservations", id: args.id },
+        { type: "Reservations", id: "LIST" },
+      ],
     }),
     deleteReservation: builder.mutation({
       query: (args: { id: string }) => ({
         url: `reservations/${args.id}/`,
         method: "DELETE",
       }),
-      invalidatesTags: ["Reservations", "MyReservations"],
+      invalidatesTags: [{ type: "Reservations", id: "LIST" }],
     }),
   }),
 });

@@ -3,6 +3,7 @@
 import React from "react";
 import ReservationStatus from "./reservation-status";
 import { Reservation } from "@/types/reservations";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   property_name: string;
@@ -23,7 +24,7 @@ export default function ReservationInfo({
 }: Props) {
   return (
     <div className="flex flex-col space-y-2">
-      <div className="flex">
+      <div className="flex justify-between">
         <h2 className="mb-4 text-xl font-bold">{property_name}</h2>
       </div>
       <div className="relative flex h-full flex-col gap-4">

@@ -15,6 +15,7 @@ class PropertyQuerysetMixin(GenericViewSet):
         guests = request.query_params.get("guests")
         by_favorites = request.query_params.get("by_favorites")
         landlord = request.query_params.get("landlord")
+        favorites = request.query_params.get("favorites")
 
         if id:
             queryset = queryset.filter(id=id)
@@ -36,6 +37,8 @@ class PropertyQuerysetMixin(GenericViewSet):
             queryset = queryset.filter(country__icontains=country)
         if landlord:
             queryset = queryset.filter(landlord=landlord)
+        if favorites and favorites.lower() == "true":
+            queryset = queryset.filter(favorites__user=request.user)
 
         queryset = queryset.annotate(favorite=Count("favorites")).order_by("-favorite")
         return queryset

@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { MessageSquare, LogOut, Menu, Ticket, UserRound } from "lucide-react";
+import { MessageSquare, LogOut, Menu, Ticket, UserRound, Heart } from "lucide-react";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { IoLockOpen } from "react-icons/io5";
 import {
@@ -70,6 +70,15 @@ const UserButton = (props: Props) => {
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <Link
+              href={"/properties/favorites"}
+              className="flex w-full items-center justify-between"
+            >
+              Favorites
+              <Heart className="ml-auto h-4 w-4" />
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem>
             <Link
               href={"/reservations/me"}

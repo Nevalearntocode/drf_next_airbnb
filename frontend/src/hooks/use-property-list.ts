@@ -32,6 +32,11 @@ export const usePropertyList = (route: PropertyRoute) => {
     useGetCurrentUserPropertiesQuery(queryArgs);
   const { data: landlordPropertiesData, isLoading: landlordPropertiesLoading } =
     useGetAllPropertiesQuery({ landlord: landlordId });
+  const { data: favoritePropertiesData, isLoading: favoritePropertiesLoading } =
+    useGetAllPropertiesQuery({
+      favorites: "true",
+      ...queryArgs,
+    });
 
   // Now, conditionally return the data and loading state
   if (route === "me") {
@@ -45,6 +50,14 @@ export const usePropertyList = (route: PropertyRoute) => {
     return {
       data: landlordPropertiesData,
       isLoading: landlordPropertiesLoading,
+    };
+  }
+
+  if (route === "favorite") {
+    console.log(favoritePropertiesData);
+    return {
+      data: favoritePropertiesData,
+      isLoading: favoritePropertiesLoading,
     };
   }
 

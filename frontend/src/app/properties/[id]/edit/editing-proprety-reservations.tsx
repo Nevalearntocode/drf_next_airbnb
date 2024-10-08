@@ -4,12 +4,15 @@ import { ShortenReservation } from "@/types/reservations";
 import React from "react";
 import EditingPropertyReservationCard from "./edit-property-reservation-card";
 import NoReservationFound from "./no-reservation-found";
+import { PropertyWithLandlordAndReservation } from "@/types/property";
 
 type Props = {
-  reservations: ShortenReservation[];
+  propertyDetail: PropertyWithLandlordAndReservation;
 };
 
-export default function EditingPropertyReservations({ reservations }: Props) {
+export default function EditingPropertyReservations({ propertyDetail }: Props) {
+  const { reservations } = propertyDetail;
+
   if (!reservations || reservations.length === 0) return <NoReservationFound />;
 
   return (
@@ -20,6 +23,7 @@ export default function EditingPropertyReservations({ reservations }: Props) {
           <EditingPropertyReservationCard
             key={reservation.id}
             id={reservation.id}
+            property={propertyDetail}
           />
         ))}
       </div>

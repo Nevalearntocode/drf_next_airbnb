@@ -110,6 +110,9 @@ const ChangeScheduleModal = (props: Props) => {
 
     if (reservations && reservations.length > 0) {
       for (const reservation of reservations) {
+        if (reservation.id === reservationId) {
+          continue;
+        }
         const check_in = parseISO(reservation.check_in);
         const check_out = parseISO(reservation.check_out);
         if (isWithinInterval(date, { start: check_in, end: check_out })) {

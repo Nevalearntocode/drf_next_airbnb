@@ -12,6 +12,7 @@ import {
   DialogOverlay,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Popover,
   PopoverContent,
@@ -25,22 +26,20 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import React, { useState } from "react";
 import { DateRange } from "react-day-picker";
-import { TbNumber0Small } from "react-icons/tb";
 
 type Props = {};
 
 export default function SearchModal({}: Props) {
   const dispatch = useAppDispatch();
   const { isOpen, type } = useAppSelector((state) => state.modal);
+  const [name, setName] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [dateRange, setDateRange] = useState<DateRange>({
     from: undefined,
     to: undefined,
   });
   const [guests, setGuests] = useState(0);
-  const [searchStep, setSearchStep] = useState<SEARCHSTEPS>(
-    SEARCHSTEPS.LOCATION,
-  );
+  const [searchStep, setSearchStep] = useState<SEARCHSTEPS>(SEARCHSTEPS.NAME);
 
   const onBack = () => {
     setSearchStep((value) => value - 1);
@@ -69,6 +68,9 @@ export default function SearchModal({}: Props) {
     if (dateRange.to) {
       url.searchParams.set("check-in", format(dateRange.to, "yyyy-MM-dd"));
     }
+    if (name && name !== "") {
+      url.searchParams.set("name", name);
+    }
     window.history.replaceState({}, "", url.toString());
     onOpenChange();
     setLocation("");
@@ -83,6 +85,12 @@ export default function SearchModal({}: Props) {
           <DialogHeader>
             <DialogTitle>Search</DialogTitle>
           </DialogHeader>
+          {searchStep === SEARCHSTEPS.NAME && (
+            <div className="mt-4">
+              <h3 className="mb-4 font-semibold">Property name</h3>
+              <Input value={name} onChange={(e) => setName(e.target.value)} />
+            </div>
+          )}
           {searchStep === SEARCHSTEPS.LOCATION && (
             <SelectLocation value={location} setValue={setLocation} />
           )}
@@ -138,7 +146,7 @@ export default function SearchModal({}: Props) {
                 className="w-2/4"
                 onClick={(e) => {
                   e.preventDefault();
-                  if (searchStep === SEARCHSTEPS.LOCATION) {
+                  if (searchStep === SEARCHSTEPS.NAME) {
                     onOpenChange();
                   } else {
                     onBack();

@@ -1,9 +1,9 @@
 # when the service's volumes are set to ./*:/usr/src/*/, docker will reflect the changes in local environment
 
 services:
-  # redis:
-  #   image: redis:7.4.0-alpine
-  #   container_name: airbnb_redis
+  redis:
+    image: redis:7.4.0-alpine
+    container_name: airbnb_redis
 
   django:
     build: ./backend
@@ -17,8 +17,8 @@ services:
       - ./.env.dev
     depends_on:
       - uvicorn
-      # - database
-      # - redis
+      - database
+      - redis
 
   uvicorn:
     build: ./backend
@@ -30,19 +30,19 @@ services:
       - "8002:8002"
     env_file:
       - .env.dev
-    # depends_on:
-    #   - redis
+    depends_on:
+      - redis
 
-  # database:
-  #   image: postgres:16.3-alpine
-  #   container_name: airbnb_database
-  #   volumes:
-  #     - postgres:/var/lib/postgresql/data/
-  #   env_file:
-  #     - .env.dev
-  #   ports:
-  #     - "1234:1234"
-  #   command: -p 1234
+  database:
+    image: postgres:16.3-alpine
+    container_name: airbnb_database
+    volumes:
+      - postgres:/var/lib/postgresql/data/
+    env_file:
+      - .env.dev
+    ports:
+      - "1234:1234"
+    command: -p 1234
 
   celery:
     build: ./backend
@@ -79,7 +79,7 @@ services:
       - ./frontend/.env
     profiles: [nextjs]
 
-# volumes:
-#   postgres:
+volumes:
+  postgres:
   # nextjs:
   # django:

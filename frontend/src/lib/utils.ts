@@ -36,6 +36,9 @@ export function paramsAppender(args: getPropertiesArgs) {
   if (args.landlord) {
     params.append("landlord", args.landlord);
   }
+  if (args.favorites) {
+    params.append("favorites", args.favorites);
+  }
 
   return params;
 }

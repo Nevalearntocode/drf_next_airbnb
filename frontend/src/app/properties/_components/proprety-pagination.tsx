@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Pagination,
   PaginationContent,
@@ -46,6 +47,11 @@ export default function PropertyPagination({ pagination }: Props) {
     });
   };
 
+  const onClick = (page: number) => {
+    setCurrentPage(page);
+    updateUrlPage(page);
+  };
+
   return (
     <Pagination className={cn("", pagesAmount === 1 && "hidden")}>
       <PaginationContent>
@@ -53,13 +59,18 @@ export default function PropertyPagination({ pagination }: Props) {
           <PaginationPrevious onClick={onPrevious} className="cursor-pointer" />
         </PaginationItem>
         {[...Array(pagesAmount)].map((_, index) => (
-          <PaginationItem key={index}>
-            <PaginationLink
-              href={`/?page=${index + 1}`}
-              isActive={currentPage === index + 1}
+          <PaginationItem key={index} onClick={() => setCurrentPage(index + 1)}>
+            <Button
+              variant={`ghost`}
+              size={`icon`}
+              className={cn(
+                "",
+                index + 1 === currentPage && "border font-bold",
+              )}
+              onClick={() => onClick(index + 1)}
             >
               {index + 1}
-            </PaginationLink>
+            </Button>
           </PaginationItem>
         ))}
         <PaginationItem>

@@ -47,6 +47,7 @@ export default function StepPrice({
               <Input
                 {...field}
                 className="p-6"
+                type="number"
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
               <DollarSign className="absolute left-1 h-4 w-4 opacity-75" />

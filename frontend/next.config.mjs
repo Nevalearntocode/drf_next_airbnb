@@ -1,8 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone/server.js",
+  output: "standalone",
   images: {
     remotePatterns: [
+      {
+        hostname: "www.djangoairbnbapi.xyz",
+        pathname: "/**",
+        protocol: "https",
+      },
       {
         hostname: "localhost",
         pathname: "/**",

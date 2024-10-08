@@ -30,9 +30,10 @@ export enum STEPS {
 }
 
 export enum SEARCHSTEPS {
-  LOCATION = 0,
-  DATES = 1,
-  GUESTS = 2,
+  NAME = 0,
+  LOCATION = 1,
+  DATES = 2,
+  GUESTS = 3,
 }
 
 export enum SOCIALPROVIDERS {

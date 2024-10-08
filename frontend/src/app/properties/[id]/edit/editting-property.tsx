@@ -20,7 +20,7 @@ export default function EditingProperty({ propertyId }: Props) {
       <div className="relative flex items-stretch">
         <Separator orientation="vertical" className="h-full" />
       </div>
-      <EditingPropertyReservations reservations={data.reservations} />
+      <EditingPropertyReservations propertyDetail={data} />
     </div>
   );
 }

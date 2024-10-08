@@ -74,6 +74,7 @@ type getPropertiesArgs = {
   checkOut?: string;
   guests?: string;
   landlord?: string;
+  favorites?: string;
 };
 
 export type {

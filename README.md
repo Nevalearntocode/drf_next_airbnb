@@ -6,11 +6,9 @@ A web app that allows users to list their properties for rent, make reservations
 
 ## App Structure
 
-- Each property belongs to a category
-- Users can list their properties and make reservations
-- Users can chat with each other in real-time
-- Users can manage their properties and reservations
-- Users can search for properties with advanced filters
+- Each property belongs to a category (14 categories for now, make dynamic if needed)
+- Users can list their properties for rent
+- Users can make reservations for properties, landlord and guests (property and reservation's owner) can manage reservations
 
 ## Features
 
@@ -18,15 +16,16 @@ A web app that allows users to list their properties for rent, make reservations
 - Property listing and reservation
 - Real-time messaging
 - Responsive design for mobile and desktop
+- Pagination for property listings
 
 ## Tech Stack
 
 - **Frontend:** Next.js, React, TypeScript, Tailwind CSS and Redux
 - **Backend:** Django, Django REST Framework
-- **Database:** PostgreSQL
-- **Message broker:** Celery
-- **Cloud Storage:** 
-- **Deployment:** 
+- **Database:** PostgreSQL Neon (Docker for local development)
+- **Message broker:** Redis Cloud (Docker for local development)
+- **Cloud Storage:** Cloudflare R2
+- **Deployment:** AWS EC2 for Django Backend and Vercel for Next.js Frontend
 
 ## Getting Started
 
@@ -50,24 +49,22 @@ A web app that allows users to list their properties for rent, make reservations
     ```
 
 3. **Set up environment variables**
-    - Create `.env.local` file in frontend and `.env.dev` file backend directory.
+    - Create  `.env.dev` file in root and `.env.local` file in frontend directory.
     - Follow the .env.example files in frontend and backend directory.
-
-### Running with Docker
-
-- In settings.py, comment out the following lines: 
-- ![Redis and Database Configs](/images/redis-and-database-configs.png)
 
 ### Running the Application
 
+- **Backend**: Run `docker compose up --build` in the root directory.
 - **Frontend**: Run `npm run dev` in the frontend directory.
-- **Backend**: Run `docker compose up --build` in the backend directory.
 
 ### Deployment
 
-- The following Github repo is a guide to how to deploy the application with separate PostgreSQL database and Redis service.
-- [Deployment guide](#)
-- Notes: 
+**AWS services** Route 53, EC2
+**Domain name** [NameCheap](https://www.namecheap.com/)
+**Cloudflare** R2
+**Vercel** Free deployment tier
+
+- I won't go into deployment details here.
 
 ## Images
 
