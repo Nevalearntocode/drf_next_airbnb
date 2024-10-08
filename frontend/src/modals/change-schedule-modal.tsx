@@ -178,10 +178,9 @@ const ChangeScheduleModal = (props: Props) => {
   return (
     <Dialog open={isModalOpen} onOpenChange={onOpenChange}>
       <DialogOverlay className="opacity-60">
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader>
-            <DialogTitle>DialogTitle</DialogTitle>
-            <DialogDescription>DialogDescription</DialogDescription>
+            <DialogTitle>Change schedule</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>

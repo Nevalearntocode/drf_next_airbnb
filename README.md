@@ -50,7 +50,7 @@ A web app that allows users to list their properties for rent, make reservations
 
 3. **Set up environment variables**
     - Create  `.env.dev` file in root and `.env.local` file in frontend directory.
-    - Follow the .env.example files in frontend and backend directory.
+    - Follow the .env.example files in frontend and root directory.
 
 ### Running the Application
 
