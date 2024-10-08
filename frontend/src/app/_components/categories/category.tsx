@@ -7,14 +7,14 @@ import { IconType } from "react-icons/lib";
 
 type Props = {
   label: string;
-  description: string;
   icon: IconType;
-  selected?: boolean;
 };
 
-const Category = ({ description, icon: Icon, label, selected }: Props) => {
+const Category = ({ icon: Icon, label }: Props) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  const selected = searchParams.get("category") === label.toLowerCase();
 
   const handleClick = () => {
     console.log("clicked");
@@ -28,6 +28,7 @@ const Category = ({ description, icon: Icon, label, selected }: Props) => {
 
     router.push(url.toString());
   };
+
   return (
     <div
       className={cn(

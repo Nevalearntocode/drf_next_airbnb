@@ -27,7 +27,7 @@ const PropertyList = ({ route }: Props) => {
 
   return (
     <>
-      <div className={cn("container", route === "all" && "")}>
+      <div className={cn("container", route === "all" && "mt-8 md:mt-0")}>
         {route === "favorite" && (
           <h1 className="mb-4 text-2xl font-bold">Favorites</h1>
         )}

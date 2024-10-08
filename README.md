@@ -69,28 +69,29 @@ A web app that allows users to list their properties for rent, make reservations
 ## Images
 
 ### Home Page
-![home page](/images/home-page.png)
+![homepage](/images/homepage-1.png)
+![homepage 3](/images/homepage-3.png)
+![homepage 2](/images/homepage-2.png)
 
-### Property Page
-![property page](/images/property-page.png)
+### Property
+![property](/images/property-1.png)
+![property 2](/images/property-2.png)
 
 ### Chat interface
-![chat interface](/images/chat-interface.png)
+![chat interface](/images/chat-interface-1.png)
+![chat interface 2](/images/chat-interface-2.png)
+![chat interface 3](/images/chat-interface-3.png)
 
-### Search Pages
-![search 1](/images/search.png)
+### Search
+![search 1](/images/search-1.png)
 ![search 2](/images/search-2.png)
 
-## Mobile
+### Reservation
+![reservation 1](/images/reservation-1.png)
+![reservation 2](/images/reservation-2.png)
 
-### Home Page
-![mobile home page 1](/images/mobile-home-page.png)
-![mobile home page 2](/images/mobile-home-page-2.png)
+### Login
+![login 1](/images/login.png)
 
-### Mobile Chat Interface
-![mobile chat interface](/images/mobile-chat-interface.png)
-
-### Mobile Property Page
-![mobile property page](/images/mobile-property-page.png)
-
-Please note that I've added some comments and placeholders where information is missing. You can fill in the missing information and update the file as needed.
+### Register
+![register 1](/images/register.png)

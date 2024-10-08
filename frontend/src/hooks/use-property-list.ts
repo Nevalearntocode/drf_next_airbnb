@@ -54,7 +54,6 @@ export const usePropertyList = (route: PropertyRoute) => {
   }
 
   if (route === "favorite") {
-    console.log(favoritePropertiesData);
     return {
       data: favoritePropertiesData,
       isLoading: favoritePropertiesLoading,
