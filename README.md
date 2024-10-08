@@ -77,6 +77,10 @@ A web app that allows users to list their properties for rent, make reservations
 ![property](/images/property-1.png)
 ![property 2](/images/property-2.png)
 
+### Reservation
+![reservation 1](/images/reservation-1.png)
+![reservation 2](/images/reservation-2.png)
+
 ### Chat interface
 ![chat interface](/images/chat-interface-1.png)
 ![chat interface 2](/images/chat-interface-2.png)
@@ -86,9 +90,6 @@ A web app that allows users to list their properties for rent, make reservations
 ![search 1](/images/search-1.png)
 ![search 2](/images/search-2.png)
 
-### Reservation
-![reservation 1](/images/reservation-1.png)
-![reservation 2](/images/reservation-2.png)
 
 ### Login
 ![login 1](/images/login.png)
